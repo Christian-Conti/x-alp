@@ -1,0 +1,33 @@
+// Copyright 2020 OpenHW Group
+// Solderpad Hardware License, Version 2.1, see LICENSE.md for details.
+// SPDX-License-Identifier: Apache-2.0 WITH SHL-2.1
+{
+  name: "eslepfl_xheep",
+  target_dir: "eslepfl_xheep",
+
+  upstream: {
+    url: "https://github.com/esl-epfl/x-heep.git",
+    rev: "0fd820e29df7e5f2561e7d121b0c150885cbe619",
+  },
+
+  exclude_from_upstream: [
+    ".github",
+    "configs",
+    "docs",
+    "hw",
+    "ides",
+    "scripts",
+    "sw",
+    "tb",
+    "test",
+    "util",
+    ".gitignore",
+    ".readthedocs.yaml",
+    "core-v-mini-mcu.core",
+    "external.mk",
+    "LICENSE",
+    "Makefile",
+    "Makefile.venv",
+    "README.md"
+  ]
+}
