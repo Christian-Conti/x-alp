@@ -20,7 +20,6 @@
     "sw",
     "tb",
     "test",
-    "util",
     ".gitignore",
     ".readthedocs.yaml",
     "core-v-mini-mcu.core",
