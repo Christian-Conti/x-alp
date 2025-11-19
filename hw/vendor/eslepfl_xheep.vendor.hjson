@@ -12,7 +12,6 @@
 
   exclude_from_upstream: [
     ".github",
-    "configs",
     "docs",
     "hw",
     "ides",
