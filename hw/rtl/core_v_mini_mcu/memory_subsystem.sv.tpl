@@ -74,22 +74,22 @@ module mempory_subsystem
 
   // swapped the final for into the rest: inteface + ram banks modules
 
-  AXI_BUS.Slave [xalp.iter_ram_banks()]  slv;
-  req_t         [xalp.iter_ram_banks()]  req;
-  resp_t        [xalp.iter_ram_banks()]  resp;
+  AXI_BUS.Slave [NUM_BANKS-1:0]  slv;
+  req_t         [NUM_BANKS-1:0]  req;
+  resp_t        [NUM_BANKS-1:0]  resp;
 
-  logic         [xalp.iter_ram_banks()]  busy_o;
-  logic         [xalp.iter_ram_banks()]  mem_req_o;
-  logic         [xalp.iter_ram_banks()]  mem_gnt_i;  
-  logic         [xalp.iter_ram_banks()]  mem_addr_o;
-  logic         [xalp.iter_ram_banks()]  mem_wdata_o;
-  logic         [xalp.iter_ram_banks()]  mem_strb_o;
-  logic         [xalp.iter_ram_banks()]  mem_atop_o;
-  logic         [xalp.iter_ram_banks()]  mem_we_o;
-  logic         [xalp.iter_ram_banks()]  mem_rvalid_i;
-  logic         [xalp.iter_ram_banks()]  mem_rdata_i;
+  logic         [NUM_BANKS-1:0]  busy;
+  logic         [NUM_BANKS-1:0]  mem_req;
+  logic         [NUM_BANKS-1:0]  mem_gnt;  
+  logic         [NUM_BANKS-1:0]  mem_addr;
+  logic         [NUM_BANKS-1:0]  mem_wdata;
+  logic         [NUM_BANKS-1:0]  mem_strb;
+  logic         [NUM_BANKS-1:0]  mem_atop;
+  logic         [NUM_BANKS-1:0]  mem_we;
+  logic         [NUM_BANKS-1:0]  mem_rvalid;
+  logic         [NUM_BANKS-1:0]  mem_rdata;
 
- %for i, bank in enumerate(xalp.iter_ram_banks()):
+ %for i, bank in enumerate(xalp.NUM_BANKS()):
 
   `AXI_ASSIGN_TO_REQ(req[${i}], slv[${i}])
   `AXI_ASSIGN_FROM_RESP(slv[${i}], resp[${i}])
@@ -108,17 +108,17 @@ module mempory_subsystem
   ) axi_to_mem_intf${bank.name()}_i (
       .clk_i(clk_cg[${i}]),
       .rst_ni(rst_ni),
-      .busy_o(busy_o[${i}]),
+      .busy_o(busy[${i}]),
       .slv(slv[${i}]),
-      .mem_req_o(mem_req_o[${i}]),
-      .mem_gnt_i(mem_gnt_i[${i}]),
-      .mem_addr_o(mem_addr_o[${i}]),
-      .mem_wdata_o(mem_wdata_o[${i}]),
-      .mem_strb_o(mem_strb_o[${i}]),
-      .mem_atop_o(mem_atop_o[${i}]),
-      .mem_we_o(mem_we_o[${i}]),
-      .mem_rvalid_i(mem_rvalid_i[${i}]),
-      .mem_rdata_i(mem_rdata_i[${i}])
+      .mem_req_o(mem_req[${i}]),
+      .mem_gnt_i(mem_gnt[${i}]),
+      .mem_addr_o(mem_addr[${i}]),
+      .mem_wdata_o(mem_wdata[${i}]),
+      .mem_strb_o(mem_strb[${i}]),
+      .mem_atop_o(mem_atop[${i}]),
+      .mem_we_o(mem_we[${i}]),
+      .mem_rvalid_i(mem_rvalid[${i}]),
+      .mem_rdata_i(mem_rdata[${i}])
   );
 
   sram_wrapper #(
@@ -127,15 +127,15 @@ module mempory_subsystem
   ) ram${bank.name()}_i (
       .clk_i(clk_cg[${i}]),
       .rst_ni(rst_ni),
-      .req_i(mem_req_o[${i}]),
-      .we_i(mem_we_o[${i}]),
-      .addr_i(mem_addr_o[${i}]),
-      .wdata_i(mem_wdata_o[${i}]),
-      .be_i(ram_req_i[${i}].be),
+      .req_i(mem_req[${i}]),
+      .we_i(mem_we[${i}]),
+      .addr_i(mem_addr[${i}]),
+      .wdata_i(mem_wdata[${i}]),
+      .be_i(ram_req_i[${i}].be),  //axi_to_mem_intf does not output a be_o, taken directly from ram_req_i , input
       .pwrgate_ni(pwrgate_ni[${i}]),
       .pwrgate_ack_no(pwrgate_ack_no[${i}]),
       .set_retentive_ni(set_retentive_ni[${i}]),
-      .rdata_o(mem_rdata_i[${i}])
+      .rdata_o(mem_rdata[${i}])
   );
 
 %endfor
