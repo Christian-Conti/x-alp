@@ -13,7 +13,6 @@
   exclude_from_upstream: [
     ".github",
     "docs",
-    "hw",
     "ides",
     "scripts",
     "sw",
