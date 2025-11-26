@@ -17,7 +17,6 @@
     "doc",
     "include",
     "scripts",
-    "src",
     "test",
     ".gitignore",
     ".gitlab-ci.yml",
