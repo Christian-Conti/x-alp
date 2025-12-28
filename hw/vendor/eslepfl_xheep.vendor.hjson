@@ -6,8 +6,8 @@
   target_dir: "eslepfl_xheep",
 
   upstream: {
-    url: "https://github.com/esl-epfl/x-heep.git",
-    rev: "0fd820e29df7e5f2561e7d121b0c150885cbe619",
+    url: "https://github.com/LuigiGiuffrida98/x-heep.git",
+    rev: "edit-cpu-config",
   },
 
   exclude_from_upstream: [
