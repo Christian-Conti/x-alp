@@ -34,7 +34,7 @@ module axi_sim_mem #(
   /// AXI User Width.
   parameter int unsigned UserWidth = 32'd0,
   /// Number of request ports
-  parameter int unsigned NumPorts  = 32'd1,
+  parameter int unsigned NumPorts = 32'd1,
   /// AXI4 request struct definition
   parameter type axi_req_t = logic,
   /// AXI4 response struct definition
@@ -51,51 +51,51 @@ module axi_sim_mem #(
   parameter time AcqDelay = 0ps
 ) (
   /// Rising-edge clock
-  input  logic clk_i,
+  input  logic                                        clk_i,
   /// Active-low reset
-  input  logic rst_ni,
+  input  logic                                        rst_ni,
   /// AXI4 request struct
-  input  axi_req_t [NumPorts-1:0] axi_req_i,
+  input  axi_req_t      [NumPorts-1:0]                axi_req_i,
   /// AXI4 response struct
-  output axi_rsp_t [NumPorts-1:0] axi_rsp_o,
+  output axi_rsp_t      [NumPorts-1:0]                axi_rsp_o,
   /// Memory monitor write valid.  All `mon_w_*` outputs are only valid if this signal is high.
   /// A write to the memory is visible on the `mon_w_*` outputs in the clock cycle after it has
   /// happened.
-  output logic [NumPorts-1:0]                mon_w_valid_o,
+  output logic          [NumPorts-1:0]                mon_w_valid_o,
   /// Memory monitor write address
-  output logic [NumPorts-1:0][AddrWidth-1:0] mon_w_addr_o,
+  output logic          [NumPorts-1:0][AddrWidth-1:0] mon_w_addr_o,
   /// Memory monitor write data
-  output logic [NumPorts-1:0][DataWidth-1:0] mon_w_data_o,
+  output logic          [NumPorts-1:0][DataWidth-1:0] mon_w_data_o,
   /// Memory monitor write ID
-  output logic [NumPorts-1:0][IdWidth-1:0]   mon_w_id_o,
+  output logic          [NumPorts-1:0][  IdWidth-1:0] mon_w_id_o,
   /// Memory monitor write user
-  output logic [NumPorts-1:0][UserWidth-1:0] mon_w_user_o,
+  output logic          [NumPorts-1:0][UserWidth-1:0] mon_w_user_o,
   /// Memory monitor write beat count
-  output axi_pkg::len_t [NumPorts-1:0]       mon_w_beat_count_o,
+  output axi_pkg::len_t [NumPorts-1:0]                mon_w_beat_count_o,
   /// Memory monitor write last
-  output logic [NumPorts-1:0]                mon_w_last_o,
+  output logic          [NumPorts-1:0]                mon_w_last_o,
   /// Memory monitor read valid.  All `mon_r_*` outputs are only valid if this signal is high.
   /// A read from the memory is visible on the `mon_w_*` outputs in the clock cycle after it has
   /// happened.
-  output logic [NumPorts-1:0]                mon_r_valid_o,
+  output logic          [NumPorts-1:0]                mon_r_valid_o,
   /// Memory monitor read address
-  output logic [NumPorts-1:0][AddrWidth-1:0] mon_r_addr_o,
+  output logic          [NumPorts-1:0][AddrWidth-1:0] mon_r_addr_o,
   /// Memory monitor read data
-  output logic [NumPorts-1:0][DataWidth-1:0] mon_r_data_o,
+  output logic          [NumPorts-1:0][DataWidth-1:0] mon_r_data_o,
   /// Memory monitor read ID
-  output logic [NumPorts-1:0][IdWidth-1:0]   mon_r_id_o,
+  output logic          [NumPorts-1:0][  IdWidth-1:0] mon_r_id_o,
   /// Memory monitor read user
-  output logic [NumPorts-1:0][UserWidth-1:0] mon_r_user_o,
+  output logic          [NumPorts-1:0][UserWidth-1:0] mon_r_user_o,
   /// Memory monitor read beat count
-  output axi_pkg::len_t [NumPorts-1:0]       mon_r_beat_count_o,
+  output axi_pkg::len_t [NumPorts-1:0]                mon_r_beat_count_o,
   /// Memory monitor read last
-  output logic [NumPorts-1:0]                mon_r_last_o
+  output logic          [NumPorts-1:0]                mon_r_last_o
 );
 
   localparam int unsigned StrbWidth = DataWidth / 8;
   typedef logic [AddrWidth-1:0] addr_t;
   typedef logic [DataWidth-1:0] data_t;
-  typedef logic [IdWidth-1:0]   id_t;
+  typedef logic [IdWidth-1:0] id_t;
   typedef logic [StrbWidth-1:0] strb_t;
   typedef logic [UserWidth-1:0] user_t;
   `AXI_TYPEDEF_AW_CHAN_T(aw_t, addr_t, id_t, user_t)
@@ -115,9 +115,9 @@ module axi_sim_mem #(
   } monitor_t;
 
   monitor_t [NumPorts-1:0] mon_w, mon_r;
-  logic [7:0]     mem[addr_t];
-  axi_pkg::resp_t rerr[addr_t] = '{default: 2'b0}; // default: 'axi_pkg::RESP_OKAY'
-  axi_pkg::resp_t werr[addr_t] = '{default: 2'b0}; // default: 'axi_pkg::RESP_OKAY'
+  logic [7:0] mem[addr_t];
+  axi_pkg::resp_t rerr[addr_t] = '{default: 2'b0};  // default: 'axi_pkg::RESP_OKAY'
+  axi_pkg::resp_t werr[addr_t] = '{default: 2'b0};  // default: 'axi_pkg::RESP_OKAY'
   // - Verilator cannot determine the type of 'axi_pkg::RESP_OKAY' in this context.
   //   The 'axi_pkg::RESP_OKAY' is expanded to 0 for Verilator compatibility.
 
@@ -128,12 +128,12 @@ module axi_sim_mem #(
     initial begin
       automatic ar_t ar_queue[$];
       automatic aw_t aw_queue[$];
-      automatic b_t b_queue[$];
+      automatic b_t  b_queue [$];
       automatic shortint unsigned r_cnt = 0, w_cnt = 0;
       axi_rsp_o[i] = '0;
       // Monitor interface
-      mon_w[i] = '0;
-      mon_r[i] = '0;
+      mon_w[i]     = '0;
+      mon_r[i]     = '0;
       wait (rst_ni);
       fork
         // AW
@@ -152,7 +152,7 @@ module axi_sim_mem #(
           @(posedge clk_i);
           #(ApplDelay);
           axi_rsp_o[i].w_ready = 1'b0;
-          mon_w[i] = '0;
+          mon_w[i]             = '0;
           if (aw_queue.size() != 0) begin
             axi_rsp_o[i].w_ready = 1'b1;
             #(AcqDelay - ApplDelay);
@@ -160,39 +160,44 @@ module axi_sim_mem #(
               automatic axi_pkg::burst_t burst = aw_queue[0].burst;
               automatic axi_pkg::len_t len = aw_queue[0].len;
               automatic axi_pkg::size_t size = aw_queue[0].size;
-              automatic addr_t addr = axi_pkg::beat_addr(aw_queue[0].addr, size, len, burst,
-                  w_cnt);
-              mon_w[i].valid = 1'b1;
-              mon_w[i].addr = addr;
-              mon_w[i].data = axi_req_i[i].w.data;
-              mon_w[i].id = aw_queue[0].id;
-              mon_w[i].user = aw_queue[0].user;
+              automatic addr_t addr = axi_pkg::beat_addr(aw_queue[0].addr, size, len, burst, w_cnt);
+              mon_w[i].valid      = 1'b1;
+              mon_w[i].addr       = addr;
+              mon_w[i].data       = axi_req_i[i].w.data;
+              mon_w[i].id         = aw_queue[0].id;
+              mon_w[i].user       = aw_queue[0].user;
               mon_w[i].beat_count = w_cnt;
-              for (shortint unsigned
-                  i_byte = axi_pkg::beat_lower_byte(aw_queue[0].addr, size, len, burst, StrbWidth, w_cnt);
-                  i_byte <= axi_pkg::beat_upper_byte(aw_queue[0].addr, size, len, burst, StrbWidth, w_cnt);
-                  i_byte++) begin
+              for (
+                  shortint unsigned i_byte = axi_pkg::beat_lower_byte(
+                      aw_queue[0].addr, size, len, burst, StrbWidth, w_cnt
+                  );
+                  i_byte <= axi_pkg::beat_upper_byte(
+                      aw_queue[0].addr, size, len, burst, StrbWidth, w_cnt
+                  );
+                  i_byte++
+              ) begin
                 if (axi_req_i[i].w.strb[i_byte]) begin
                   automatic addr_t byte_addr = (addr / StrbWidth) * StrbWidth + i_byte;
-                  mem[byte_addr] = axi_req_i[i].w.data[i_byte*8+:8];
+                  mem[byte_addr]    = axi_req_i[i].w.data[i_byte*8+:8];
                   error_happened[i] = axi_pkg::resp_precedence(werr[byte_addr], error_happened[i]);
-                  if (ClearErrOnAccess)
-                    werr[byte_addr] = axi_pkg::RESP_OKAY;
+                  if (ClearErrOnAccess) werr[byte_addr] = axi_pkg::RESP_OKAY;
                 end
               end
               if (w_cnt == aw_queue[0].len) begin
                 automatic b_t b_beat = '0;
-                assert (axi_req_i[i].w.last) else $error("Expected last beat of W burst!");
-                b_beat.id = aw_queue[0].id;
+                assert (axi_req_i[i].w.last)
+                else $error("Expected last beat of W burst!");
+                b_beat.id   = aw_queue[0].id;
                 b_beat.resp = error_happened[i];
                 b_beat.user = aw_queue[0].user;
                 b_queue.push_back(b_beat);
-                w_cnt = 0;
-                mon_w[i].last = 1'b1;
+                w_cnt             = 0;
+                mon_w[i].last     = 1'b1;
                 error_happened[i] = axi_pkg::RESP_OKAY;
                 void'(aw_queue.pop_front());
               end else begin
-                assert (!axi_req_i[i].w.last) else $error("Did not expect last beat of W burst!");
+                assert (!axi_req_i[i].w.last)
+                else $error("Did not expect last beat of W burst!");
                 w_cnt++;
               end
             end
@@ -204,7 +209,7 @@ module axi_sim_mem #(
           #(ApplDelay);
           axi_rsp_o[i].b_valid = 1'b0;
           if (b_queue.size() != 0) begin
-            axi_rsp_o[i].b = b_queue[0];
+            axi_rsp_o[i].b       = b_queue[0];
             axi_rsp_o[i].b_valid = 1'b1;
             #(AcqDelay - ApplDelay);
             if (axi_req_i[i].b_ready) begin
@@ -228,37 +233,38 @@ module axi_sim_mem #(
           @(posedge clk_i);
           #(ApplDelay);
           axi_rsp_o[i].r_valid = 1'b0;
-          mon_r[i] = '0;
+          mon_r[i]             = '0;
           if (ar_queue.size() != 0) begin
             automatic axi_pkg::burst_t burst = ar_queue[0].burst;
             automatic axi_pkg::len_t len = ar_queue[0].len;
             automatic axi_pkg::size_t size = ar_queue[0].size;
             automatic addr_t addr = axi_pkg::beat_addr(ar_queue[0].addr, size, len, burst, r_cnt);
             automatic r_t r_beat = '0;
-            automatic data_t r_data = 'x; // compatibility reasons
+            automatic data_t r_data = 'x;  // compatibility reasons
             r_beat.data = 'x;
-            r_beat.id = ar_queue[0].id;
+            r_beat.id   = ar_queue[0].id;
             r_beat.resp = axi_pkg::RESP_OKAY;
             r_beat.user = ar_queue[0].user;
-            for (shortint unsigned
-                i_byte = axi_pkg::beat_lower_byte(ar_queue[0].addr, size, len, burst, StrbWidth, r_cnt);
-                i_byte <= axi_pkg::beat_upper_byte(ar_queue[0].addr, size, len, burst, StrbWidth, r_cnt);
-                i_byte++) begin
+            for (
+                shortint unsigned i_byte = axi_pkg::beat_lower_byte(
+                    ar_queue[0].addr, size, len, burst, StrbWidth, r_cnt
+                );
+                i_byte <= axi_pkg::beat_upper_byte(
+                    ar_queue[0].addr, size, len, burst, StrbWidth, r_cnt
+                );
+                i_byte++
+            ) begin
               automatic addr_t byte_addr = (addr / StrbWidth) * StrbWidth + i_byte;
               if (!mem.exists(byte_addr)) begin
                 if (WarnUninitialized) begin
-                  $warning("Access to non-initialized byte at address 0x%016x by ID 0x%x.", byte_addr,
-                      r_beat.id);
+                  $warning("Access to non-initialized byte at address 0x%016x by ID 0x%x.",
+                           byte_addr, r_beat.id);
                 end
                 case (UninitializedData)
-                  "random":
-                    r_data[i_byte*8+:8] = $urandom;
-                  "ones":
-                    r_data[i_byte*8+:8] = '1;
-                  "zeros":
-                    r_data[i_byte*8+:8] = '0;
-                  default: 
-                    r_data[i_byte*8+:8] = 'x;
+                  "random": r_data[i_byte*8+:8] = $urandom;
+                  "ones":   r_data[i_byte*8+:8] = '1;
+                  "zeros":  r_data[i_byte*8+:8] = '0;
+                  default:  r_data[i_byte*8+:8] = 'x;
                 endcase
               end else begin
                 r_data[i_byte*8+:8] = mem[byte_addr];
@@ -270,17 +276,17 @@ module axi_sim_mem #(
             end
             r_beat.data = r_data;
             if (r_cnt == ar_queue[0].len) begin
-              r_beat.last = 1'b1;
+              r_beat.last   = 1'b1;
               mon_r[i].last = 1'b1;
             end
-            axi_rsp_o[i].r = r_beat;
+            axi_rsp_o[i].r       = r_beat;
             axi_rsp_o[i].r_valid = 1'b1;
-            mon_r[i].valid = 1'b1;
-            mon_r[i].addr = addr;
-            mon_r[i].data = r_beat.data;
-            mon_r[i].id = r_beat.id;
-            mon_r[i].user = ar_queue[0].user;
-            mon_r[i].beat_count = r_cnt;
+            mon_r[i].valid       = 1'b1;
+            mon_r[i].addr        = addr;
+            mon_r[i].data        = r_beat.data;
+            mon_r[i].id          = r_beat.id;
+            mon_r[i].user        = ar_queue[0].user;
+            mon_r[i].beat_count  = r_cnt;
             #(AcqDelay - ApplDelay);
             while (!axi_req_i[i].r_ready) begin
               @(posedge clk_i);
@@ -304,47 +310,51 @@ module axi_sim_mem #(
     // provide the monitoring output for writes (and for uniformity also for reads) in the next clock
     // cycle.
     initial begin
-      mon_w_valid_o[i] = '0;
-      mon_w_addr_o[i] = '0;
-      mon_w_data_o[i] = '0;
-      mon_w_id_o[i] = '0;
-      mon_w_user_o[i] = '0;
+      mon_w_valid_o[i]      = '0;
+      mon_w_addr_o[i]       = '0;
+      mon_w_data_o[i]       = '0;
+      mon_w_id_o[i]         = '0;
+      mon_w_user_o[i]       = '0;
       mon_w_beat_count_o[i] = '0;
-      mon_w_last_o[i] = '0;
-      mon_r_valid_o[i] = '0;
-      mon_r_addr_o[i] = '0;
-      mon_r_data_o[i] = '0;
-      mon_r_id_o[i] = '0;
-      mon_r_user_o[i] = '0;
+      mon_w_last_o[i]       = '0;
+      mon_r_valid_o[i]      = '0;
+      mon_r_addr_o[i]       = '0;
+      mon_r_data_o[i]       = '0;
+      mon_r_id_o[i]         = '0;
+      mon_r_user_o[i]       = '0;
       mon_r_beat_count_o[i] = '0;
-      mon_r_last_o[i] = '0;
+      mon_r_last_o[i]       = '0;
       wait (rst_ni);
       forever begin
         @(posedge clk_i);
-        mon_w_valid_o[i] <= #(ApplDelay) mon_w[i].valid;
-        mon_w_addr_o[i] <= #(ApplDelay) mon_w[i].addr;
-        mon_w_data_o[i] <= #(ApplDelay) mon_w[i].data;
-        mon_w_id_o[i] <= #(ApplDelay) mon_w[i].id;
-        mon_w_user_o[i] <= #(ApplDelay) mon_w[i].user;
+        mon_w_valid_o[i]      <= #(ApplDelay) mon_w[i].valid;
+        mon_w_addr_o[i]       <= #(ApplDelay) mon_w[i].addr;
+        mon_w_data_o[i]       <= #(ApplDelay) mon_w[i].data;
+        mon_w_id_o[i]         <= #(ApplDelay) mon_w[i].id;
+        mon_w_user_o[i]       <= #(ApplDelay) mon_w[i].user;
         mon_w_beat_count_o[i] <= #(ApplDelay) mon_w[i].beat_count;
-        mon_w_last_o[i] <= #(ApplDelay) mon_w[i].last;
-        mon_r_valid_o[i] <= #(ApplDelay) mon_r[i].valid;
-        mon_r_addr_o[i] <= #(ApplDelay) mon_r[i].addr;
-        mon_r_data_o[i] <= #(ApplDelay) mon_r[i].data;
-        mon_r_id_o[i] <= #(ApplDelay) mon_r[i].id;
-        mon_r_user_o[i] <= #(ApplDelay) mon_r[i].user;
+        mon_w_last_o[i]       <= #(ApplDelay) mon_w[i].last;
+        mon_r_valid_o[i]      <= #(ApplDelay) mon_r[i].valid;
+        mon_r_addr_o[i]       <= #(ApplDelay) mon_r[i].addr;
+        mon_r_data_o[i]       <= #(ApplDelay) mon_r[i].data;
+        mon_r_id_o[i]         <= #(ApplDelay) mon_r[i].id;
+        mon_r_user_o[i]       <= #(ApplDelay) mon_r[i].user;
         mon_r_beat_count_o[i] <= #(ApplDelay) mon_r[i].beat_count;
-        mon_r_last_o[i] <= #(ApplDelay) mon_r[i].last;
+        mon_r_last_o[i]       <= #(ApplDelay) mon_r[i].last;
       end
     end
   end
 
   // Parameter Assertions
   initial begin
-    assert (AddrWidth != 0) else $fatal("AddrWidth must be non-zero!", 1);
-    assert (DataWidth != 0) else $fatal("DataWidth must be non-zero!", 1);
-    assert (IdWidth != 0) else $fatal("IdWidth must be non-zero!", 1);
-    assert (UserWidth != 0) else $fatal("UserWidth must be non-zero!", 1);
+    assert (AddrWidth != 0)
+    else $fatal("AddrWidth must be non-zero!", 1);
+    assert (DataWidth != 0)
+    else $fatal("DataWidth must be non-zero!", 1);
+    assert (IdWidth != 0)
+    else $fatal("IdWidth must be non-zero!", 1);
+    assert (UserWidth != 0)
+    else $fatal("UserWidth must be non-zero!", 1);
   end
 
 endmodule
@@ -366,30 +376,30 @@ module axi_sim_mem_intf #(
   parameter time APPL_DELAY = 0ps,
   parameter time ACQ_DELAY = 0ps
 ) (
-  input  logic                      clk_i,
-  input  logic                      rst_ni,
-  AXI_BUS.Slave                     axi_slv,
-  output logic                      mon_w_valid_o,
-  output logic [AXI_ADDR_WIDTH-1:0] mon_w_addr_o,
-  output logic [AXI_DATA_WIDTH-1:0] mon_w_data_o,
-  output logic [AXI_ID_WIDTH-1:0]   mon_w_id_o,
-  output logic [AXI_USER_WIDTH-1:0] mon_w_user_o,
-  output axi_pkg::len_t             mon_w_beat_count_o,
-  output logic                      mon_w_last_o,
-  output logic                      mon_r_valid_o,
-  output logic [AXI_ADDR_WIDTH-1:0] mon_r_addr_o,
-  output logic [AXI_DATA_WIDTH-1:0] mon_r_data_o,
-  output logic [AXI_ID_WIDTH-1:0]   mon_r_id_o,
-  output logic [AXI_USER_WIDTH-1:0] mon_r_user_o,
-  output axi_pkg::len_t             mon_r_beat_count_o,
-  output logic                      mon_r_last_o
+  input  logic                               clk_i,
+  input  logic                               rst_ni,
+         AXI_BUS.Slave                       axi_slv,
+  output logic                               mon_w_valid_o,
+  output logic          [AXI_ADDR_WIDTH-1:0] mon_w_addr_o,
+  output logic          [AXI_DATA_WIDTH-1:0] mon_w_data_o,
+  output logic          [  AXI_ID_WIDTH-1:0] mon_w_id_o,
+  output logic          [AXI_USER_WIDTH-1:0] mon_w_user_o,
+  output axi_pkg::len_t                      mon_w_beat_count_o,
+  output logic                               mon_w_last_o,
+  output logic                               mon_r_valid_o,
+  output logic          [AXI_ADDR_WIDTH-1:0] mon_r_addr_o,
+  output logic          [AXI_DATA_WIDTH-1:0] mon_r_data_o,
+  output logic          [  AXI_ID_WIDTH-1:0] mon_r_id_o,
+  output logic          [AXI_USER_WIDTH-1:0] mon_r_user_o,
+  output axi_pkg::len_t                      mon_r_beat_count_o,
+  output logic                               mon_r_last_o
 );
-  
-  typedef logic [AXI_ADDR_WIDTH-1:0]   axi_addr_t;
-  typedef logic [AXI_DATA_WIDTH-1:0]   axi_data_t;
-  typedef logic [AXI_ID_WIDTH-1:0]     axi_id_t;
+
+  typedef logic [AXI_ADDR_WIDTH-1:0] axi_addr_t;
+  typedef logic [AXI_DATA_WIDTH-1:0] axi_data_t;
+  typedef logic [AXI_ID_WIDTH-1:0] axi_id_t;
   typedef logic [AXI_DATA_WIDTH/8-1:0] axi_strb_t;
-  typedef logic [AXI_USER_WIDTH-1:0]   axi_user_t;
+  typedef logic [AXI_USER_WIDTH-1:0] axi_user_t;
   `AXI_TYPEDEF_ALL(axi, axi_addr_t, axi_id_t, axi_data_t, axi_strb_t, axi_user_t)
 
   axi_req_t  axi_req;
@@ -399,22 +409,22 @@ module axi_sim_mem_intf #(
   `AXI_ASSIGN_FROM_RESP(axi_slv, axi_rsp)
 
   axi_sim_mem #(
-    .AddrWidth          (AXI_ADDR_WIDTH),
-    .DataWidth          (AXI_DATA_WIDTH),
-    .IdWidth            (AXI_ID_WIDTH),
-    .UserWidth          (AXI_USER_WIDTH),
-    .axi_req_t          (axi_req_t),
-    .axi_rsp_t          (axi_resp_t),
-    .WarnUninitialized  (WARN_UNINITIALIZED),
-    .UninitializedData  (UNINITIALIZED_DATA),
-    .ClearErrOnAccess   (ClearErrOnAccess),
-    .ApplDelay          (APPL_DELAY),
-    .AcqDelay           (ACQ_DELAY)
+    .AddrWidth        (AXI_ADDR_WIDTH),
+    .DataWidth        (AXI_DATA_WIDTH),
+    .IdWidth          (AXI_ID_WIDTH),
+    .UserWidth        (AXI_USER_WIDTH),
+    .axi_req_t        (axi_req_t),
+    .axi_rsp_t        (axi_resp_t),
+    .WarnUninitialized(WARN_UNINITIALIZED),
+    .UninitializedData(UNINITIALIZED_DATA),
+    .ClearErrOnAccess (ClearErrOnAccess),
+    .ApplDelay        (APPL_DELAY),
+    .AcqDelay         (ACQ_DELAY)
   ) i_sim_mem (
     .clk_i,
     .rst_ni,
-    .axi_req_i (axi_req),
-    .axi_rsp_o (axi_rsp),
+    .axi_req_i(axi_req),
+    .axi_rsp_o(axi_rsp),
     .mon_w_valid_o,
     .mon_w_addr_o,
     .mon_w_data_o,
@@ -448,30 +458,30 @@ module axi_sim_mem_multiport_intf #(
   parameter time APPL_DELAY = 0ps,
   parameter time ACQ_DELAY = 0ps
 ) (
-  input  logic                      clk_i,
-  input  logic                      rst_ni,
-  AXI_BUS.Slave                     axi_slv[NUM_PORTS],
-  output logic [NUM_PORTS-1:0]                     mon_w_valid_o,
-  output logic [NUM_PORTS-1:0][AXI_ADDR_WIDTH-1:0] mon_w_addr_o,
-  output logic [NUM_PORTS-1:0][AXI_DATA_WIDTH-1:0] mon_w_data_o,
-  output logic [NUM_PORTS-1:0][AXI_ID_WIDTH-1:0]   mon_w_id_o,
-  output logic [NUM_PORTS-1:0][AXI_USER_WIDTH-1:0] mon_w_user_o,
-  output axi_pkg::len_t [NUM_PORTS-1:0]            mon_w_beat_count_o,
-  output logic [NUM_PORTS-1:0]                     mon_w_last_o,
-  output logic [NUM_PORTS-1:0]                     mon_r_valid_o,
-  output logic [NUM_PORTS-1:0][AXI_ADDR_WIDTH-1:0] mon_r_addr_o,
-  output logic [NUM_PORTS-1:0][AXI_DATA_WIDTH-1:0] mon_r_data_o,
-  output logic [NUM_PORTS-1:0][AXI_ID_WIDTH-1:0]   mon_r_id_o,
-  output logic [NUM_PORTS-1:0][AXI_USER_WIDTH-1:0] mon_r_user_o,
-  output axi_pkg::len_t [NUM_PORTS-1:0]            mon_r_beat_count_o,
-  output logic [NUM_PORTS-1:0]                     mon_r_last_o
+  input  logic                                              clk_i,
+  input  logic                                              rst_ni,
+         AXI_BUS.Slave                                      axi_slv           [NUM_PORTS],
+  output logic          [NUM_PORTS-1:0]                     mon_w_valid_o,
+  output logic          [NUM_PORTS-1:0][AXI_ADDR_WIDTH-1:0] mon_w_addr_o,
+  output logic          [NUM_PORTS-1:0][AXI_DATA_WIDTH-1:0] mon_w_data_o,
+  output logic          [NUM_PORTS-1:0][  AXI_ID_WIDTH-1:0] mon_w_id_o,
+  output logic          [NUM_PORTS-1:0][AXI_USER_WIDTH-1:0] mon_w_user_o,
+  output axi_pkg::len_t [NUM_PORTS-1:0]                     mon_w_beat_count_o,
+  output logic          [NUM_PORTS-1:0]                     mon_w_last_o,
+  output logic          [NUM_PORTS-1:0]                     mon_r_valid_o,
+  output logic          [NUM_PORTS-1:0][AXI_ADDR_WIDTH-1:0] mon_r_addr_o,
+  output logic          [NUM_PORTS-1:0][AXI_DATA_WIDTH-1:0] mon_r_data_o,
+  output logic          [NUM_PORTS-1:0][  AXI_ID_WIDTH-1:0] mon_r_id_o,
+  output logic          [NUM_PORTS-1:0][AXI_USER_WIDTH-1:0] mon_r_user_o,
+  output axi_pkg::len_t [NUM_PORTS-1:0]                     mon_r_beat_count_o,
+  output logic          [NUM_PORTS-1:0]                     mon_r_last_o
 );
 
-  typedef logic [AXI_ADDR_WIDTH-1:0]   axi_addr_t;
-  typedef logic [AXI_DATA_WIDTH-1:0]   axi_data_t;
-  typedef logic [AXI_ID_WIDTH-1:0]     axi_id_t;
+  typedef logic [AXI_ADDR_WIDTH-1:0] axi_addr_t;
+  typedef logic [AXI_DATA_WIDTH-1:0] axi_data_t;
+  typedef logic [AXI_ID_WIDTH-1:0] axi_id_t;
   typedef logic [AXI_DATA_WIDTH/8-1:0] axi_strb_t;
-  typedef logic [AXI_USER_WIDTH-1:0]   axi_user_t;
+  typedef logic [AXI_USER_WIDTH-1:0] axi_user_t;
   `AXI_TYPEDEF_ALL(axi, axi_addr_t, axi_id_t, axi_data_t, axi_strb_t, axi_user_t)
 
   axi_req_t  [NUM_PORTS-1:0] axi_req;
@@ -483,23 +493,23 @@ module axi_sim_mem_multiport_intf #(
   end
 
   axi_sim_mem #(
-    .AddrWidth          (AXI_ADDR_WIDTH),
-    .DataWidth          (AXI_DATA_WIDTH),
-    .IdWidth            (AXI_ID_WIDTH),
-    .UserWidth          (AXI_USER_WIDTH),
-    .NumPorts           (NUM_PORTS),
-    .axi_req_t          (axi_req_t),
-    .axi_rsp_t          (axi_resp_t),
-    .WarnUninitialized  (WARN_UNINITIALIZED),
-    .UninitializedData  (UNINITIALIZED_DATA),
-    .ClearErrOnAccess   (ClearErrOnAccess),
-    .ApplDelay          (APPL_DELAY),
-    .AcqDelay           (ACQ_DELAY)
+    .AddrWidth        (AXI_ADDR_WIDTH),
+    .DataWidth        (AXI_DATA_WIDTH),
+    .IdWidth          (AXI_ID_WIDTH),
+    .UserWidth        (AXI_USER_WIDTH),
+    .NumPorts         (NUM_PORTS),
+    .axi_req_t        (axi_req_t),
+    .axi_rsp_t        (axi_resp_t),
+    .WarnUninitialized(WARN_UNINITIALIZED),
+    .UninitializedData(UNINITIALIZED_DATA),
+    .ClearErrOnAccess (ClearErrOnAccess),
+    .ApplDelay        (APPL_DELAY),
+    .AcqDelay         (ACQ_DELAY)
   ) i_sim_mem (
     .clk_i,
     .rst_ni,
-    .axi_req_i (axi_req),
-    .axi_rsp_o (axi_rsp),
+    .axi_req_i(axi_req),
+    .axi_rsp_o(axi_rsp),
     .mon_w_valid_o,
     .mon_w_addr_o,
     .mon_w_data_o,

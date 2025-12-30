@@ -39,8 +39,8 @@ module axi_burst_splitter #(
   parameter type         axi_req_t    = logic,
   parameter type         axi_resp_t   = logic
 ) (
-  input  logic  clk_i,
-  input  logic  rst_ni,
+  input logic clk_i,
+  input logic rst_ni,
 
   // Input / Slave Port
   input  axi_req_t  slv_req_i,
@@ -51,39 +51,39 @@ module axi_burst_splitter #(
   input  axi_resp_t mst_resp_i
 );
 
-  typedef logic [AddrWidth-1:0]   addr_t;
-  typedef logic [DataWidth-1:0]   data_t;
+  typedef logic [AddrWidth-1:0] addr_t;
+  typedef logic [DataWidth-1:0] data_t;
   typedef logic [DataWidth/8-1:0] strb_t;
-  typedef logic [IdWidth-1:0]     id_t;
-  typedef logic [UserWidth-1:0]   user_t;
+  typedef logic [IdWidth-1:0] id_t;
+  typedef logic [UserWidth-1:0] user_t;
 
   `AXI_TYPEDEF_AW_CHAN_T(axi_aw_chan_t, addr_t, id_t, user_t)
-  `AXI_TYPEDEF_W_CHAN_T (axi_w_chan_t, data_t, strb_t, user_t)
-  `AXI_TYPEDEF_B_CHAN_T (axi_b_chan_t, id_t, user_t)
+  `AXI_TYPEDEF_W_CHAN_T(axi_w_chan_t, data_t, strb_t, user_t)
+  `AXI_TYPEDEF_B_CHAN_T(axi_b_chan_t, id_t, user_t)
   `AXI_TYPEDEF_AR_CHAN_T(axi_ar_chan_t, addr_t, id_t, user_t)
-  `AXI_TYPEDEF_R_CHAN_T (axi_r_chan_t, data_t, id_t, user_t)
+  `AXI_TYPEDEF_R_CHAN_T(axi_r_chan_t, data_t, id_t, user_t)
 
   axi_burst_splitter_gran #(
-    .MaxReadTxns   ( MaxReadTxns   ),
-    .MaxWriteTxns  ( MaxWriteTxns  ),
-    .CutPath       ( 1'b0          ),
-    .DisableChecks ( 1'b0          ),
-    .FullBW        ( FullBW        ),
-    .AddrWidth     ( AddrWidth     ),
-    .DataWidth     ( DataWidth     ),
-    .IdWidth       ( IdWidth       ),
-    .UserWidth     ( UserWidth     ),
-    .axi_req_t     ( axi_req_t     ),
-    .axi_resp_t    ( axi_resp_t    ),
-    .axi_aw_chan_t ( axi_aw_chan_t ),
-    .axi_w_chan_t  ( axi_w_chan_t  ),
-    .axi_b_chan_t  ( axi_b_chan_t  ),
-    .axi_ar_chan_t ( axi_ar_chan_t ),
-    .axi_r_chan_t  ( axi_r_chan_t  )
+    .MaxReadTxns  (MaxReadTxns),
+    .MaxWriteTxns (MaxWriteTxns),
+    .CutPath      (1'b0),
+    .DisableChecks(1'b0),
+    .FullBW       (FullBW),
+    .AddrWidth    (AddrWidth),
+    .DataWidth    (DataWidth),
+    .IdWidth      (IdWidth),
+    .UserWidth    (UserWidth),
+    .axi_req_t    (axi_req_t),
+    .axi_resp_t   (axi_resp_t),
+    .axi_aw_chan_t(axi_aw_chan_t),
+    .axi_w_chan_t (axi_w_chan_t),
+    .axi_b_chan_t (axi_b_chan_t),
+    .axi_ar_chan_t(axi_ar_chan_t),
+    .axi_r_chan_t (axi_r_chan_t)
   ) i_axi_burst_splitter_gran (
     .clk_i,
     .rst_ni,
-    .len_limit_i ( 8'h00 ),
+    .len_limit_i(8'h00),
     .slv_req_i,
     .slv_resp_o,
     .mst_req_o,
