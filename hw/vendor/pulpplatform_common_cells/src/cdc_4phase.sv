@@ -38,7 +38,7 @@ module cdc_4phase #(
   parameter bit DECOUPLED = 1'b1,
   parameter bit SEND_RESET_MSG = 1'b0,
   parameter T RESET_MSG = T'('0)
-) (
+)(
   input  logic src_rst_ni,
   input  logic src_clk_i,
   input  T     src_data_i,
@@ -53,40 +53,37 @@ module cdc_4phase #(
 );
 
   // Asynchronous handshake signals.
-  (* dont_touch = "true" *)logic async_req;
-  (* dont_touch = "true" *)logic async_ack;
-  (* dont_touch = "true" *)T     async_data;
+  (* dont_touch = "true" *) logic async_req;
+  (* dont_touch = "true" *) logic async_ack;
+  (* dont_touch = "true" *) T async_data;
 
   // The sender in the source domain.
   cdc_4phase_src #(
-    .T             (T),
-    .DECOUPLED     (DECOUPLED),
+    .T(T),
+    .DECOUPLED(DECOUPLED),
     .SEND_RESET_MSG(SEND_RESET_MSG),
-    .RESET_MSG     (RESET_MSG)
+    .RESET_MSG(RESET_MSG)
   ) i_src (
-    .rst_ni      (src_rst_ni),
-    .clk_i       (src_clk_i),
-    .data_i      (src_data_i),
-    .valid_i     (src_valid_i),
-    .ready_o     (src_ready_o),
-    .async_req_o (async_req),
-    .async_ack_i (async_ack),
-    .async_data_o(async_data)
+    .rst_ni       ( src_rst_ni  ),
+    .clk_i        ( src_clk_i   ),
+    .data_i       ( src_data_i  ),
+    .valid_i      ( src_valid_i ),
+    .ready_o      ( src_ready_o ),
+    .async_req_o  ( async_req   ),
+    .async_ack_i  ( async_ack   ),
+    .async_data_o ( async_data  )
   );
 
   // The receiver in the destination domain.
-  cdc_4phase_dst #(
-    .T        (T),
-    .DECOUPLED(DECOUPLED)
-  ) i_dst (
-    .rst_ni      (dst_rst_ni),
-    .clk_i       (dst_clk_i),
-    .data_o      (dst_data_o),
-    .valid_o     (dst_valid_o),
-    .ready_i     (dst_ready_i),
-    .async_req_i (async_req),
-    .async_ack_o (async_ack),
-    .async_data_i(async_data)
+  cdc_4phase_dst #(.T(T), .DECOUPLED(DECOUPLED)) i_dst (
+    .rst_ni       ( dst_rst_ni  ),
+    .clk_i        ( dst_clk_i   ),
+    .data_o       ( dst_data_o  ),
+    .valid_o      ( dst_valid_o ),
+    .ready_i      ( dst_ready_i ),
+    .async_req_i  ( async_req   ),
+    .async_ack_o  ( async_ack   ),
+    .async_data_i ( async_data  )
   );
 endmodule
 
@@ -98,7 +95,7 @@ module cdc_4phase_src #(
   parameter bit DECOUPLED = 1'b1,
   parameter bit SEND_RESET_MSG = 1'b0,
   parameter T RESET_MSG = T'('0)
-) (
+)(
   input  logic rst_ni,
   input  logic clk_i,
   input  T     data_i,
@@ -110,27 +107,23 @@ module cdc_4phase_src #(
 );
 
   (* dont_touch = "true" *)
-  logic req_src_d, req_src_q;
+  logic  req_src_d, req_src_q;
   (* dont_touch = "true" *)
   T data_src_d, data_src_q;
   (* dont_touch = "true" *)
-  logic ack_synced;
+  logic  ack_synced;
 
-  typedef enum logic [1:0] {
-    IDLE,
-    WAIT_ACK_ASSERT,
-    WAIT_ACK_DEASSERT
-  } state_e;
+  typedef enum logic[1:0] {IDLE, WAIT_ACK_ASSERT, WAIT_ACK_DEASSERT} state_e;
   state_e state_d, state_q;
 
   // Synchronize the async ACK
   sync #(
     .STAGES(SYNC_STAGES)
-  ) i_sync (
+  ) i_sync(
     .clk_i,
     .rst_ni,
-    .serial_i(async_ack_i),
-    .serial_o(ack_synced)
+    .serial_i( async_ack_i ),
+    .serial_o( ack_synced  )
   );
 
   // FSM for the 4-phase handshake
@@ -152,7 +145,7 @@ module cdc_4phase_src #(
         if (valid_i) begin
           data_src_d = data_i;
           req_src_d  = 1'b1;
-          state_d    = WAIT_ACK_ASSERT;
+          state_d = WAIT_ACK_ASSERT;
         end
       end
       WAIT_ACK_ASSERT: begin
@@ -201,7 +194,7 @@ module cdc_4phase_src #(
   end
 
   // Async output assignments.
-  assign async_req_o  = req_src_q;
+  assign async_req_o = req_src_q;
   assign async_data_o = data_src_q;
 
 endmodule
@@ -213,7 +206,7 @@ module cdc_4phase_dst #(
   parameter type T = logic,
   parameter int unsigned SYNC_STAGES = 2,
   parameter bit DECOUPLED = 1
-) (
+)(
   input  logic rst_ni,
   input  logic clk_i,
   output T     data_o,
@@ -225,30 +218,26 @@ module cdc_4phase_dst #(
 );
 
   (* dont_touch = "true" *)
-  logic ack_dst_d, ack_dst_q;
+  logic  ack_dst_d, ack_dst_q;
   (* dont_touch = "true" *)
-  logic req_synced;
+  logic  req_synced;
 
-  logic data_valid;
+  logic  data_valid;
 
-  logic output_ready;
+  logic  output_ready;
 
 
-  typedef enum logic [1:0] {
-    IDLE,
-    WAIT_DOWNSTREAM_ACK,
-    WAIT_REQ_DEASSERT
-  } state_e;
+  typedef enum logic[1:0] {IDLE, WAIT_DOWNSTREAM_ACK, WAIT_REQ_DEASSERT} state_e;
   state_e state_d, state_q;
 
   //Synchronize the request
   sync #(
     .STAGES(SYNC_STAGES)
-  ) i_sync (
+  ) i_sync(
     .clk_i,
     .rst_ni,
-    .serial_i(async_req_i),
-    .serial_o(req_synced)
+    .serial_i( async_req_i ),
+    .serial_o( req_synced  )
   );
 
   // FSM for the 4-phase handshake
@@ -271,10 +260,10 @@ module cdc_4phase_dst #(
       end
 
       WAIT_DOWNSTREAM_ACK: begin
-        data_valid = 1'b1;
+        data_valid       = 1'b1;
         if (output_ready == 1'b1) begin
-          state_d   = WAIT_REQ_DEASSERT;
-          ack_dst_d = 1'b1;
+          state_d    = WAIT_REQ_DEASSERT;
+          ack_dst_d  = 1'b1;
         end
       end
 
@@ -313,14 +302,14 @@ module cdc_4phase_dst #(
     // Decouple the output from the asynchronous data bus without introducing
     // additional latency by inserting a spill register
     spill_register #(
-      .T     (T),
+      .T(T),
       .Bypass(1'b0)
     ) i_spill_register (
       .clk_i,
       .rst_ni,
       .valid_i(data_valid),
       .ready_o(output_ready),
-      .data_i (async_data_i),
+      .data_i(async_data_i),
       .valid_o,
       .ready_i,
       .data_o

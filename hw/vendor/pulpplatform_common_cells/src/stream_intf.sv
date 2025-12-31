@@ -16,26 +16,34 @@
 interface STREAM_DV #(
   /// Custom payload type.
   parameter type payload_t = logic
-) (
+)(
   /// Interface clock.
   input logic clk_i
 );
   payload_t data;
-  logic     valid;
-  logic     ready;
+  logic valid;
+  logic ready;
 
-  modport In(output ready, input valid, data);
+  modport In (
+    output ready,
+    input valid, data
+  );
 
-  modport Out(output valid, data, input ready);
+  modport Out (
+    output valid, data,
+    input ready
+  );
 
   /// Passive modport for scoreboard and monitors.
-  modport Passive(input valid, ready, data);
+  modport Passive (
+    input valid, ready, data
+  );
 
   // Make sure that the handshake and payload is stable
   // pragma translate_off
-`ifndef VERILATOR
+  `ifndef VERILATOR
   assert property (@(posedge clk_i) (valid && !ready |=> $stable(data)));
   assert property (@(posedge clk_i) (valid && !ready |=> valid));
-`endif
+  `endif
   // pragma translate_on
 endinterface

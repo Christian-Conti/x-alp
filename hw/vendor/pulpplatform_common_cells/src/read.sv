@@ -8,11 +8,11 @@
 
 (* no_ungroup *)
 module read #(
-  parameter int unsigned Width = 1,
-  parameter type T = logic [Width-1:0]
+    parameter int unsigned Width = 1,
+    parameter type T = logic [Width-1:0]
 ) (
-  input  T d_i,
-  output T d_o
+    input  T d_i,
+    output T d_o
 );
 
   assign d_o = d_i;

@@ -57,7 +57,8 @@ module stream_to_mem #(
   typedef logic [$clog2(BufDepth+1):0] cnt_t;
 
   cnt_t cnt_d, cnt_q;
-  logic buf_ready, req_ready;
+  logic buf_ready,
+        req_ready;
 
   if (BufDepth > 0) begin : gen_buf
     // Count number of outstanding requests.
@@ -73,29 +74,29 @@ module stream_to_mem #(
 
     // Can issue another request if the counter is not at its limit or a response is delivered in
     // the current cycle.
-    assign req_ready       = (cnt_q < BufDepth) | (resp_valid_o & resp_ready_i);
+    assign req_ready = (cnt_q < BufDepth) | (resp_valid_o & resp_ready_i);
 
     // Control request and memory request interface handshakes.
-    assign req_ready_o     = mem_req_ready_i & req_ready;
+    assign req_ready_o = mem_req_ready_i & req_ready;
     assign mem_req_valid_o = req_valid_i & req_ready;
 
     // Buffer responses.
     stream_fifo #(
-      .FALL_THROUGH(1'b1),
-      .DEPTH       (BufDepth),
-      .T           (mem_resp_t)
+      .FALL_THROUGH ( 1'b1       ),
+      .DEPTH        ( BufDepth   ),
+      .T            ( mem_resp_t )
     ) i_resp_buf (
       .clk_i,
       .rst_ni,
-      .flush_i   (1'b0),
-      .testmode_i(1'b0),
-      .data_i    (mem_resp_i),
-      .valid_i   (mem_resp_valid_i),
-      .ready_o   (buf_ready),
-      .data_o    (resp_o),
-      .valid_o   (resp_valid_o),
-      .ready_i   (resp_ready_i),
-      .usage_o   (  /* unused */)
+      .flush_i    ( 1'b0             ),
+      .testmode_i ( 1'b0             ),
+      .data_i     ( mem_resp_i       ),
+      .valid_i    ( mem_resp_valid_i ),
+      .ready_o    ( buf_ready        ),
+      .data_o     ( resp_o           ),
+      .valid_o    ( resp_valid_o     ),
+      .ready_i    ( resp_ready_i     ),
+      .usage_o    ( /* unused */     )
     );
 
     // Register
@@ -105,29 +106,29 @@ module stream_to_mem #(
     // Control request, memory request, and response interface handshakes.
     assign mem_req_valid_o = req_valid_i;
     assign resp_valid_o    = mem_req_valid_o & mem_req_ready_i & mem_resp_valid_i;
-    assign req_ready_o     = resp_ready_i & resp_valid_o;
+    assign req_ready_o     = resp_ready_i    & resp_valid_o;
 
     // Forward responses.
-    assign resp_o          = mem_resp_i;
+    assign resp_o = mem_resp_i;
   end
 
   // Forward requests.
   assign mem_req_o = req_i;
 
-  // Assertions
-  // pragma translate_off
+// Assertions
+// pragma translate_off
 `ifndef VERILATOR
   if (BufDepth > 0) begin : gen_buf_asserts
     assert property (@(posedge clk_i) mem_resp_valid_i |-> buf_ready)
-    else $error("Memory response lost!");
+      else $error("Memory response lost!");
     assert property (@(posedge clk_i) cnt_q == '0 |=> cnt_q != '1)
-    else $error("Counter underflowed!");
+      else $error("Counter underflowed!");
     assert property (@(posedge clk_i) cnt_q == BufDepth |=> cnt_q != BufDepth + 1)
-    else $error("Counter overflowed!");
+      else $error("Counter overflowed!");
   end else begin : gen_no_buf_asserts
     assume property (@(posedge clk_i) mem_req_valid_o & mem_req_ready_i |-> mem_resp_valid_i)
-    else $error("Without BufDepth = 0, the memory must respond in the same cycle!");
+      else $error("Without BufDepth = 0, the memory must respond in the same cycle!");
   end
 `endif
-  // pragma translate_on
+// pragma translate_on
 endmodule

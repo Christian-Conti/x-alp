@@ -42,7 +42,7 @@
 /* verilator lint_off DECLFILENAME */
 module cdc_2phase #(
   parameter type T = logic
-) (
+)(
   input  logic src_rst_ni,
   input  logic src_clk_i,
   input  T     src_data_i,
@@ -57,36 +57,32 @@ module cdc_2phase #(
 );
 
   // Asynchronous handshake signals.
-  (* dont_touch = "true" *)logic async_req;
-  (* dont_touch = "true" *)logic async_ack;
-  (* dont_touch = "true" *)T     async_data;
+  (* dont_touch = "true" *) logic async_req;
+  (* dont_touch = "true" *) logic async_ack;
+  (* dont_touch = "true" *) T async_data;
 
   // The sender in the source domain.
-  cdc_2phase_src #(
-    .T(T)
-  ) i_src (
-    .rst_ni      (src_rst_ni),
-    .clk_i       (src_clk_i),
-    .data_i      (src_data_i),
-    .valid_i     (src_valid_i),
-    .ready_o     (src_ready_o),
-    .async_req_o (async_req),
-    .async_ack_i (async_ack),
-    .async_data_o(async_data)
+  cdc_2phase_src #(.T(T)) i_src (
+    .rst_ni       ( src_rst_ni  ),
+    .clk_i        ( src_clk_i   ),
+    .data_i       ( src_data_i  ),
+    .valid_i      ( src_valid_i ),
+    .ready_o      ( src_ready_o ),
+    .async_req_o  ( async_req   ),
+    .async_ack_i  ( async_ack   ),
+    .async_data_o ( async_data  )
   );
 
   // The receiver in the destination domain.
-  cdc_2phase_dst #(
-    .T(T)
-  ) i_dst (
-    .rst_ni      (dst_rst_ni),
-    .clk_i       (dst_clk_i),
-    .data_o      (dst_data_o),
-    .valid_o     (dst_valid_o),
-    .ready_i     (dst_ready_i),
-    .async_req_i (async_req),
-    .async_ack_o (async_ack),
-    .async_data_i(async_data)
+  cdc_2phase_dst #(.T(T)) i_dst (
+    .rst_ni       ( dst_rst_ni  ),
+    .clk_i        ( dst_clk_i   ),
+    .data_o       ( dst_data_o  ),
+    .valid_o      ( dst_valid_o ),
+    .ready_i      ( dst_ready_i ),
+    .async_req_i  ( async_req   ),
+    .async_ack_o  ( async_ack   ),
+    .async_data_i ( async_data  )
   );
 
 endmodule
@@ -95,7 +91,7 @@ endmodule
 /// Half of the two-phase clock domain crossing located in the source domain.
 module cdc_2phase_src #(
   parameter type T = logic
-) (
+)(
   input  logic rst_ni,
   input  logic clk_i,
   input  T     data_i,
@@ -134,8 +130,8 @@ module cdc_2phase_src #(
   end
 
   // Output assignments.
-  assign ready_o      = (req_src_q == ack_q);
-  assign async_req_o  = req_src_q;
+  assign ready_o = (req_src_q == ack_q);
+  assign async_req_o = req_src_q;
   assign async_data_o = data_src_q;
 
 endmodule
@@ -145,7 +141,7 @@ endmodule
 /// domain.
 module cdc_2phase_dst #(
   parameter type T = logic
-) (
+)(
   input  logic rst_ni,
   input  logic clk_i,
   output T     data_o,
@@ -156,7 +152,8 @@ module cdc_2phase_dst #(
   input  T     async_data_i
 );
 
-  (* dont_touch = "true" *) (* async_reg = "true" *)
+  (* dont_touch = "true" *)
+  (* async_reg = "true" *)
   logic req_dst_q, req_q0, req_q1, ack_dst_q;
   (* dont_touch = "true" *)
   T data_dst_q;
@@ -164,9 +161,9 @@ module cdc_2phase_dst #(
   // The ack_dst register changes when a new data item is accepted.
   always_ff @(posedge clk_i or negedge rst_ni) begin
     if (!rst_ni) begin
-      ack_dst_q <= 0;
+      ack_dst_q  <= 0;
     end else if (valid_o && ready_i) begin
-      ack_dst_q <= ~ack_dst_q;
+      ack_dst_q  <= ~ack_dst_q;
     end
   end
 
@@ -194,8 +191,8 @@ module cdc_2phase_dst #(
   end
 
   // Output assignments.
-  assign valid_o     = (ack_dst_q != req_q1);
-  assign data_o      = data_dst_q;
+  assign valid_o = (ack_dst_q != req_q1);
+  assign data_o = data_dst_q;
   assign async_ack_o = ack_dst_q;
 
 endmodule

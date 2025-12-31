@@ -69,7 +69,7 @@ module isochronous_spill_register #(
     assign dst_valid_o = src_valid_i;
     assign src_ready_o = dst_ready_i;
     assign dst_data_o  = src_data_i;
-    // Generate the spill register
+  // Generate the spill register
   end else begin : gen_isochronous_spill_register
     /// Read/write pointer are one bit wider than necessary.
     /// We implicitly capture the full and empty state with the second bit:
@@ -78,46 +78,34 @@ module isochronous_spill_register #(
     /// empty, otherwise it is full.
     logic [1:0] rd_pointer_q, wr_pointer_q;
     // Advance write pointer if we pushed a new item into the FIFO. (Source clock domain)
-    `FFLARN(wr_pointer_q, wr_pointer_q + 1, (src_valid_i && src_ready_o), '0, src_clk_i, src_rst_ni)
+    `FFLARN(wr_pointer_q, wr_pointer_q+1, (src_valid_i && src_ready_o), '0, src_clk_i, src_rst_ni)
     // Advance read pointer if downstream consumed an item. (Destination clock domain)
-    `FFLARN(rd_pointer_q, rd_pointer_q + 1, (dst_valid_o && dst_ready_i), '0, dst_clk_i, dst_rst_ni)
+    `FFLARN(rd_pointer_q, rd_pointer_q+1, (dst_valid_o && dst_ready_i), '0, dst_clk_i, dst_rst_ni)
 
     T [1:0] mem_d, mem_q;
     `FFLNR(mem_q, mem_d, (src_valid_i && src_ready_o), src_clk_i)
     always_comb begin
-      mem_d                  = mem_q;
+      mem_d = mem_q;
       mem_d[wr_pointer_q[0]] = src_data_i;
     end
 
     assign src_ready_o = (rd_pointer_q ^ wr_pointer_q) != 2'b10;
 
     assign dst_valid_o = (rd_pointer_q ^ wr_pointer_q) != '0;
-    assign dst_data_o  = mem_q[rd_pointer_q[0]];
+    assign dst_data_o = mem_q[rd_pointer_q[0]];
   end
 
   // pragma translate_off
   // stability guarantees
-`ifndef VERILATOR
+  `ifndef VERILATOR
   assert property (@(posedge src_clk_i) disable iff (~src_rst_ni)
-    (src_valid_i && !src_ready_o |=> $stable(
-      src_valid_i
-  )))
-  else $error("src_valid_i is unstable");
+    (src_valid_i && !src_ready_o |=> $stable(src_valid_i))) else $error("src_valid_i is unstable");
   assert property (@(posedge src_clk_i) disable iff (~src_rst_ni)
-    (src_valid_i && !src_ready_o |=> $stable(
-      src_data_i
-  )))
-  else $error("src_data_i is unstable");
+    (src_valid_i && !src_ready_o |=> $stable(src_data_i))) else $error("src_data_i is unstable");
   assert property (@(posedge dst_clk_i) disable iff (~dst_rst_ni)
-    (dst_valid_o && !dst_ready_i |=> $stable(
-      dst_valid_o
-  )))
-  else $error("dst_valid_o is unstable");
+    (dst_valid_o && !dst_ready_i |=> $stable(dst_valid_o))) else $error("dst_valid_o is unstable");
   assert property (@(posedge dst_clk_i) disable iff (~dst_rst_ni)
-    (dst_valid_o && !dst_ready_i |=> $stable(
-      dst_data_o
-  )))
-  else $error("dst_data_o is unstable");
-`endif
+    (dst_valid_o && !dst_ready_i |=> $stable(dst_data_o))) else $error("dst_data_o is unstable");
+  `endif
   // pragma translate_on
 endmodule

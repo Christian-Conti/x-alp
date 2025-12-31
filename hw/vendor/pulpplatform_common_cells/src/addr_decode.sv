@@ -64,7 +64,7 @@ module addr_decode #(
   /// Dependent parameter, do **not** overwite!
   ///
   /// Type of the `idx_o` output port.
-  parameter type         idx_t     = logic                             [IdxWidth-1:0]
+  parameter type         idx_t     = logic [IdxWidth-1:0]
 ) (
   /// Address to decode.
   input  addr_t               addr_i,
@@ -88,7 +88,7 @@ module addr_decode #(
   input  idx_t                default_idx_i
 );
 
-  logic [NoRules-1:0] matched_rules;  // purely for address map debugging
+  logic [NoRules-1:0] matched_rules; // purely for address map debugging
 
   always_comb begin
     // default assignments
@@ -114,31 +114,21 @@ module addr_decode #(
   end
 
   // Assumptions and assertions
-`ifndef VERILATOR
-`ifndef XSIM
+  `ifndef VERILATOR
+  `ifndef XSIM
   // pragma translate_off
   initial begin : proc_check_parameters
-    assume ($bits(addr_i) == $bits(addr_map_i[0].start_addr))
-    else
-      $warning(
-          $sformatf(
-              "Input address has %d bits and address map has %d bits.",
-              $bits(
-                  addr_i
-              ),
-              $bits(
-                  addr_map_i[0].start_addr
-              )
-          )
-      );
-    assume (NoRules > 0)
-    else $fatal(1, $sformatf("At least one rule needed"));
-    assume (NoIndices > 0)
-    else $fatal(1, $sformatf("At least one index needed"));
+    assume ($bits(addr_i) == $bits(addr_map_i[0].start_addr)) else
+      $warning($sformatf("Input address has %d bits and address map has %d bits.",
+        $bits(addr_i), $bits(addr_map_i[0].start_addr)));
+    assume (NoRules > 0) else
+      $fatal(1, $sformatf("At least one rule needed"));
+    assume (NoIndices > 0) else
+      $fatal(1, $sformatf("At least one index needed"));
   end
 
-  assert final ($onehot0(matched_rules))
-  else $warning("More than one bit set in the one-hot signal, matched_rules");
+  assert final ($onehot0(matched_rules)) else
+    $warning("More than one bit set in the one-hot signal, matched_rules");
 
   // These following assumptions check the validity of the address map.
   // The assumptions gets generated for each distinct pair of rules.
@@ -148,78 +138,45 @@ module addr_decode #(
   // check_start:        Enforces a smaller start than end address.
   // check_idx:          Enforces a valid index in the rule.
   // check_overlap:      Warns if there are overlapping address regions.
-  always @(addr_map_i)
-    #0 begin : proc_check_addr_map
-      if (!$isunknown(addr_map_i)) begin
-        for (int unsigned i = 0; i < NoRules; i++) begin
-          check_start :
-          assume (Napot || addr_map_i[i].start_addr < addr_map_i[i].end_addr ||
-          addr_map_i[i].end_addr == '0)
-          else
-            $fatal(
-                1,
-                $sformatf(
-                    "This rule has a higher start than end address!!!\n\
+  always @(addr_map_i) #0 begin : proc_check_addr_map
+    if (!$isunknown(addr_map_i)) begin
+      for (int unsigned i = 0; i < NoRules; i++) begin
+        check_start : assume (Napot || addr_map_i[i].start_addr < addr_map_i[i].end_addr ||
+          addr_map_i[i].end_addr == '0) else
+          $fatal(1, $sformatf("This rule has a higher start than end address!!!\n\
               Violating rule %d.\n\
               Rule> IDX: %h START: %h END: %h\n\
               #####################################################",
-                    i,
-                    addr_map_i[i].idx,
-                    addr_map_i[i].start_addr,
-                    addr_map_i[i].end_addr
-                )
-            );
-          // check the SLV ids
-          check_idx :
-          assume (addr_map_i[i].idx < NoIndices)
-          else
-            $fatal(
-                1,
-                $sformatf(
-                    "This rule has a IDX that is not allowed!!!\n\
+              i ,addr_map_i[i].idx, addr_map_i[i].start_addr, addr_map_i[i].end_addr));
+        // check the SLV ids
+        check_idx : assume (addr_map_i[i].idx < NoIndices) else
+            $fatal(1, $sformatf("This rule has a IDX that is not allowed!!!\n\
             Violating rule %d.\n\
             Rule> IDX: %h START: %h END: %h\n\
             Rule> MAX_IDX: %h\n\
             #####################################################",
-                    i,
-                    addr_map_i[i].idx,
-                    addr_map_i[i].start_addr,
-                    addr_map_i[i].end_addr,
-                    (NoIndices - 1)
-                )
-            );
-          for (int unsigned j = i + 1; j < NoRules; j++) begin
-            // overlap check
-            check_overlap :
-            assume (Napot ||
+            i, addr_map_i[i].idx, addr_map_i[i].start_addr, addr_map_i[i].end_addr,
+            (NoIndices-1)));
+        for (int unsigned j = i + 1; j < NoRules; j++) begin
+          // overlap check
+          check_overlap : assume (Napot ||
                                   !((addr_map_i[j].start_addr < addr_map_i[i].end_addr) &&
                                     (addr_map_i[j].end_addr > addr_map_i[i].start_addr)) ||
                                   !((addr_map_i[i].end_addr == '0) &&
                                     (addr_map_i[j].end_addr > addr_map_i[i].start_addr)) ||
                                   !((addr_map_i[j].start_addr < addr_map_i[i].end_addr) &&
-                                    (addr_map_i[j].end_addr == '0)))
-            else
-              $warning(
-                  $sformatf(
-                      "Overlapping address region found!!!\n\
+                                    (addr_map_i[j].end_addr == '0))) else
+               $warning($sformatf("Overlapping address region found!!!\n\
               Rule %d: IDX: %h START: %h END: %h\n\
               Rule %d: IDX: %h START: %h END: %h\n\
               #####################################################",
-                      i,
-                      addr_map_i[i].idx,
-                      addr_map_i[i].start_addr,
-                      addr_map_i[i].end_addr,
-                      j,
-                      addr_map_i[j].idx,
-                      addr_map_i[j].start_addr,
-                      addr_map_i[j].end_addr
-                  )
-              );
-          end
+              i, addr_map_i[i].idx, addr_map_i[i].start_addr, addr_map_i[i].end_addr,
+              j, addr_map_i[j].idx, addr_map_i[j].start_addr, addr_map_i[j].end_addr));
         end
       end
     end
+  end
   // pragma translate_on
-`endif
-`endif
+  `endif
+  `endif
 endmodule

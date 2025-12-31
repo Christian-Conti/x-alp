@@ -12,21 +12,21 @@
 // Description: Edge detector, clock needs to oversample for proper edge detection
 
 module edge_detect (
-  input  logic clk_i,   // Clock
-  input  logic rst_ni,  // Asynchronous reset active low
-  input  logic d_i,     // data stream in
-  output logic re_o,    // rising edge detected
-  output logic fe_o     // falling edge detected
+    input  logic clk_i,   // Clock
+    input  logic rst_ni,  // Asynchronous reset active low
+    input  logic d_i,     // data stream in
+    output logic re_o,    // rising edge detected
+    output logic fe_o     // falling edge detected
 );
 
-  sync_wedge i_sync_wedge (
-    .clk_i   (clk_i),
-    .rst_ni  (rst_ni),
-    .en_i    (1'b1),
-    .serial_i(d_i),
-    .r_edge_o(re_o),
-    .f_edge_o(fe_o),
-    .serial_o()
-  );
+    sync_wedge i_sync_wedge (
+        .clk_i    ( clk_i  ),
+        .rst_ni   ( rst_ni ),
+        .en_i     ( 1'b1   ),
+        .serial_i ( d_i    ),
+        .r_edge_o ( re_o   ),
+        .f_edge_o ( fe_o   ),
+        .serial_o (        )
+    );
 
 endmodule

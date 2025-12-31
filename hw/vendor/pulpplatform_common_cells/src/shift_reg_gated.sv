@@ -16,8 +16,8 @@ module shift_reg_gated #(
   parameter int unsigned Depth = 32'd8,
   parameter type         dtype = logic
 ) (
-  input logic clk_i,  // Clock
-  input logic rst_ni, // Asynchronous reset active low
+  input  logic clk_i,    // Clock
+  input  logic rst_ni,   // Asynchronous reset active low
 
   input  logic valid_i,
   input  dtype data_i,
@@ -31,7 +31,7 @@ module shift_reg_gated #(
     assign valid_o = valid_i;
     assign data_o  = data_i;
 
-    // It's a shift register if depth is greater than 0
+  // It's a shift register if depth is greater than 0
   end else begin : gen_shift_reg
 
     logic [Depth-1 : 0] valid_d, valid_q;

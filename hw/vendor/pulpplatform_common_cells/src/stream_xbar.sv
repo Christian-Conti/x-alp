@@ -15,24 +15,24 @@
 /// Handshaking rules as defined by the `AMBA AXI` standard on default.
 module stream_xbar #(
   /// Number of inputs into the crossbar (`> 0`).
-  parameter int unsigned NumInp = 32'd0,
+  parameter int unsigned NumInp      = 32'd0,
   /// Number of outputs from the crossbar (`> 0`).
-  parameter int unsigned NumOut = 32'd0,
+  parameter int unsigned NumOut      = 32'd0,
   /// Data width of the stream. Can be overwritten by defining the type parameter `payload_t`.
-  parameter int unsigned DataWidth = 32'd1,
+  parameter int unsigned DataWidth   = 32'd1,
   /// Payload type of the data ports, only usage of parameter `DataWidth`.
-  parameter type payload_t = logic [DataWidth-1:0],
+  parameter type         payload_t   = logic [DataWidth-1:0],
   /// Adds a spill register stage at each output.
-  parameter bit OutSpillReg = 1'b0,
+  parameter bit          OutSpillReg = 1'b0,
   /// Use external priority for the individual `rr_arb_trees`.
-  parameter int unsigned ExtPrio = 1'b0,
+  parameter int unsigned ExtPrio     = 1'b0,
   /// Use strict AXI valid ready handshaking.
   /// To be protocol conform also the parameter `LockIn` has to be set.
-  parameter int unsigned AxiVldRdy = 1'b1,
+  parameter int unsigned AxiVldRdy   = 1'b1,
   /// Lock in the arbitration decision of the `rr_arb_tree`.
   /// When this is set, valids have to be asserted until the corresponding transaction is indicated
   /// by ready.
-  parameter int unsigned LockIn = 1'b1,
+  parameter int unsigned LockIn      = 1'b1,
   /// Derived parameter, do **not** overwrite!
   ///
   /// Width of the output selection signal.
@@ -40,7 +40,7 @@ module stream_xbar #(
   /// Derived parameter, do **not** overwrite!
   ///
   /// Signal type definition for selecting the output at the inputs.
-  parameter type sel_oup_t = logic [SelWidth-1:0],
+  parameter type sel_oup_t = logic[SelWidth-1:0],
   /// Derived parameter, do **not** overwrite!
   ///
   /// Width of the input index signal.
@@ -48,7 +48,7 @@ module stream_xbar #(
   /// Derived parameter, do **not** overwrite!
   ///
   /// Signal type definition indicating from which input the output came.
-  parameter type idx_inp_t = logic [IdxWidth-1:0]
+  parameter type idx_inp_t = logic[IdxWidth-1:0]
 ) (
   /// Clock, positive edge triggered.
   input  logic                  clk_i,
@@ -96,13 +96,13 @@ module stream_xbar #(
   // Generate the input selection
   for (genvar i = 0; unsigned'(i) < NumInp; i++) begin : gen_inps
     stream_demux #(
-      .N_OUP(NumOut)
+      .N_OUP ( NumOut )
     ) i_stream_demux (
-      .inp_valid_i(valid_i[i]),
-      .inp_ready_o(ready_o[i]),
-      .oup_sel_i  (sel_i[i]),
-      .oup_valid_o(inp_valid[i]),
-      .oup_ready_i(inp_ready[i])
+      .inp_valid_i ( valid_i[i]   ),
+      .inp_ready_o ( ready_o[i]   ),
+      .oup_sel_i   ( sel_i[i]     ),
+      .oup_valid_o ( inp_valid[i] ),
+      .oup_ready_i ( inp_ready[i] )
     );
 
     // Do the switching cross of the signals.
@@ -118,42 +118,42 @@ module stream_xbar #(
   // Generate the output arbitration.
   for (genvar j = 0; unsigned'(j) < NumOut; j++) begin : gen_outs
     spill_data_t arb;
-    logic arb_valid, arb_ready;
+    logic        arb_valid, arb_ready;
 
     rr_arb_tree #(
-      .NumIn    (NumInp),
-      .DataType (payload_t),
-      .ExtPrio  (ExtPrio),
-      .AxiVldRdy(AxiVldRdy),
-      .LockIn   (LockIn)
+      .NumIn     ( NumInp    ),
+      .DataType  ( payload_t ),
+      .ExtPrio   ( ExtPrio   ),
+      .AxiVldRdy ( AxiVldRdy ),
+      .LockIn    ( LockIn    )
     ) i_rr_arb_tree (
       .clk_i,
       .rst_ni,
       .flush_i,
-      .rr_i  (rr_i[j]),
-      .req_i (out_valid[j]),
-      .gnt_o (out_ready[j]),
-      .data_i(out_data[j]),
-      .req_o (arb_valid),
-      .gnt_i (arb_ready),
-      .data_o(arb.data),
-      .idx_o (arb.idx)
+      .rr_i    ( rr_i[j]      ),
+      .req_i   ( out_valid[j] ),
+      .gnt_o   ( out_ready[j] ),
+      .data_i  ( out_data[j]  ),
+      .req_o   ( arb_valid    ),
+      .gnt_i   ( arb_ready    ),
+      .data_o  ( arb.data     ),
+      .idx_o   ( arb.idx      )
     );
 
     spill_data_t spill;
 
     spill_register #(
-      .T     (spill_data_t),
-      .Bypass(!OutSpillReg)
+      .T      ( spill_data_t ),
+      .Bypass ( !OutSpillReg )
     ) i_spill_register (
       .clk_i,
       .rst_ni,
-      .valid_i(arb_valid),
-      .ready_o(arb_ready),
-      .data_i (arb),
-      .valid_o(valid_o[j]),
-      .ready_i(ready_i[j]),
-      .data_o (spill)
+      .valid_i ( arb_valid  ),
+      .ready_o ( arb_ready  ),
+      .data_i  ( arb        ),
+      .valid_o ( valid_o[j] ),
+      .ready_i ( ready_i[j] ),
+      .data_o  ( spill      )
     );
     // Assign the outputs (deaggregate the data).
     always_comb begin
@@ -165,38 +165,36 @@ module stream_xbar #(
   // Assertions
   // Make sure that the handshake and payload is stable
   // pragma translate_off
-`ifndef VERILATOR
+  `ifndef VERILATOR
   default disable iff rst_ni;
   for (genvar i = 0; unsigned'(i) < NumInp; i++) begin : gen_sel_assertions
-    assert property (@(posedge clk_i) (valid_i[i] |-> sel_i[i] < sel_oup_t'(NumOut)))
-    else $fatal(1, "Non-existing output is selected!");
+    assert property (@(posedge clk_i) (valid_i[i] |-> sel_i[i] < sel_oup_t'(NumOut))) else
+        $fatal(1, "Non-existing output is selected!");
   end
 
   if (AxiVldRdy) begin : gen_handshake_assertions
     for (genvar i = 0; unsigned'(i) < NumInp; i++) begin : gen_inp_assertions
-      assert property (@(posedge clk_i) (valid_i[i] && !ready_o[i] |=> $stable(data_i[i])))
-      else $error("data_i is unstable at input: %0d", i);
-      assert property (@(posedge clk_i) (valid_i[i] && !ready_o[i] |=> $stable(sel_i[i])))
-      else $error("sel_i is unstable at input: %0d", i);
-      assert property (@(posedge clk_i) (valid_i[i] && !ready_o[i] |=> valid_i[i]))
-      else $error("valid_i at input %0d has been taken away without a ready.", i);
+      assert property (@(posedge clk_i) (valid_i[i] && !ready_o[i] |=> $stable(data_i[i]))) else
+          $error("data_i is unstable at input: %0d", i);
+      assert property (@(posedge clk_i) (valid_i[i] && !ready_o[i] |=> $stable(sel_i[i]))) else
+          $error("sel_i is unstable at input: %0d", i);
+      assert property (@(posedge clk_i) (valid_i[i] && !ready_o[i] |=> valid_i[i])) else
+          $error("valid_i at input %0d has been taken away without a ready.", i);
     end
     for (genvar i = 0; unsigned'(i) < NumOut; i++) begin : gen_out_assertions
-      assert property (@(posedge clk_i) (valid_o[i] && !ready_i[i] |=> $stable(data_o[i])))
-      else $error("data_o is unstable at output: %0d Check that parameter LockIn is set.", i);
-      assert property (@(posedge clk_i) (valid_o[i] && !ready_i[i] |=> $stable(idx_o[i])))
-      else $error("idx_o is unstable at output: %0d Check that parameter LockIn is set.", i);
-      assert property (@(posedge clk_i) (valid_o[i] && !ready_i[i] |=> valid_o[i]))
-      else $error("valid_o at output %0d has been taken away without a ready.", i);
+      assert property (@(posedge clk_i) (valid_o[i] && !ready_i[i] |=> $stable(data_o[i]))) else
+          $error("data_o is unstable at output: %0d Check that parameter LockIn is set.", i);
+      assert property (@(posedge clk_i) (valid_o[i] && !ready_i[i] |=> $stable(idx_o[i]))) else
+          $error("idx_o is unstable at output: %0d Check that parameter LockIn is set.", i);
+      assert property (@(posedge clk_i) (valid_o[i] && !ready_i[i] |=> valid_o[i])) else
+          $error("valid_o at output %0d has been taken away without a ready.", i);
     end
   end
 
   initial begin : proc_parameter_assertions
-    assert (NumInp > 32'd0)
-    else $fatal(1, "NumInp has to be > 0!");
-    assert (NumOut > 32'd0)
-    else $fatal(1, "NumOut has to be > 0!");
+    assert (NumInp > 32'd0) else $fatal(1, "NumInp has to be > 0!");
+    assert (NumOut > 32'd0) else $fatal(1, "NumOut has to be > 0!");
   end
-`endif
+  `endif
   // pragma translate_on
 endmodule

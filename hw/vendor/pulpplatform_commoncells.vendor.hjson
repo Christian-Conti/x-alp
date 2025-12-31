@@ -21,7 +21,6 @@
     ".github/verible-lint-matcher.json",
     "ci",
     "formal",
-    "include",
     "lint",
     "test",
     ".gitignore",

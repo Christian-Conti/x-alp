@@ -41,7 +41,7 @@ module addr_decode_napot #(
   /// Dependent parameter, do **not** overwite!
   ///
   /// Type of the `idx_o` output port.
-  parameter type         idx_t     = logic                             [IdxWidth-1:0]
+  parameter type         idx_t     = logic [IdxWidth-1:0]
 ) (
   /// Address to decode.
   input  addr_t               addr_i,
@@ -67,17 +67,17 @@ module addr_decode_napot #(
 
   // Rename struct field names to those expected by `addr_decode`
   typedef struct packed {
-    int unsigned idx;
-    addr_t       start_addr;
-    addr_t       end_addr;
+    int unsigned  idx;
+    addr_t        start_addr;
+    addr_t        end_addr;
   } rule_range_t;
 
   addr_decode #(
-    .NoIndices(NoIndices),
-    .NoRules  (NoRules),
-    .addr_t   (addr_t),
-    .rule_t   (rule_range_t),
-    .Napot    (1)
+    .NoIndices ( NoIndices    ) ,
+    .NoRules   ( NoRules      ),
+    .addr_t    ( addr_t       ),
+    .rule_t    ( rule_range_t ),
+    .Napot     ( 1            )
   ) i_addr_decode (
     .addr_i,
     .addr_map_i,
@@ -86,6 +86,6 @@ module addr_decode_napot #(
     .dec_error_o,
     .en_default_idx_i,
     .default_idx_i
-  );
+);
 
 endmodule

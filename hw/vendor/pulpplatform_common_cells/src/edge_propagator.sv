@@ -23,7 +23,7 @@ module edge_propagator (
     .clk_tx_i,
     .rstn_tx_i,
     .edge_i,
-    .ack_tx_o(  /* unused */),
+    .ack_tx_o (/* unused */),
     .clk_rx_i,
     .rstn_rx_i,
     .edge_o
