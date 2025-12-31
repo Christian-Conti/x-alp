@@ -24,7 +24,7 @@ module cva6
     ),
 
     // RVFI PROBES
-     parameter type rvfi_probes_instr_t = `RVFI_PROBES_INSTR_T(CVA6Cfg),
+    parameter type rvfi_probes_instr_t = `RVFI_PROBES_INSTR_T(CVA6Cfg),
     parameter type rvfi_probes_csr_t = `RVFI_PROBES_CSR_T(CVA6Cfg),
     parameter type rvfi_probes_t = struct packed {
       rvfi_probes_csr_t   csr;
