@@ -15,7 +15,6 @@
     ".github",
     ".gitlab-ci.d",
     "doc",
-    "include",
     "scripts",
     "test",
     ".gitignore",
