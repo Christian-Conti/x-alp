@@ -1,0 +1,69 @@
+CAPI=2:
+name : openhwgroup.org::cva6:1.4.0
+
+filesets:
+  rtl:
+    files:
+      - openhwgroup_cva6/core/include/iti_types.svh : {is_include_file: true, include_path: openhwgroup_cva6/core/include} 
+      - openhwgroup_cva6/core/include/cvxif_types.svh : {is_include_file: true, include_path: openhwgroup_cva6/core/include} 
+      - openhwgroup_cva6/core/include/rvfi_types.svh : {is_include_file: true, include_path: openhwgroup_cva6/core/include} 
+      - openhwgroup_cva6/core/include/aes_pkg.sv 
+      - openhwgroup_cva6/core/include/ariane_pkg.sv 
+      - openhwgroup_cva6/core/include/build_config_pkg.sv 
+      - openhwgroup_cva6/core/include/config_pkg.sv 
+      - openhwgroup_cva6/core/include/instr_tracer_pkg.sv 
+      - openhwgroup_cva6/core/include/iti_pkg.sv 
+      - openhwgroup_cva6/core/include/riscv_pkg.sv 
+      - openhwgroup_cva6/core/include/std_cache_pkg.sv 
+      - openhwgroup_cva6/core/include/triggers_pkg.sv 
+      - openhwgroup_cva6/core/include/wt_cache_pkg.sv
+      - openhwgroup_cva6/core/acc_dispatcher.sv 
+      - openhwgroup_cva6/core/aes.sv 
+      - openhwgroup_cva6/core/alu_wrapper.sv 
+      - openhwgroup_cva6/core/alu.sv 
+      - openhwgroup_cva6/core/amo_buffer.sv 
+      - openhwgroup_cva6/core/ariane_regfile_ff.sv 
+      - openhwgroup_cva6/core/ariane_regfile_fpga.sv 
+      - openhwgroup_cva6/core/axi_shim.sv 
+      - openhwgroup_cva6/core/branch_unit.sv 
+      - openhwgroup_cva6/core/commit_stage.sv 
+      - openhwgroup_cva6/core/compressed_decoder.sv 
+      - openhwgroup_cva6/core/controller.sv 
+      - openhwgroup_cva6/core/csr_buffer.sv 
+      - openhwgroup_cva6/core/csr_regfile.sv 
+      - openhwgroup_cva6/core/cva6_accel_first_pass_decoder_stub.sv 
+      - openhwgroup_cva6/core/cva6_fifo_v3.sv 
+      - openhwgroup_cva6/core/cva6_rvfi_probes.sv 
+      - openhwgroup_cva6/core/cva6_rvfi.sv 
+      - openhwgroup_cva6/core/cva6.sv 
+      - openhwgroup_cva6/core/cvxif_compressed_if_driver.sv 
+      - openhwgroup_cva6/core/cvxif_fu.sv 
+      - openhwgroup_cva6/core/cvxif_issue_register_commit_if_driver.sv 
+      - openhwgroup_cva6/core/decoder.sv 
+      - openhwgroup_cva6/core/ex_stage.sv
+      - openhwgroup_cva6/core/fpu_wrap.sv 
+      - openhwgroup_cva6/core/id_stage.sv 
+      - openhwgroup_cva6/core/instr_realign.sv 
+      - openhwgroup_cva6/core/issue_read_operands.sv 
+      - openhwgroup_cva6/core/issue_stage.sv 
+      - openhwgroup_cva6/core/load_store_unit.sv 
+      - openhwgroup_cva6/core/load_unit.sv 
+      - openhwgroup_cva6/core/lsu_bypass.sv 
+      - openhwgroup_cva6/core/macro_decoder.sv 
+      - openhwgroup_cva6/core/mult.sv 
+      - openhwgroup_cva6/core/multiplier.sv 
+      - openhwgroup_cva6/core/perf_counters.sv 
+      - openhwgroup_cva6/core/raw_checker.sv 
+      - openhwgroup_cva6/core/scoreboard.sv 
+      - openhwgroup_cva6/core/serdiv.sv 
+      - openhwgroup_cva6/core/store_buffer.sv 
+      - openhwgroup_cva6/core/store_unit.sv 
+      - openhwgroup_cva6/core/trigger_module.sv 
+      - openhwgroup_cva6/core/zcmt_decoder.sv
+    file_type : systemVerilogSource
+
+targets:
+  default:
+    filesets:
+    - "!target_format ? (!target_lint ? (rtl))"
+
