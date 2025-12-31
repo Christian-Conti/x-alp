@@ -13,7 +13,7 @@ targets:
     - x-alp
     toplevel: core_v_mcu
 
-  simulate:
+  sim:
     <<: *default
     description: RTL simulation
     default_tool: verilator

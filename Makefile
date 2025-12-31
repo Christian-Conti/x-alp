@@ -181,7 +181,7 @@ app-list:
 
 ## Verilator simulation with C++
 verilator-build: | .check-verilator
-	$(FUSESOC) --cores-root . run --no-export --target=simulate --tool=verilator $(FUSESOC_FLAGS) --build x-heep:x-alp:x-alp:0.0.1 $(FUSESOC_PARAM) 2>&1 | tee buildsim.log
+	$(FUSESOC) --cores-root . run --no-export --target=sim --tool=verilator $(FUSESOC_FLAGS) --build x-heep:x-alp:x-alp:0.0.1 $(FUSESOC_PARAM) 2>&1 | tee buildsim.log
 
 ## @section Cleaning commands
 
