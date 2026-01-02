@@ -19,9 +19,15 @@ filesets:
   waivers:
     file_type: vlt
     files:
-    - misc/vendor-waivers.vlt
-    - misc/xalp-waivers.vlt 
-
+      - misc/vendor/common-waivers.vlt
+      - misc/vendor/axi-waivers.vlt
+      - misc/vendor/common_cells-waivers.vlt
+      - misc/vendor/cva6-waivers.vlt
+      - misc/vendor/fpnew-waivers.vlt
+      - misc/vendor/fpu_div_sqrt-waivers.vlt
+      - misc/vendor/hpdcache-waivers.vlt
+      - misc/vendor/tech_cells-waivers.vlt
+      
 targets:
   default:
     filesets:
