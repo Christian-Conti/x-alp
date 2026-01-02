@@ -6,8 +6,13 @@ filesets:
     files:
       - openhwgroup_cv_hpdcache/rtl/include/include/hpdcache_typedef.svh: {is_include_file: true, include_path: openhwgroup_cv_hpdcache/rtl/include}
       - openhwgroup_cv_hpdcache/rtl/src/hpdcache_pkg.sv
-      - openhwgroup_cv_hpdcache/rtl/src/utils/hpdcache_mem_req_read_arbiter.sv
-      - openhwgroup_cv_hpdcache/rtl/src/utils/hpdcache_mem_req_write_arbiter.sv
+      - openhwgroup_cv_hpdcache/rtl/src/utils/hpdcache_l15_req_arbiter.sv 
+      - openhwgroup_cv_hpdcache/rtl/src/utils/hpdcache_l15_resp_demux.sv 
+      - openhwgroup_cv_hpdcache/rtl/src/utils/hpdcache_mem_req_read_arbiter.sv 
+      - openhwgroup_cv_hpdcache/rtl/src/utils/hpdcache_mem_req_write_arbiter.sv 
+      - openhwgroup_cv_hpdcache/rtl/src/utils/hpdcache_mem_resp_demux.sv 
+      - openhwgroup_cv_hpdcache/rtl/src/utils/hpdcache_mem_to_axi_read.sv 
+      - openhwgroup_cv_hpdcache/rtl/src/utils/hpdcache_mem_to_axi_write.sv
       - openhwgroup_cv_hpdcache/rtl/src/common/hpdcache_demux.sv
       - openhwgroup_cv_hpdcache/rtl/src/common/hpdcache_lfsr.sv
       - openhwgroup_cv_hpdcache/rtl/src/common/hpdcache_sync_buffer.sv

@@ -17,6 +17,11 @@ filesets:
       - openhwgroup_cva6/core/include/std_cache_pkg.sv 
       - openhwgroup_cva6/core/include/triggers_pkg.sv 
       - openhwgroup_cva6/core/include/wt_cache_pkg.sv
+      - openhwgroup_cva6/common/local/util/ex_trace_item.svh 
+      - openhwgroup_cva6/common/local/util/instr_trace_item.svh 
+      - openhwgroup_cva6/common/local/util/instr_tracer.sv 
+      - openhwgroup_cva6/common/local/util/sram_cache.sv 
+      - openhwgroup_cva6/common/local/util/sram.sv 
       - openhwgroup_cva6/core/frontend/bht.sv 
       - openhwgroup_cva6/core/frontend/bht2lvl.sv 
       - openhwgroup_cva6/core/frontend/btb.sv 
@@ -100,8 +105,23 @@ filesets:
       - openhwgroup.org::cvfpu
       - openhwgroup.org::cv-hpdcache
 
+  sim_rtl:
+    files:
+    - openhwgroup_cva6/common/local/util/tc_sram_wrapper.sv
+    file_type : systemVerilogSource
+    depend:
+      -  pulpplatform.org::tech_cells:0.2.13
+  
+  rtl_fpga:
+    files:
+    - openhwgroup_cva6/common/local/util/tc_sram_fpga_wrapper.sv
+    file_type : systemVerilogSource
+
+
 targets:
   default:
     filesets:
     - "!target_format ? (!target_lint ? (rtl))"
+    - target_sim ? (sim_rtl)
+    - target_fpga ? (rtl_fpga)
 
