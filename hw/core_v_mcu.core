@@ -2,19 +2,35 @@ CAPI=2:
 
 name: x-heep:x-alp:core-v-mcu:0.0.1
 filesets:
+
+  subsystems_rtl:
+    file_type: systemVerilogSource
+    files:
+      - subsystems/memory_subsystem.sv
+      - subsystems/cpu_subsystem.sv
+
   files_rtl:
     file_type: systemVerilogSource
     files:
       - include/core_v_mcu_pkg.sv
       - include/core_v_mcu_axi_pkg.sv
       - include/cva6_config_pkg.sv
-      - subsystems/cpu_subsystem.sv
       - system/core_v_mcu.sv
 
   vendor_modules:
     depend:
       - pulp-platform.org::axi:0.39.8
       - openhwgroup.org::cva6:1.4.0
+  
+  simulation_rtl:
+    file_type: systemVerilogSource
+    files:
+      - target/simulation/pad_cell_bypass_input.sv 
+      - target/simulation/pad_cell_bypass_output.sv 
+      - target/simulation/pad_cell_inout.sv 
+      - target/simulation/pad_cell_input.sv 
+      - target/simulation/pad_cell_output.sv 
+      - target/simulation/sram_wrapper.sv
 
   waivers:
     file_type: vlt
@@ -27,10 +43,13 @@ filesets:
       - misc/vendor/fpu_div_sqrt-waivers.vlt
       - misc/vendor/hpdcache-waivers.vlt
       - misc/vendor/tech_cells-waivers.vlt
+      - misc/simulation.vlt
       
 targets:
   default:
     filesets:
     - "!target_format ? (!target_lint ? (vendor_modules))"
-    - files_rtl
+    - target_sim ? (simulation_rtl)
     - tool_verilator ? (waivers)
+    - files_rtl
+    - subsystems_rtl

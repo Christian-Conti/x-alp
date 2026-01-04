@@ -3,6 +3,9 @@ module core_v_mcu (
   input logic rst_ni
 );
 
+  /* verilator lint_off PINCONNECTEMPTY */
+  /* verilator lint_off PINMISSING      */
+
   import core_v_mcu_pkg::*;
 
   // Internal signals
@@ -10,7 +13,7 @@ module core_v_mcu (
   core_v_mcu_axi_pkg::axi_resp_t bus_resp_sig;
 
   // Instantiate CPU Subsystem
-  cpu_subsystem cpu_subsystem_inst (
+  cpu_subsystem u_cpu_subsystem (
     .clk_i      (clk_i),
     .rst_ni     (rst_ni),
     .boot_addr_i('0),
@@ -24,6 +27,14 @@ module core_v_mcu (
     .irq_i      ('0),
     .time_irq_i ('0),
     .debug_req_i('0)
+  );
+
+  // Instantiate Memory Subsystem
+  memory_subsystem u_memory_subsystem (
+    .clk_i     (clk_i),
+    .rst_ni    (rst_ni),
+    .bus_req_i (bus_req_sig),
+    .bus_resp_o(bus_resp_sig)
   );
 
 endmodule

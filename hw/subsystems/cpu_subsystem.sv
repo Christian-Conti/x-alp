@@ -23,6 +23,9 @@ module cpu_subsystem (
 
 );
 
+  /* verilator lint_off PINCONNECTEMPTY */
+  /* verilator lint_off PINMISSING      */
+
   cva6 #(
     .noc_req_t (core_v_mcu_axi_pkg::axi_req_t),
     .noc_resp_t(core_v_mcu_axi_pkg::axi_resp_t)
