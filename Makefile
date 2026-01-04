@@ -2,9 +2,8 @@
 # Licensed under the Apache License, Version 2.0, see LICENSE for details.
 # SPDX-License-Identifier: Apache-2.0
 
-MAKE	= make
-
-XALP    = x-heep:x-alp:x-alp:0.0.1
+# Project configuration
+XALP := x-heep:x-alp:x-alp:0.0.1
 
 # Get the absolute path
 mkfile_path := $(shell dirname "$(realpath $(firstword $(MAKEFILE_LIST)))")
@@ -33,16 +32,35 @@ PYTHON  	:= $(shell which python)
 endif
 
 # FuseSoC args
-FUSESOC_ARGS    ?= 
+FUSESOC_ARGS ?= 
 
-# Verilator simulation parameters
-LOG_LEVEL	?= LOG_DEBUG
-BINARY      ?= ""
-BOOTMODE    ?= force
-MAX_CYCLES  ?= 1000000
+# Verilator simulation parameters
+LOG_LEVEL ?= LOG_DEBUG
+BINARY ?= ""
+BOOTMODE ?= force
+MAX_CYCLES ?= 1000000
+
+# Application build parameters
+PROJECT ?= hello_world
+TARGET ?= sim
+LINKER ?= on_chip
+LINK_FOLDER ?= 
+COMPILER ?= gcc
+COMPILER_PREFIX ?= riscv64-unknown-
+COMPILER_FLAGS ?= 
+ARCH ?= rv64gc_zifencei
+SOURCE ?= 
 
 # Export variables to sub-makefiles
 export
+
+# Declare phony targets
+.PHONY: help conda clean clean-app app app-list \
+        verilator-run format lint \
+        .check-fusesoc .check-gtkwave .check-verible .check-verilator
+
+# Build stamp file to track successful compilations
+BUILD_STAMP := build/.verilator-build-stamp
 
 ## @section Conda
 conda:
@@ -68,7 +86,7 @@ app: clean-app
 	echo "\033[0;31mI would start by checking b) or c) if I were you!\033[0m"; \
 	exit 1; \
 	}
-	@python scripts/building/mem_usage.py
+# 	@python scripts/building/mem_usage.py
 
 ## Just list the different application names available
 app-list:
@@ -77,12 +95,16 @@ app-list:
 
 ## @section Simulation
 
-## Verilator simulation
-verilator-build: | .check-verilator
-	$(FUSESOC) --cores-root . run --no-export --target sim --tool verilator --build x-heep:x-alp:x-alp:0.0.1 $(FUSESOC_ARGS) 2>&1 | tee buildsim.log
+## Verilator simulation build
+verilator-build: $(BUILD_STAMP)
 
-verilator-run: | verilator-build
-	$(FUSESOC) run --no-export --target sim --tool verilator --run x-heep:x-alp:x-alp:0.0.1 \
+$(BUILD_STAMP): hw/**/*.sv **/*.core tb/**/*.sv tb/**/*.cpp | .check-verilator
+	$(FUSESOC) --cores-root . run --no-export --target sim --tool verilator --build $(XALP) $(FUSESOC_ARGS) 2>&1 | tee buildsim.log
+	@mkdir -p $(dir $@)
+	@touch $@
+
+verilator-run: $(BUILD_STAMP)
+	$(FUSESOC) run --no-export --target sim --tool verilator --run $(XALP) \
 		--LOG_LEVEL=$(LOG_LEVEL) \
 		--BINARY=$(BINARY) \
 		--BOOTMODE=$(BOOTMODE) \
@@ -93,12 +115,10 @@ verilator-run: | verilator-build
 ## @section formatting and linting
 
 ## Format
-.PHONY: format
 format: .check-fusesoc
 	$(FUSESOC) $(FUSESOC_FLAGS) run --no-export --target format $(XALP)
 
 ## Lint
-.PHONY: lint
 lint: .check-fusesoc
 	$(FUSESOC) $(FUSESOC_FLAGS) run --no-export --target lint $(XALP)
 
@@ -106,31 +126,27 @@ lint: .check-fusesoc
 ## @section Cleaning commands
 
 ## Remove the sw build folder
-.PHONY: clean-app
 clean-app:
 	@rm -rf sw/build
 
 ## Remove the build folders
-.PHONY: clean
 clean: clean-app
-	@rm -rf $(BUILD_DIR)
+	@rm -rf $(BUILD_DIR) $(BUILD_STAMP)
 
-## Leave the repository in a clean state, removing all generated files. For now, it just calls clean.
-.PHONY: clean-all
+## Leave the repository in a clean state, removing all generated files
 clean-all: clean
 
 ## @section Utilities
 
 # Check FuseSoC
-.PHONY: .check-fusesoc
 .check-fusesoc:
-	@if [ ! `which fusesoc` ]; then \
-	printf -- "### ERROR: 'fusesoc' is not in PATH. Is the correct conda environment active?\n" >&2; \
-	exit 1; fi
+	@command -v fusesoc >/dev/null 2>&1 || { \
+		printf "### ERROR: 'fusesoc' is not in PATH. Is the correct conda environment active?\\n" >&2; \
+		exit 1; \
+	}
 
 # Check if a program is available in PATH
 define CHECK_PROGRAM
-.PHONY: .check-$(1)
 .check-$(1):
 	@command -v $(2) >/dev/null 2>&1 || { \
 		printf "### ERROR: '%s' is not in PATH.\\n" "$(2)" >&2; \
