@@ -17,10 +17,10 @@
 
 //#include "sim_ctrl_extension.h"
 //#include "verilated_toplevel.h"
-#include "cheshire_utils.hh"
+#include "tb_utils.hh"
 #include "tb_macros.hh"
-#include "Vcheshire_testharness.h"
-#include "Vcheshire_testharness__Syms.h"
+#include "Vtestharness.h"
+#include "Vtestharness__Syms.h"
 #include "verilated.h"
 #include "verilated_fst_c.h"
 
@@ -128,10 +128,10 @@ class TbSimCtrl {
 
   TbLogger logger;
  private:
-  Vcheshire_testharness* dut;
+  Vtestharness* dut;
   VerilatedFstC* m_trace;
   std::string my_arg_value_;
-  CheshireUtils* utils_;
+  TbUtils* utils_;
   std::string firmware_;
   unsigned int mem_type_;
   std::string boot_mode_arg_;

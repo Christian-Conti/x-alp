@@ -1,0 +1,33 @@
+`verilator_config
+
+lint_off -rule PINCONNECTEMPTY -file "*/x_alp_testharness.sv"
+lint_off -rule PINCONNECTEMPTY -file "*/*ip_x_alp_soc.sv"
+lint_off -rule UNUSEDPARAM -file "*/*ip_x_alp_soc.sv"
+lint_off -rule WIDTH -file "*/*ip_x_alp_soc.sv"
+lint_off -rule WIDTH -file "*/*ip_x_alp_soc.sv" -match "Operator DIV expects 32 bits on the LHS, but LHS's SEL generates * bits."
+
+lint_off -rule WIDTH -file "*/tb_util.svh"
+
+// JTAG DPI
+///////////
+
+//lint_off -rule DECLFILENAME -file "*/jtag_debug_simple.sv"
+//lint_off -rule WIDTH -file "*/jtag_debug_simple.sv"
+lint_off -rule BLKSEQ -file "*/SimJTAG.sv"
+lint_off -rule SYNCASYNCNET -file "*/SimJTAG.sv" -match "Signal flopped as both synchronous and async: *i_sim_jtag__reset'"
+lint_off -rule SYNCASYNCNET -file "*/testharness.sv" -match "Signal flopped as both synchronous and async: 'rst_ni'"
+
+// SRAM WRAPPER
+///////////////
+lint_off -rule PINCONNECTEMPTY -file "*/tc_sram_mem_wrapper.sv" -match "* pin connected by name with empty reference: 'busy_o'"
+lint_off -rule PINCONNECTEMPTY -file "*/tc_sram_mem_wrapper.sv" -match "* pin connected by name with empty reference: 'mem_atop_o'"
+// Width
+lint_off -rule WIDTH -file "*/tc_sram.sv" -match "Bit extraction of array[*:0] requires * bit index, not * bits." // mem is smaller than 48/64 bit of addressing
+// Unused, Undriven
+lint_off -rule WIDTH -file "*/tc_sram_mem_wrapper.sv" -match "Input port connection 'addr_i' expects * bits on the pin connection, but pin connection's SEL generates * bits." // mem is smaller than 48/64 bit of addressing
+
+// Unoptimizable signals
+lint_off -rule UNOPTFLAT -file "*/axi_to_detailed_mem.sv" -match "Signal unoptimizable: Circular combinational logic: *.axi4_block.u_axi_to_mem.i_axi_to_detailed_mem.meta_sel_d'"
+lint_off -rule UNOPTFLAT -file "*/axi_to_detailed_mem.sv" -match "Signal unoptimizable: Circular combinational logic: *.axi4_block.u_axi_to_mem.i_axi_to_detailed_mem.arb_valid'"
+lint_off -rule UNOPTFLAT -file "*/axi_to_detailed_mem.sv" -match "Signal unoptimizable: Circular combinational logic: '__VdfgRegularize*'"
+lint_off -rule UNOPTFLAT -file "*/axi_to_detailed_mem.sv" -match "Signal unoptimizable: Circular combinational logic:*u_axi_to_mem.i_axi_to_detailed_mem.i_mem_to_banks.cnt_req_ready'"

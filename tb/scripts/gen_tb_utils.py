@@ -1,4 +1,4 @@
-# Generate tb_cheshire_util.svh with the correct number of sets for the LLC
+# Generate tb_util.svh with the correct number of sets for the LLC
 # starting from a mako template.
 import pathlib
 import re
@@ -21,7 +21,7 @@ def write_template(tpl_path, outdir, **kwargs):
             raise FileNotFoundError(f'Template file {tpl_path} not found')
 
 def main():
-  parser = argparse.ArgumentParser(description="Generate tb_cheshire_util.svh")
+  parser = argparse.ArgumentParser(description="Generate tb_util.svh")
   parser.add_argument("--sets-assoc",
                         type=int,
                         default=8,

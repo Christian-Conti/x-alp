@@ -121,7 +121,7 @@ bool TbSimCtrl::ParseCLIArguments(int argc, char **argv) {
   
   bool exit_app = false;
 
-  utils_ = new CheshireUtils(argc, argv);
+  utils_ = new TbUtils(argc, argv);
   firmware_ = utils_->get_firmware();
   mem_type_ = utils_->extract_memory_type();
   boot_mode_arg_ = utils_->get_boot_mode();
@@ -143,7 +143,7 @@ bool TbSimCtrl::ParseCLIArguments(int argc, char **argv) {
       break;
     case BOOT_MODE_FORCE:
       // Force boot from testbench
-      // TB_LOG(LOG_MEDIUM, "[TESTBENCH]: Force boot from testbench");
+      TB_LOG(LOG_MEDIUM, "[TESTBENCH]: Force boot from testbench");
       break;
     case BOOT_MODE_AUTONOMOUS:
       // Autonomous boot using GDB
@@ -159,8 +159,8 @@ bool TbSimCtrl::ParseCLIArguments(int argc, char **argv) {
 
 // TODO: use a return value for failure
 void TbSimCtrl::SetTop() {
-  dut = new Vcheshire_testharness;
-  svSetScope(svGetScopeFromName("TOP.cheshire_testharness"));
+  dut = new Vtestharness;
+  svSetScope(svGetScopeFromName("TOP.testharness"));
   svScope scope = svGetScope();
   if (!scope) {
     TB_ERR("[TESTBENCH]: svGetScope failed... Exiting");
@@ -186,7 +186,7 @@ void TbSimCtrl::Init() {
   dut->jtag_trst_ni         = 0;
   dut->jtag_tdi_i           = 0;
   dut->boot_mode_i          = boot_mode_;
-  dut->test_mode_i          = 0; // unsupported test mode
+  // dut->test_mode_i          = 0; // unsupported test mode
   dut->eval();
   if (gen_waves_) {
     m_trace->dump(sim_cycles_);
@@ -209,14 +209,14 @@ void TbSimCtrl::UnsetReset() {
 void TbSimCtrl::PreExec() {
   TbElfLoader* elf_loader = new TbElfLoader();
   // Section chunk length
-  long long unsigned SectionChunkLength;
+  long long unsigned SectionChunkLength = 0;
 
   dut->tb_get_section_chunk_length(&SectionChunkLength);
   TB_LOG(LOG_LOW, "[TESTBENCH]: Section chunk length %lu", SectionChunkLength);
   long long sec_addr = 0;
   long long sec_len  = 0;
   long long chunk_len = 0;
-  char bf [SectionChunkLength] = {0};
+  char bf [2048] = {0};
   // If boot mode is force, load the firmware
   if (boot_mode_ == BOOT_MODE_FORCE) {
     if (elf_loader->read_elf(firmware_.c_str())) {

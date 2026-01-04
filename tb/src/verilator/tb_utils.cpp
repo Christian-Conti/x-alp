@@ -8,29 +8,29 @@
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the
 // specific language governing permissions and limitations under the License.
 //
-// File: cheshire_utils.cpp
+// File: tb_utils.cpp
 // Author: Flavia Guella
 // Date: 06/09/2025
-// Description: Command line options for CHESHIRE testbench
-// From: https://github.com/esl-epfl/x-heep
+// Description: Command line options for X-ALP testbench
+// From: https://github.com/x-heep/x-heep
 
 
-#include "cheshire_utils.hh"
+#include "tb_utils.hh"
 #include "tb_macros.hh"
 #include <iostream>
 #include <string>
 
-CheshireUtils::CheshireUtils() // define default constructor
+TbUtils::TbUtils() // define default constructor
 {
 }
 
-CheshireUtils::CheshireUtils(int argc, char* argv[]) // define default constructor
+TbUtils::TbUtils(int argc, char* argv[]) // define default constructor
 {
     this->argc = argc;
     this->argv = argv;
 }
 
-std::string CheshireUtils::getCmdOption(int argc, char* argv[], const std::string& option)
+std::string TbUtils::getCmdOption(int argc, char* argv[], const std::string& option)
 {
     std::string cmd;
      for( int i = 0; i < argc; ++i)
@@ -46,7 +46,7 @@ std::string CheshireUtils::getCmdOption(int argc, char* argv[], const std::strin
      return cmd;
 }
 
-bool CheshireUtils::get_use_openocd()
+bool TbUtils::get_use_openocd()
 {
 
   std::string arg_openocd = this->getCmdOption(this->argc, this->argv, "+openOCD=");;
@@ -64,7 +64,7 @@ bool CheshireUtils::get_use_openocd()
 }
 
 
-std::string CheshireUtils::get_firmware()
+std::string TbUtils::get_firmware()
 {
 
   std::string firmware = this->getCmdOption(this->argc, this->argv, "+BINARY=");
@@ -79,7 +79,7 @@ std::string CheshireUtils::get_firmware()
 }
 
 
-unsigned int CheshireUtils::extract_memory_type() {
+unsigned int TbUtils::extract_memory_type() {
   std::string firmware = this->getCmdOption(this->argc, this->argv, "+BINARY=");
   
   // Extract the filename from the path
@@ -123,7 +123,7 @@ unsigned int CheshireUtils::extract_memory_type() {
 }
 
 
-unsigned long long CheshireUtils::get_max_sim_time(bool& run_all)
+unsigned long long TbUtils::get_max_sim_time(bool& run_all)
 {
 
   std::string arg_max_sim_time = this->getCmdOption(this->argc, this->argv, "+MAX_CYCLES=");
@@ -152,7 +152,7 @@ unsigned long long CheshireUtils::get_max_sim_time(bool& run_all)
   return max_sim_time;
 }
 
-std::string CheshireUtils::get_boot_mode()
+std::string TbUtils::get_boot_mode()
 {
   std::string arg_boot_mode = this->getCmdOption(this->argc, this->argv, "+BOOTMODE=");
   if (arg_boot_mode.empty()) {

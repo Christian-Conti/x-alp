@@ -1,5 +1,5 @@
-#ifndef CHESHIRE_TB_UTIL_H
-#define CHESHIRE_TB_UTIL_H
+#ifndef TB_UTILS_H
+#define TB_UTILS_H
 
 #include <iostream>
 #include <verilated.h>
@@ -26,12 +26,12 @@ typedef enum {
 extern vluint64_t sim_cycles;
 
 
-class CheshireUtils // declare Calculator class
+class TbUtils // declare Calculator class
 {
 
   public: // public members
-    CheshireUtils(); // default constructor
-    CheshireUtils(int argc, char* argv[]);
+    TbUtils(); // default constructor
+    TbUtils(int argc, char* argv[]);
     // Cmd Line options
     // -----------------
     std::string getCmdOption(int argc, char* argv[], const std::string& option); // get options from cmd lines

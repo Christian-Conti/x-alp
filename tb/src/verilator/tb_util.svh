@@ -17,13 +17,6 @@ export "DPI-C" task tb_get_entry_address;
 export "DPI-C" task tb_get_section_chunk_length;
 `endif
 
-`ifdef VERILATOR
-`define TOP i_cheshire_soc
-`else
-`define TOP dut
-`endif
-
-import cheshire_pkg::*;
 
 // TODO: change, so small just to verify
 localparam longint unsigned SectionChunkLength = 256;  // 256B chunks, can be changed
@@ -53,12 +46,12 @@ localparam longint unsigned SectionChunkLength = 256;  // 256B chunks, can be ch
 `ifdef VERILATOR
 task automatic tb_loadChunk;
   input bit MemType;  // 0: DRAM, 1: SPM
-  input longint unsigned addr;
+  input int unsigned addr;
   input byte chunk[SectionChunkLength];  // chunk to write
-  input longint unsigned EffChunkLength;  // actual chunk size
-  localparam int unsigned BytesPerMemWord = cheshire_pkg::DefaultCfg.AxiDataWidth / 8;
-  logic [63:0] MemBaseAddr = (MemType) ? AmSpm : DefaultCfg.LlcOutRegionStart;
-  longint unsigned i, w_addr, base_addr;
+  input int unsigned EffChunkLength;  // actual chunk size
+  localparam int unsigned BytesPerMemWord = core_v_mcu_axi_pkg::AxiDataWidth / 8;
+  logic [31:0] MemBaseAddr = '0;
+  int unsigned i, w_addr, base_addr;
 
   // Write to DRAM or SPM
   base_addr = addr - MemBaseAddr;
@@ -93,7 +86,7 @@ endtask
 
 task automatic tb_writetoSram;
   input bit MemType;  // 0: DRAM, 1: SPM
-  input longint unsigned addr;
+  input int unsigned addr;
   input [7:0] val7;
   input [7:0] val6;
   input [7:0] val5;
@@ -103,38 +96,17 @@ task automatic tb_writetoSram;
   input [7:0] val1;
   input [7:0] val0;
   // should not count the word offset as it is removed by the loadChunk function when calculating w_addr /8
-  localparam int unsigned SpmBankAddrRange = $clog2(
-      cheshire_pkg::DefaultCfg.LlcNumLines
-  ) + $clog2(
-      cheshire_pkg::DefaultCfg.LlcNumBlocks
-  );
+  // localparam int unsigned SpmBankAddrRange = $clog2(
+  //     cheshire_pkg::DefaultCfg.LlcNumLines
+  // ) + $clog2(
+  //     cheshire_pkg::DefaultCfg.LlcNumBlocks
+  // );
 
   int unsigned bank_id;
-  logic [SpmBankAddrRange-1:0] bank_addr;
-  logic [$clog2(cheshire_pkg::DefaultCfg.LlcSetAssoc)-1:0] set_id;
-  if (MemType != 0) begin
-    // MSBs Bits of the address
-    set_id = addr[SpmBankAddrRange+:$clog2(cheshire_pkg::DefaultCfg.LlcSetAssoc)];
-    bank_addr = addr[SpmBankAddrRange-1:0];
-
-    // TODO: make it template to support different ways
-    case (set_id)
-
-      //0: writeSPM_0(bank_addr, val0, val1, val2, val3, val4, val5, val6, val7);
-      //1: writeSPM_1(bank_addr, val0, val1, val2, val3, val4, val5, val6, val7);
-      //2: writeSPM_2(bank_addr, val0, val1, val2, val3, val4, val5, val6, val7);
-      //3: writeSPM_3(bank_addr, val0, val1, val2, val3, val4, val5, val6, val7);
-      //4: writeSPM_4(bank_addr, val0, val1, val2, val3, val4, val5, val6, val7);
-      //5: writeSPM_5(bank_addr, val0, val1, val2, val3, val4, val5, val6, val7);
-      //6: writeSPM_6(bank_addr, val0, val1, val2, val3, val4, val5, val6, val7);
-      //7: writeSPM_7(bank_addr, val0, val1, val2, val3, val4, val5, val6, val7);
-      default: begin
-        $error("tb_writetoSram: SPM set_id %0d out of range", set_id);
-      end
-    endcase
-  end else begin
-    vip.i_dram_sim.i_mem_sim.sram[addr] = {val7, val6, val5, val4, val3, val2, val1, val0};
-  end
+  // logic [SpmBankAddrRange-1:0] bank_addr;
+  // logic [$clog2(cheshire_pkg::DefaultCfg.LlcSetAssoc)-1:0] set_id;
+    // Write to SRAM
+    u_x_alp.u_core_v_mcu.u_memory_subsystem.u_ram0.u_tc_sram.sram[addr] = {val7, val6, val5, val4, val3, val2, val1, val0};
 endtask
 
 //-------------------------
@@ -143,22 +115,22 @@ endtask
 `ifndef FAST_SIM
 task tb_write_entry_address;
   input longint entry_addr;
-  // Write start address at SCRATCH[1:0]
-  `TOP.tb_force_start_addr_low[0]  = 32'(entry_addr);
-  `TOP.tb_force_start_addr_high[0] = '0;
-  `TOP.tb_force_start_addr_de[0]   = 1'b1;
+  // // Write start address at SCRATCH[1:0]
+  // `TOP.tb_force_start_addr_low[0]  = 32'(entry_addr);
+  // `TOP.tb_force_start_addr_high[0] = '0;
+  // `TOP.tb_force_start_addr_de[0]   = 1'b1;
 
 endtask
 
 task tb_preload_force;
   // Write scratch_2 reg bit 0 to inform preload is complete and start execution
-  `TOP.tb_force_sim_start_de[0] = 1'b1;
+  // `TOP.tb_force_sim_start_de[0] = 1'b1;
 endtask
 
 
 task tb_release_request;
-  `TOP.tb_force_start_addr_de[0] = 1'b0;
-  `TOP.tb_force_sim_start_de[0]  = 1'b0;
+  // `TOP.tb_force_start_addr_de[0] = 1'b0;
+  // `TOP.tb_force_sim_start_de[0]  = 1'b0;
 endtask
 
 `endif
@@ -174,9 +146,9 @@ task tb_get_entry_address;
   input bit MemType;  // 0: DRAM, 1: SPM
   output longint unsigned start_addr;
   if (MemType == 0)  // DRAM
-    start_addr = DefaultCfg.LlcOutRegionStart;
+    start_addr = '0;  // DefaultCfg.LlcOutRegionStart;
   else  // SPM
-    start_addr = AmSpm;
+    start_addr = '0;  // AmSpm;
 endtask
 
 // Get chunk length for section loading
