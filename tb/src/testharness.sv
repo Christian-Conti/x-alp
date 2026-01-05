@@ -13,41 +13,39 @@
 // Date: 03/12/2025
 // Inspired by x-heep testharness.sv
 
-
-
 module testharness #(
-    /// The selected simulation configuration from the `tb_x_alp_pkg`.
-    // parameter int unsigned SelectedCfg  = 32'd0,
-    // parameter bit          UseDramSys   = 1'b0,
-    // parameter int unsigned DRAM_LATENCY = 32'd1,
-    parameter bit          USE_JTAG_DPI = 1'b0
+  /// The selected simulation configuration from the `tb_x_alp_pkg`.
+  // parameter int unsigned SelectedCfg  = 32'd0,
+  // parameter bit          UseDramSys   = 1'b0,
+  // parameter int unsigned DRAM_LATENCY = 32'd1,
+  parameter bit USE_JTAG_DPI = 1'b0
 ) (
-    input logic       clk_i,
-    input logic       rst_ni,
-    // input logic       test_mode_i,
-    // Boot mode
-    //----------
-    input logic [1:0] boot_mode_i,
+  input logic       clk_i,
+  input logic       rst_ni,
+  // input logic       test_mode_i,
+  // Boot mode
+  //----------
+  input logic [1:0] boot_mode_i,
 
-    // RTC Clic clock
-    // --------------
-    input logic rtc_i,
+  // RTC Clic clock
+  // --------------
+  input logic rtc_i,
 
-    // ELF to be loaded
-    // ----------------
-    //input string      preload_elf,
+  // ELF to be loaded
+  // ----------------
+  //input string      preload_elf,
 
-    // JTAG
-    // ----
-    input  logic        jtag_tck_i,
-    input  logic        jtag_tms_i,
-    input  logic        jtag_trst_ni,
-    input  logic        jtag_tdi_i,
-    output logic        jtag_tdo_o,
-    // Exit sim
-    // --------
-    output logic [31:0] exit_value_o,
-    output logic        exit_valid_o
+  // JTAG
+  // ----
+  input  logic        jtag_tck_i,
+  input  logic        jtag_tms_i,
+  input  logic        jtag_trst_ni,
+  input  logic        jtag_tdi_i,
+  output logic        jtag_tdo_o,
+  // Exit sim
+  // --------
+  output logic [31:0] exit_value_o,
+  output logic        exit_valid_o
 );
 
   // Includes
@@ -58,27 +56,27 @@ module testharness #(
   // ----------------
 
   // JTAG
-  logic                                               sim_jtag_enable;
-  logic                                               sim_jtag_tck;
-  logic                                               sim_jtag_trst_n;
-  logic                                               sim_jtag_tms;
-  logic                                               sim_jtag_tdi;
-  logic                                               sim_jtag_tdo;
+  logic       sim_jtag_enable;
+  logic       sim_jtag_tck;
+  logic       sim_jtag_trst_n;
+  logic       sim_jtag_tms;
+  logic       sim_jtag_tdi;
+  logic       sim_jtag_tdo;
 
-  logic                                               jtag_tck;
-  logic                                               jtag_trst_n;
-  logic                                               jtag_tms;
-  logic                                               jtag_tdi;
-  logic                                               jtag_tdo;
+  logic       jtag_tck;
+  logic       jtag_trst_n;
+  logic       jtag_tms;
+  logic       jtag_tdi;
+  logic       jtag_tdo;
 
   // UART
-  logic                                               uart_tx;
-  logic                                               uart_rx;
+  logic       uart_tx;
+  logic       uart_rx;
   // I2C
-  logic                                               i2c_sda;
-  logic                                               i2c_scl;
+  logic       i2c_sda;
+  logic       i2c_scl;
   // SPI
-  logic         [             3:0]                    spih_sd;
+  logic [3:0] spih_sd;
   // Serial Link
   // logic         [SlinkNumChan-1:0]                    slink_rcv_clk;
   // logic         [SlinkNumChan-1:0][SlinkNumLanes-1:0] slink;
@@ -91,19 +89,19 @@ module testharness #(
   // DUT
   //----
   x_alp u_x_alp (
-      .clk_i            (clk_i),
-      .rst_ni           (rst_ni)
+    .clk_i (clk_i),
+    .rst_ni(rst_ni)
   );
 
   // UNSUPPORTED FEATURES in VERILATOR
 `ifdef VERILATOR
   // I2C
   // ---
-  assign i2c_sda       = 1'b0;
-  assign i2c_scl       = 1'b0;
+  assign i2c_sda = 1'b0;
+  assign i2c_scl = 1'b0;
   // SPI
   // ---
-  assign spih_sd       = 4'b0;
+  assign spih_sd = 4'b0;
   // Serial Link
   // -----------
   // assign slink_rcv_clk = '0;
@@ -123,56 +121,56 @@ module testharness #(
 `endif
 
   // vip_x_alp_soc #(
-      // .DutCfg           (DutCfg),
-      // .UseDramSys       (UseDramSys),
-      // .UseJtagDPI       (USE_JTAG_DPI),
-      // .DramLatency      (DRAM_LATENCY),
-      // .axi_ext_llc_req_t(axi_llc_req_t),
-      // .axi_ext_llc_rsp_t(axi_llc_rsp_t),
-      // .axi_ext_mst_req_t(axi_mst_req_t),
-      // .axi_ext_mst_rsp_t(axi_mst_rsp_t)
+  // .DutCfg           (DutCfg),
+  // .UseDramSys       (UseDramSys),
+  // .UseJtagDPI       (USE_JTAG_DPI),
+  // .DramLatency      (DRAM_LATENCY),
+  // .axi_ext_llc_req_t(axi_llc_req_t),
+  // .axi_ext_llc_rsp_t(axi_llc_rsp_t),
+  // .axi_ext_mst_req_t(axi_mst_req_t),
+  // .axi_ext_mst_rsp_t(axi_mst_rsp_t)
   // ) vip (
-      // .clk(clk_i),
-      // .rst_n(rst_ni)
-      // TODO:Connect other signals
-//       .axi_llc_mst_req(axi_llc_mst_req),
-//       .axi_llc_mst_rsp(axi_llc_mst_rsp),
-//       // JTAG
-//       .jtag_tck(sim_jtag_tck),
-//       .jtag_trst_n(sim_jtag_trst_n),
-//       .jtag_tms(sim_jtag_tms),
-//       .jtag_tdi(sim_jtag_tdi),
-//       .jtag_tdo(sim_jtag_tdo),
-//       .uart_tx(uart_tx),
-// `ifndef VERILATOR
-//       .uart_rx(uart_rx),
-//       .test_mode(),
-//       .boot_mode(boot_mode_i),
-//       .axi_slink_mst_req(axi_slink_mst_req),
-//       .axi_slink_mst_rsp(),
-//       .i2c_sda(),  // unsupported in verilator
-//       .i2c_scl(),  // unsupported in verilator
-//       .spih_sck(),  // unsupported in verilator
-//       .spih_csb(),  // unsupported in verilator
-//       .spih_sd(),  // unsupported in verilator
-//       .slink_rcv_clk_i(slink_rcv_clk),
-//       .slink_rcv_clk_o('0),
-//       .slink_i(slink),
-//       .slink_o('0)
-// `else
-//       .uart_rx(uart_rx)
-// `endif
+  // .clk(clk_i),
+  // .rst_n(rst_ni)
+  // TODO:Connect other signals
+  //       .axi_llc_mst_req(axi_llc_mst_req),
+  //       .axi_llc_mst_rsp(axi_llc_mst_rsp),
+  //       // JTAG
+  //       .jtag_tck(sim_jtag_tck),
+  //       .jtag_trst_n(sim_jtag_trst_n),
+  //       .jtag_tms(sim_jtag_tms),
+  //       .jtag_tdi(sim_jtag_tdi),
+  //       .jtag_tdo(sim_jtag_tdo),
+  //       .uart_tx(uart_tx),
+  // `ifndef VERILATOR
+  //       .uart_rx(uart_rx),
+  //       .test_mode(),
+  //       .boot_mode(boot_mode_i),
+  //       .axi_slink_mst_req(axi_slink_mst_req),
+  //       .axi_slink_mst_rsp(),
+  //       .i2c_sda(),  // unsupported in verilator
+  //       .i2c_scl(),  // unsupported in verilator
+  //       .spih_sck(),  // unsupported in verilator
+  //       .spih_csb(),  // unsupported in verilator
+  //       .spih_sd(),  // unsupported in verilator
+  //       .slink_rcv_clk_i(slink_rcv_clk),
+  //       .slink_rcv_clk_o('0),
+  //       .slink_i(slink),
+  //       .slink_o('0)
+  // `else
+  //       .uart_rx(uart_rx)
+  // `endif
   // );
 
   // JTAG BOOT MODE
   // --------------
   assign sim_jtag_enable = (boot_mode_i == 0 && USE_JTAG_DPI) ? 1'b1 : 1'b0;
-  assign jtag_tck = (sim_jtag_enable) ? sim_jtag_tck : jtag_tck_i;
-  assign jtag_trst_n = (sim_jtag_enable) ? sim_jtag_trst_n : jtag_trst_ni;
-  assign jtag_tms = (sim_jtag_enable) ? sim_jtag_tms : jtag_tms_i;
-  assign jtag_tdi = (sim_jtag_enable) ? sim_jtag_tdi : jtag_tdi_i;
-  assign sim_jtag_tdo = (sim_jtag_enable) ? jtag_tdo : 1'b0;
-  assign jtag_tdo_o = (sim_jtag_enable) ? 1'b0 : jtag_tdo;
+  assign jtag_tck        = (sim_jtag_enable) ? sim_jtag_tck : jtag_tck_i;
+  assign jtag_trst_n     = (sim_jtag_enable) ? sim_jtag_trst_n : jtag_trst_ni;
+  assign jtag_tms        = (sim_jtag_enable) ? sim_jtag_tms : jtag_tms_i;
+  assign jtag_tdi        = (sim_jtag_enable) ? sim_jtag_tdi : jtag_tdi_i;
+  assign sim_jtag_tdo    = (sim_jtag_enable) ? jtag_tdo : 1'b0;
+  assign jtag_tdo_o      = (sim_jtag_enable) ? 1'b0 : jtag_tdo;
 
 
   //------------
