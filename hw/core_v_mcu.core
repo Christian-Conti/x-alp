@@ -21,7 +21,8 @@ filesets:
     depend:
       - pulp-platform.org::axi:0.39.8
       - openhwgroup.org::cva6:1.4.0
-  
+      - lowrisc:ip:uart:0.1
+
   simulation_rtl:
     file_type: systemVerilogSource
     files:

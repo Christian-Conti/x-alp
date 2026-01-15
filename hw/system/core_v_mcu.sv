@@ -1,6 +1,12 @@
 module core_v_mcu (
-  input logic clk_i,
-  input logic rst_ni
+
+    input logic clk_i,
+    input logic rst_ni,
+
+    // UART IO
+    input  logic uart_rx_i,
+    output logic uart_tx_o
+
 );
 
   /* verilator lint_off PINCONNECTEMPTY */
@@ -9,32 +15,77 @@ module core_v_mcu (
   import core_v_mcu_pkg::*;
 
   // Internal signals
-  core_v_mcu_axi_pkg::axi_req_t  bus_req_sig;
-  core_v_mcu_axi_pkg::axi_resp_t bus_resp_sig;
+  core_v_mcu_axi_pkg::axi_req_t [core_v_mcu_pkg::NumMasters-1:0] axi_master_req_sig;
+  core_v_mcu_axi_pkg::axi_resp_t [core_v_mcu_pkg::NumMasters-1:0] axi_master_resp_sig;
+  core_v_mcu_axi_pkg::axi_req_t [core_v_mcu_pkg::NumSlaves-1:0] axi_slave_req_sig;
+  core_v_mcu_axi_pkg::axi_resp_t [core_v_mcu_pkg::NumSlaves-1:0] axi_slave_resp_sig;
 
-  // Instantiate CPU Subsystem
+  core_v_mcu_reg_pkg::reg_req_t [core_v_mcu_pkg::NumRegSlaves-1:0] reg_req_sig;
+  core_v_mcu_reg_pkg::reg_resp_t [core_v_mcu_pkg::NumRegSlaves-1:0] reg_resp_sig;
+
+  // CPU Subsystem
   cpu_subsystem u_cpu_subsystem (
-    .clk_i      (clk_i),
-    .rst_ni     (rst_ni),
-    .boot_addr_i(64'h0000_0000_0000_0180), 
+      .clk_i      (clk_i),
+      .rst_ni     (rst_ni),
+      .boot_addr_i(64'h0000_0000_0000_0180),
 
-    // .cvxif_resp_o (),
-    // .cvxif_req_i('0),
+      // .cvxif_resp_o (),
+      // .cvxif_req_i('0),
 
-    .bus_req_o (bus_req_sig),
-    .bus_resp_i(bus_resp_sig),
+      .bus_req_o (axi_master_req_sig[CPU_BUS_IDX]),
+      .bus_resp_i(axi_master_resp_sig[CPU_BUS_IDX]),
 
-    .irq_i      ('0),
-    .time_irq_i ('0),
-    .debug_req_i('0)
+      .irq_i      ('0),
+      .time_irq_i ('0),
+      .debug_req_i('0)
   );
 
-  // Instantiate Memory Subsystem
+  // Memory Subsystem
   memory_subsystem u_memory_subsystem (
-    .clk_i     (clk_i),
-    .rst_ni    (rst_ni),
-    .bus_req_i (bus_req_sig),
-    .bus_resp_o(bus_resp_sig)
+      .clk_i     (clk_i),
+      .rst_ni    (rst_ni),
+      .bus_req_i (axi_slave_req_sig[MEM_BUS_IDX]),
+      .bus_resp_o(axi_slave_resp_sig[MEM_BUS_IDX])
   );
+
+
+  // Bus Subsystem
+  bus_subsystem u_bus_subsystem (
+      .clk_i (clk_i),
+      .rst_ni(rst_ni),
+
+      // AXI master
+      .axi_master_req_i (axi_master_req_sig),
+      .axi_master_resp_o(axi_master_resp_sig),
+
+      // AXI slave
+      .axi_slave_req_o (axi_slave_req_sig),
+      .axi_slave_resp_i(axi_slave_resp_sig),
+
+      // Peripheral register interface
+      .reg_req_o (reg_req_sig),
+      .reg_resp_i(reg_resp_sig)
+  );
+
+  // Peripherals
+
+  // UART Subsystem
+  uart_subsystem u_uart_subsystem (
+      .clk_i                    (clk_i),
+      .rst_ni                   (rst_ni),
+      .uart_reg_req             (reg_req_sig[UART_REG_IDX]),
+      .uart_reg_rsp             (reg_resp_sig[UART_REG_IDX]),
+      .uart_rx_i                (uart_rx_i),
+      .uart_tx_o                (uart_tx_o),
+      .uart_intr_tx_watermark_o (),
+      .uart_intr_rx_watermark_o (),
+      .uart_intr_tx_empty_o     (),
+      .uart_intr_rx_overflow_o  (),
+      .uart_intr_rx_frame_err_o (),
+      .uart_intr_rx_break_err_o (),
+      .uart_intr_rx_timeout_o   (),
+      .uart_intr_rx_parity_err_o()
+  );
+
 
 endmodule
