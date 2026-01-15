@@ -51,8 +51,8 @@ package cva6_config_pkg;
   localparam int CVA6ConfigDcacheSetAssoc = 8;
   localparam int CVA6ConfigDcacheLineWidth = 128;
 
-  localparam int CVA6ConfigDcacheFlushOnFence = 1'b0;
-  localparam int CVA6ConfigDcacheInvalidateOnFlush = 1'b0;
+  localparam logic CVA6ConfigDcacheFlushOnFence = 1'b0;
+  localparam logic CVA6ConfigDcacheInvalidateOnFlush = 1'b0;
 
   localparam int CVA6ConfigDcacheIdWidth = 3;
   localparam int CVA6ConfigMemTidWidth = CVA6ConfigAxiIdWidth;
@@ -75,13 +75,13 @@ package cva6_config_pkg;
 
   localparam int CVA6ConfigPerfCounterEn = 1;
 
-  localparam config_pkg::cache_type_t CVA6ConfigDcacheType = config_pkg::HPDCACHE_WT;
+  localparam config_pkg::cache_type_t CVA6ConfigDcacheType = config_pkg::WT;
 
   localparam int CVA6ConfigMmuPresent = 1;
 
   localparam int CVA6ConfigRvfiTrace = 1;
 
-  localparam config_pkg::cva6_user_cfg_t CVA6Cfg = '{
+  localparam config_pkg::cva6_user_cfg_t cva6_cfg = '{
       XLEN: unsigned'(CVA6ConfigXlen),
       VLEN: unsigned'(64),
       FpgaEn: bit'(0),  // for Xilinx and Altera
