@@ -2,69 +2,87 @@
 # Licensed under the Apache License, Version 2.0, see LICENSE for details.
 # SPDX-License-Identifier: Apache-2.0
 
-# Project configuration
+# ============================================================================
+# Project Configuration
+# ============================================================================
 XALP := x-heep:x-alp:x-alp:0.0.1
-
-# Get the absolute path
 mkfile_path := $(shell dirname "$(realpath $(firstword $(MAKEFILE_LIST)))")
-$(info $$You are executing from: $(mkfile_path))
 
-# Include the self-documenting tool
-export FILE_FOR_HELP=$(mkfile_path)/Makefile
+$(info Executing from: $(mkfile_path))
 
-help:
-	${mkfile_path}/util/MakefileHelp
-
-# Setup to autogenerate python virtual environment
-VENVDIR?=$(WORKDIR)/.venv
+# ============================================================================
+# Python Environment Setup
+# ============================================================================
+VENVDIR ?= $(WORKDIR)/.venv
 REQUIREMENTS_TXT ?= util/python-requirements.txt docs/python-requirements.txt
+export FILE_FOR_HELP := $(mkfile_path)/Makefile
+
 include Makefile.venv
 
-# FUSESOC and Python values (default)
-ifndef CONDA_DEFAULT_ENV
-$(info USING VENV)
-FUSESOC 	= $(PWD)/$(VENV)/fusesoc
-PYTHON  	= $(PWD)/$(VENV)/python
+# Select Python tooling (conda or venv)
+ifdef CONDA_DEFAULT_ENV
+  $(info Using Miniconda environment: $(CONDA_DEFAULT_ENV))
+  FUSESOC := $(shell which fusesoc)
+  PYTHON := $(shell which python)
 else
-$(info USING MINICONDA $(CONDA_DEFAULT_ENV))
-FUSESOC 	:= $(shell which fusesoc)
-PYTHON  	:= $(shell which python)
+  $(info Using virtual environment)
+  FUSESOC := $(PWD)/$(VENV)/fusesoc
+  PYTHON := $(PWD)/$(VENV)/python
 endif
 
-# FuseSoC args
-FUSESOC_ARGS ?= 
+# ============================================================================
+# Build Configuration
+# ============================================================================
+# FuseSoC arguments
+FUSESOC_ARGS ?=
 
 # Verilator simulation parameters
 LOG_LEVEL ?= LOG_DEBUG
-BINARY ?= ""
+BINARY ?= $(mkfile_path)/sw/build/main.spm.elf
 BOOTMODE ?= force
 MAX_CYCLES ?= 1000000
+BUILD_STAMP := build/.verilator-build-stamp
 
 # Application build parameters
 PROJECT ?= hello_world
 TARGET ?= sim
 LINKER ?= on_chip
-LINK_FOLDER ?= 
+LINK_FOLDER := $(mkfile_path)/sw/linker
 COMPILER ?= gcc
 COMPILER_PREFIX ?= riscv64-unknown-
-COMPILER_FLAGS ?= 
+COMPILER_FLAGS ?=
 ARCH ?= rv64gc_zifencei
-SOURCE ?= 
+SOURCE ?=
 
 # Export variables to sub-makefiles
 export
 
-# Declare phony targets
-.PHONY: help conda clean clean-app app app-list \
-        verilator-run format lint \
+# ============================================================================
+# Phony Targets
+# ============================================================================
+.PHONY: help conda clean clean-app clean-all \
+        app app-list \
+        verilator-build verilator-run verilator-waves \
+        format lint \
         .check-fusesoc .check-gtkwave .check-verible .check-verilator
 
-# Build stamp file to track successful compilations
-BUILD_STAMP := build/.verilator-build-stamp
+# ============================================================================
+# Default Target
+# ============================================================================
+help:
+	@$(mkfile_path)/util/MakefileHelp
+
+# ============================================================================
+# Environment Setup
+# ============================================================================
 
 ## @section Conda
 conda:
-	conda env create -f util/conda_environment.yml
+	@conda env create -f util/conda_environment.yml
+
+# ============================================================================
+# Application Firmware Build
+# ============================================================================
 
 ## @section APP FW Build
 
@@ -76,7 +94,16 @@ conda:
 ## @param COMPILER_PREFIX=riscv32-corev-(default),riscv32-unknown-
 ## @param ARCH=rv32imc(default),<any_RISC-V_ISA_string_supported_by_the_CPU>
 app: clean-app
-	@$(MAKE) -C sw PROJECT=$(PROJECT) TARGET=$(TARGET) LINKER=$(LINKER) LINK_FOLDER=$(LINK_FOLDER) COMPILER=$(COMPILER) COMPILER_PREFIX=$(COMPILER_PREFIX) COMPILER_FLAGS=$(COMPILER_FLAGS) ARCH=$(ARCH) SOURCE=$(SOURCE) \
+	@$(MAKE) -C sw \
+		PROJECT=$(PROJECT) \
+		TARGET=$(TARGET) \
+		LINKER=$(LINKER) \
+		LINK_FOLDER=$(LINK_FOLDER) \
+		COMPILER=$(COMPILER) \
+		COMPILER_PREFIX=$(COMPILER_PREFIX) \
+		COMPILER_FLAGS=$(COMPILER_FLAGS) \
+		ARCH=$(ARCH) \
+		SOURCE=$(SOURCE) \
 	|| { \
 	echo "\033[0;31mHmmm... seems like the compilation failed...\033[0m"; \
 	echo "\033[0;31mIf you do not understand why, it is likely that you either:\033[0m"; \
@@ -90,21 +117,23 @@ app: clean-app
 
 ## Just list the different application names available
 app-list:
-	@echo "Note: Applications outside the X-HEEP sw/applications directory will not be listed."
-	tree sw/applications/
+	@echo "Note: Applications outside the X-ALP sw/applications directory will not be listed."
+	@tree sw/applications/
+
+# ============================================================================
+# Simulation
+# ============================================================================
 
 ## @section Simulation
 
 ## Verilator simulation build
-verilator-build: $(BUILD_STAMP)
-
-$(BUILD_STAMP): hw/**/*.sv **/*.core tb/**/*.sv tb/**/*.cpp | .check-verilator
-	$(FUSESOC) --cores-root . run --no-export --target sim --tool verilator --build $(XALP) $(FUSESOC_ARGS) 2>&1 | tee buildsim.log
+verilator-build:
+	@$(FUSESOC) --cores-root . run --no-export --target sim --tool verilator --build $(XALP) $(FUSESOC_ARGS) 2>&1 | tee buildsim.log
 	@mkdir -p $(dir $@)
-	@touch $@
 
-verilator-run: $(BUILD_STAMP)
-	$(FUSESOC) run --no-export --target sim --tool verilator --run $(XALP) \
+## Verilator simulation run
+verilator-run:
+	@$(FUSESOC) run --no-export --target sim --tool verilator --run $(XALP) \
 		--LOG_LEVEL=$(LOG_LEVEL) \
 		--BINARY=$(BINARY) \
 		--BOOTMODE=$(BOOTMODE) \
@@ -112,16 +141,27 @@ verilator-run: $(BUILD_STAMP)
 		--trace=true \
 		$(FUSESOC_ARGS)
 
-## @section formatting and linting
+## Verilator wave viewer
+verilator-waves: .check-gtkwave
+	@gtkwave build/x-heep_x-alp_x-alp_0.0.1/sim-verilator/waveform.fst wave.gtkw
+
+# ============================================================================
+# Code Quality
+# ============================================================================
+
+## @section formatting and linting
 
 ## Format
 format: .check-fusesoc
-	$(FUSESOC) $(FUSESOC_FLAGS) run --no-export --target format $(XALP)
+	@$(FUSESOC) $(FUSESOC_FLAGS) run --no-export --target format $(XALP)
 
 ## Lint
 lint: .check-fusesoc
-	$(FUSESOC) $(FUSESOC_FLAGS) run --no-export --target lint $(XALP)
+	@$(FUSESOC) $(FUSESOC_FLAGS) run --no-export --target lint $(XALP)
 
+# ============================================================================
+# Cleaning
+# ============================================================================
 
 ## @section Cleaning commands
 
@@ -136,23 +176,30 @@ clean: clean-app
 ## Leave the repository in a clean state, removing all generated files
 clean-all: clean
 
+# ============================================================================
+# Utilities & Checks
+# ============================================================================
+
 ## @section Utilities
 
-# Check FuseSoC
+# Check if FuseSoC is available
 .check-fusesoc:
 	@command -v fusesoc >/dev/null 2>&1 || { \
-		printf "### ERROR: 'fusesoc' is not in PATH. Is the correct conda environment active?\\n" >&2; \
+		printf "\033[0;31m✗ ERROR: 'fusesoc' not found in PATH\033[0m\n" >&2; \
+		printf "Is the correct conda environment active?\n" >&2; \
 		exit 1; \
 	}
 
-# Check if a program is available in PATH
+# Generic program checker template
 define CHECK_PROGRAM
 .check-$(1):
 	@command -v $(2) >/dev/null 2>&1 || { \
-		printf "### ERROR: '%s' is not in PATH.\\n" "$(2)" >&2; \
+		printf "\033[0;31m✗ ERROR: '$(2)' not found in PATH\033[0m\n" >&2; \
 		exit 1; \
 	}
 endef
+
+# Instantiate checks for required tools
 $(eval $(call CHECK_PROGRAM,gtkwave,gtkwave))
 $(eval $(call CHECK_PROGRAM,verible,verible-verilog-format))
 $(eval $(call CHECK_PROGRAM,verilator,verilator))
