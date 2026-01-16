@@ -1,5 +1,5 @@
 CAPI=2:
-name : pulpp-latform.org::tech_cells:0.2.13
+name : pulp-platform.org::tech_cells:0.2.13
 
 filesets:
   rtl:

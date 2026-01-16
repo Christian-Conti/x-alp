@@ -110,7 +110,7 @@ filesets:
     - openhwgroup_cva6/common/local/util/tc_sram_wrapper.sv
     file_type : systemVerilogSource
     depend:
-      -  pulpplatform.org::tech_cells:0.2.13
+      -  pulp-platform.org::tech_cells:0.2.13
   
   rtl_fpga:
     files:
