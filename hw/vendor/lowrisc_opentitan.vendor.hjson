@@ -97,7 +97,6 @@
     "hw/ip/racl_ctrl",
     "hw/ip/rom_ctrl",
     "hw/ip/rv_core_ibex",
-    "hw/ip/rv_dm",
     "hw/ip/rv_timer",
     "hw/ip/soc_dbg_ctrl",
     "hw/ip/spi_device",
