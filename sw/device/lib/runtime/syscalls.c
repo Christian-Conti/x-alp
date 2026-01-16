@@ -34,7 +34,8 @@ extern "C"
 #include "soc_ctrl.h"
 #include "core_v_mcu.h"
 #include "error.h"
-#include "x-heep.h"
+#include "x-alp.h"
+#include "mmio.h"
 
 #undef errno
     extern int errno;

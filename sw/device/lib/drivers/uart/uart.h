@@ -1,8 +1,10 @@
 #ifndef _UART_H_
 #define _UART_H_
 
+#include "mmio.h"
+
 typedef struct uart {
-    uint32_t base_addr;
+    mmio_region_t base_addr;
     uint32_t clk_freq_hz;
     uint32_t baudrate;
     uint64_t nco;

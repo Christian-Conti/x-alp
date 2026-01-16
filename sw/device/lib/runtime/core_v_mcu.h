@@ -1,0 +1,36 @@
+// Copyright 2022 OpenHW Group
+// Solderpad Hardware License, Version 2.1, see LICENSE.md for details.
+// SPDX-License-Identifier: Apache-2.0 WITH SHL-2.1
+
+
+
+#ifndef _COREV_MCU_H_
+#define _COREV_MCU_H_
+
+#ifdef __cplusplus
+extern "C" {
+#endif  // __cplusplus
+
+#define MEMORY_BANKS 1
+
+#define RAM0_START_ADDRESS 0x0000000000000000
+#define RAM0_END_ADDRESS   0x0000000000002000
+
+#define SOC_CTRL_START_ADDRESS 0x1000000000000000
+#define SOC_CTRL_SIZE 0x10000
+#define SOC_CTRL_END_ADDRESS (SOC_CTRL_START_ADDRESS + SOC_CTRL_SIZE)
+
+#define FAST_INTR_CTRL_START_ADDRESS 0x1000100000000000
+#define FAST_INTR_CTRL_SIZE 0x10000
+#define FAST_INTR_CTRL_END_ADDRESS (FAST_INTR_CTRL_START_ADDRESS + FAST_INTR_CTRL_SIZE)
+
+#define UART_START_ADDRESS 0x1000200000000000
+#define UART_SIZE 0x10000
+#define UART_END_ADDRESS (UART_START_ADDRESS + UART_SIZE)
+
+
+#ifdef __cplusplus
+}  // extern "C"
+#endif  // __cplusplus
+
+#endif  // _COREV_MCU_H_
