@@ -85,7 +85,6 @@
     "hw/ip/keymgr",
     "hw/ip/keymgr_dpe",
     "hw/ip/kmac",
-    "hw/ip/lc_ctrl",
     "hw/ip/mbx",
     "hw/ip/otbn",
     "hw/ip/otp_ctrl",
