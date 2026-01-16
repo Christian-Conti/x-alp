@@ -5,7 +5,14 @@ module core_v_mcu (
 
     // UART IO
     input  logic uart_rx_i,
-    output logic uart_tx_o
+    output logic uart_tx_o,
+
+    // Boot select
+    input  logic boot_select_i,
+
+    // Exit interface
+    output logic        exit_valid_o,
+    output logic [31:0] exit_value_o
 
 );
 
@@ -71,6 +78,21 @@ module core_v_mcu (
 
   // Peripherals
 
+  // SoC Controller
+
+  soc_ctrl #(
+      .reg_req_t(core_v_mcu_reg_pkg::reg_req_t),
+      .reg_rsp_t(core_v_mcu_reg_pkg::reg_resp_t)
+  ) soc_ctrl_i (
+      .clk_i(clk_i),
+      .rst_ni(rst_ni),
+      .reg_req_i(reg_req_sig[SOC_CTRL_IDX]),
+      .reg_rsp_o(reg_resp_sig[SOC_CTRL_IDX]),
+      .boot_select_i(boot_select_i),
+      .exit_valid_o(exit_valid_o),
+      .exit_value_o(exit_value_o)
+  );
+
   // Fast Interrupt Controller
 
   assign fast_intr = '0;  // No external fast interrupts for now
@@ -95,6 +117,7 @@ module core_v_mcu (
   );
 
   // UART Subsystem
+
   uart_subsystem u_uart_subsystem (
       .clk_i                    (clk_i),
       .rst_ni                   (rst_ni),
