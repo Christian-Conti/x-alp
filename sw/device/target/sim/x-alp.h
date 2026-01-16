@@ -5,7 +5,7 @@
 #ifndef X_HEEP
 #define X_HEEP
 
-#pragma message ( "the x-heep.h for SIMULATION is used" )
+#pragma message ( "the x-alp.h for SIMULATION is used" )
 
 #ifdef __cplusplus
 extern "C" {
