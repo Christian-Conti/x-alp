@@ -9,10 +9,10 @@ name: pulp-platform:riscv-dbg:0.1
 filesets:
   rtl:
     depend:
-    - pulp-platform.org::tech_cells_generic
+    - pulp-platform.org::tech_cells:0.2.13
     - pulp-platform.org::common_cells
-    - pulp-platform.org::riscv_dbg_pkg
     files:
+    - pulpplatform_riscv_dbg/src/dm_pkg.sv
     - pulpplatform_riscv_dbg/debug_rom/debug_rom.sv
     - pulpplatform_riscv_dbg/debug_rom/debug_rom_one_scratch.sv
     - pulpplatform_riscv_dbg/src/dm_csrs.sv

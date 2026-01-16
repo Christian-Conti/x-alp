@@ -107,4 +107,6 @@
     "hw/ip/README.md",
   ],
 
+  patch_dir: "patches/lowrisc_opentitan"
+
 }
