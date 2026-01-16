@@ -76,7 +76,6 @@ module bus_subsystem (
   // Reg Peripheral Bus
   //-------------------
 
-
   // Atomics
   //--------
   axi_riscv_atomics_structs #(
@@ -146,9 +145,9 @@ module bus_subsystem (
   // Non-matching addresses are directed to an error slave
   addr_decode #(
       .NoIndices(NumRegSlaves),
-      .NoRules  (word_bt'(RegOut.num_rules)),
-      .addr_t   (addr_t),
-      .rule_t   (addr_rule_t)
+      .NoRules  (word_bt'(RegOut.num_rules)), // TODO: set
+      .addr_t   (addr_t), // TODO: set
+      .rule_t   (addr_rule_t) // TODO: set
   ) i_reg_demux_decode (
       .addr_i          (reg_in_req.addr),
       .addr_map_i      (RegMap),  // TODO: modify

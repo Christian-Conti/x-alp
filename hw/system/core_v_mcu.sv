@@ -15,13 +15,16 @@ module core_v_mcu (
   import core_v_mcu_pkg::*;
 
   // Internal signals
-  core_v_mcu_axi_pkg::axi_req_t [core_v_mcu_pkg::NumMasters-1:0] axi_master_req_sig;
-  core_v_mcu_axi_pkg::axi_resp_t [core_v_mcu_pkg::NumMasters-1:0] axi_master_resp_sig;
-  core_v_mcu_axi_pkg::axi_req_t [core_v_mcu_pkg::NumSlaves-1:0] axi_slave_req_sig;
-  core_v_mcu_axi_pkg::axi_resp_t [core_v_mcu_pkg::NumSlaves-1:0] axi_slave_resp_sig;
+  core_v_mcu_axi_pkg::axi_req_t [NumMasters-1:0] axi_master_req_sig;
+  core_v_mcu_axi_pkg::axi_resp_t [NumMasters-1:0] axi_master_resp_sig;
+  core_v_mcu_axi_pkg::axi_req_t [NumSlaves-1:0] axi_slave_req_sig;
+  core_v_mcu_axi_pkg::axi_resp_t [NumSlaves-1:0] axi_slave_resp_sig;
 
-  core_v_mcu_reg_pkg::reg_req_t [core_v_mcu_pkg::NumRegSlaves-1:0] reg_req_sig;
-  core_v_mcu_reg_pkg::reg_resp_t [core_v_mcu_pkg::NumRegSlaves-1:0] reg_resp_sig;
+  core_v_mcu_reg_pkg::reg_req_t [NumRegSlaves-1:0] reg_req_sig;
+  core_v_mcu_reg_pkg::reg_resp_t [NumRegSlaves-1:0] reg_resp_sig;
+
+  logic [15:0] fast_intr;
+  logic [15:0] fast_irq;
 
   // CPU Subsystem
   cpu_subsystem u_cpu_subsystem (
@@ -35,7 +38,7 @@ module core_v_mcu (
       .bus_req_o (axi_master_req_sig[CPU_BUS_IDX]),
       .bus_resp_i(axi_master_resp_sig[CPU_BUS_IDX]),
 
-      .irq_i      ('0),
+      .irq_i      (fast_irq),
       .time_irq_i ('0),
       .debug_req_i('0)
   );
@@ -47,7 +50,6 @@ module core_v_mcu (
       .bus_req_i (axi_slave_req_sig[MEM_BUS_IDX]),
       .bus_resp_o(axi_slave_resp_sig[MEM_BUS_IDX])
   );
-
 
   // Bus Subsystem
   bus_subsystem u_bus_subsystem (
@@ -68,6 +70,29 @@ module core_v_mcu (
   );
 
   // Peripherals
+
+  // Fast Interrupt Controller
+
+  assign fast_intr = '0;  // No external fast interrupts for now
+
+  fast_intr_ctrl#(
+      .reg_req_t(core_v_mcu_reg_pkg::reg_req_t),
+      .reg_rsp_t(core_v_mcu_reg_pkg::reg_resp_t)
+  ) (
+      .clk_i(clk_i),
+      .rst_ni(rst_ni),
+
+      // Bus Interface
+      reg_req_i(
+          reg_req_sig[FAST_INTR_CTRL_REG_IDX]
+      ),
+      reg_rsp_o(
+          reg_resp_sig[FAST_INTR_CTRL_REG_IDX]
+      ),
+
+      .fast_intr_i(fast_intr),
+      .fast_intr_o(fast_irq)
+  );
 
   // UART Subsystem
   uart_subsystem u_uart_subsystem (
