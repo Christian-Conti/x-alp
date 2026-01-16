@@ -62,7 +62,6 @@
     "hw/dv",
     "hw/formal",
     "hw/ip_templates",
-    "hw/lint",
     "hw/rdc",
     "hw/syn",
     "hw/top",
