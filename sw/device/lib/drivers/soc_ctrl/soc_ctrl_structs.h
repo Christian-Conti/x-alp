@@ -5,7 +5,7 @@
 **                                                                         **
 ** project  : x-heep                                                       **
 ** filename : soc_ctrl_structs.h                                 **
-** date     : 16/01/2026                                                      **
+** date     : 20/01/2026                                                      **
 **                                                                         **
 *****************************************************************************
 **                                                                         **
@@ -16,7 +16,7 @@
 
 /**
 * @file   soc_ctrl_structs.h
-* @date   16/01/2026
+* @date   20/01/2026
 * @brief  Contains structs for every register
 *
 * This file contains the structs of the registes of the peripheral.
@@ -65,17 +65,7 @@ typedef struct {
 
   uint32_t BOOT_ADDRESS;                          /*!< Boot Address Value - Used in the boot rom or power-on-reset functions*/
 
-  uint32_t USE_SPIMEMIO;                          /*!< Spi Module Select Value - Used to decide whether to use the SPI from Yosys or OpenTitan*/
-
-  uint32_t ENABLE_SPI_SEL;                        /*!< Enable Spi module selection from software*/
-
   uint32_t SYSTEM_FREQUENCY_HZ;                   /*!< System Frequency Value - Used to know and set at which frequency the system is running (in Hz)*/
-
-  uint32_t XHEEP_ID;                              /*!< In case of multiple X-HEEP instances, it tells you the X-HEEP instance id*/
-
-  uint32_t XHEEP_AO_PERIPHERAL_CONFIG;            /*!< Tells you about the ao_peripheral config*/
-
-  uint32_t XHEEP_PERIPHERAL_CONFIG;               /*!< Tells you about the peripheral config*/
 
 } soc_ctrl;
 
