@@ -49,7 +49,7 @@ task automatic tb_loadChunk;
   input int unsigned addr;
   input byte chunk[SectionChunkLength];  // chunk to write
   input int unsigned EffChunkLength;  // actual chunk size
-  localparam int unsigned BytesPerMemWord = core_v_mcu_axi_pkg::AxiDataWidth / 8;
+  localparam int unsigned BytesPerMemWord = core_v_mcu_pkg::AxiDataWidth / 8;
   logic [31:0] MemBaseAddr = '0;
   int unsigned i, w_addr, base_addr;
 
