@@ -9,6 +9,7 @@ filesets:
       - subsystems/memory_subsystem.sv
       - subsystems/cpu_subsystem.sv
       - subsystems/bus_subsystem.sv
+      - subsystems/uart_subsystem.sv
 
   files_rtl:
     file_type: systemVerilogSource
@@ -23,8 +24,9 @@ filesets:
       - pulp-platform.org::axi_riscv_atomics
       - pulp-platform.org::register_interface:0.4.7
       - openhwgroup.org::cva6:1.4.0
-      - lowrisc:ip:uart:0.1
+      - lowrisc:ip:uart
       - x-heep:ip:soc_ctrl
+      - x-heep:ip:fast_intr_ctrl
 
   simulation_rtl:
     file_type: systemVerilogSource
@@ -47,6 +49,7 @@ filesets:
       - misc/vendor/fpu_div_sqrt-waivers.vlt
       - misc/vendor/hpdcache-waivers.vlt
       - misc/vendor/tech_cells-waivers.vlt
+      - misc/vendor/axi_riscv_atomics-waivers.vlt
       - misc/simulation.vlt
       
 targets:
