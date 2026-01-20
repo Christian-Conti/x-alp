@@ -81,8 +81,8 @@ module core_v_mcu (
     // SoC Controller
 
     soc_ctrl #(
-        .reg_req_t(core_v_mcu_reg_pkg::reg_req_t),
-        .reg_rsp_t(core_v_mcu_reg_pkg::reg_resp_t)
+        .reg_req_t(core_v_mcu_pkg::reg_req_t),
+        .reg_rsp_t(core_v_mcu_pkg::reg_rsp_t)
     ) soc_ctrl_i (
         .clk_i        (clk_i),
         .rst_ni       (rst_ni),
@@ -98,8 +98,8 @@ module core_v_mcu (
     assign fast_intr = '0;  // No external fast interrupts for now
 
     fast_intr_ctrl #(
-        .reg_req_t(core_v_mcu_reg_pkg::reg_req_t),
-        .reg_rsp_t(core_v_mcu_reg_pkg::reg_resp_t)
+        .reg_req_t(core_v_mcu_pkg::reg_req_t),
+        .reg_rsp_t(core_v_mcu_pkg::reg_rsp_t)
     ) u_fast_intr_ctrl (
         .clk_i (clk_i),
         .rst_ni(rst_ni),
