@@ -76,6 +76,7 @@ targets:
         - '--port_declarations_indentation=indent'
         - '--assignment_statement_alignment=align'
         - '--module_net_variable_alignment=align'
+        - '--indentation_spaces=4'
         - '--inplace'
   
   # Static analysis
