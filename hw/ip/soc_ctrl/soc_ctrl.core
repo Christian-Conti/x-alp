@@ -10,15 +10,19 @@ description: "OpenHW Group core-v-mini-mcu soc controller"
 filesets:
   files_rtl:
     depend:
-      - lowrisc:prim:all
       - pulp-platform.org::register_interface
     files:
     - rtl/soc_ctrl_reg_pkg.sv
     - rtl/soc_ctrl_reg_top.sv
     - rtl/soc_ctrl.sv
     file_type: systemVerilogSource
+  waivers:
+    file_type: vlt
+    files:
+      - soc_ctrl.vlt
 
 targets:
   default:
     filesets:
     - files_rtl
+    - tool_verilator ? (waivers)
