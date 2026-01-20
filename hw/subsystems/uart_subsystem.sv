@@ -3,8 +3,8 @@ module uart_subsystem (
     input logic rst_ni,
 
     // UART register interface
-    output core_v_mcu_reg_pkg::reg_req_t  uart_reg_req,
-    input  core_v_mcu_reg_pkg::reg_resp_t uart_reg_rsp,
+    input core_v_mcu_pkg::reg_req_t  uart_reg_req,
+    output core_v_mcu_pkg::reg_rsp_t uart_reg_rsp,
 
     // UART IO
     input  logic uart_rx_i,
@@ -25,8 +25,8 @@ module uart_subsystem (
     tlul_pkg::tl_d2h_t uart_tl_d2h;
 
   reg_to_tlul #(
-      .req_t(core_v_mcu_reg_pkg::reg_req_t),
-      .rsp_t(core_v_mcu_reg_pkg::reg_rsp_t),
+      .req_t(core_v_mcu_pkg::reg_req_t),
+      .rsp_t(core_v_mcu_pkg::reg_rsp_t),
       .tl_h2d_t(tlul_pkg::tl_h2d_t),
       .tl_d2h_t(tlul_pkg::tl_d2h_t),
       .tl_a_user_t(tlul_pkg::tl_a_user_t),
@@ -49,14 +49,14 @@ module uart_subsystem (
       .cio_rx_i(uart_rx_i),
       .cio_tx_o(uart_tx_o),
       .cio_tx_en_o(),
-      .intr_tx_watermark_o(uart_intr_tx_watermark),
-      .intr_rx_watermark_o(uart_intr_rx_watermark),
-      .intr_tx_empty_o(uart_intr_tx_empty),
-      .intr_rx_overflow_o(uart_intr_rx_overflow),
-      .intr_rx_frame_err_o(uart_intr_rx_frame_err),
-      .intr_rx_break_err_o(uart_intr_rx_break_err),
-      .intr_rx_timeout_o(uart_intr_rx_timeout),
-      .intr_rx_parity_err_o(uart_intr_rx_parity_err)
+      .intr_tx_watermark_o(uart_intr_tx_watermark_o),
+      .intr_rx_watermark_o(uart_intr_rx_watermark_o),
+      .intr_tx_empty_o(uart_intr_tx_empty_o),
+      .intr_rx_overflow_o(uart_intr_rx_overflow_o),
+      .intr_rx_frame_err_o(uart_intr_rx_frame_err_o),
+      .intr_rx_break_err_o(uart_intr_rx_break_err_o),
+      .intr_rx_timeout_o(uart_intr_rx_timeout_o),
+      .intr_rx_parity_err_o(uart_intr_rx_parity_err_o)
   );
 
 endmodule

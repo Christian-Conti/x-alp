@@ -63,8 +63,8 @@ module bus_subsystem (
         .test_i               ('0),
         .slv_ports_req_i      (axi_master_req_i),
         .slv_ports_resp_o     (axi_master_resp_o),
-        .mst_ports_req_o      (axi_slave_req),
-        .mst_ports_resp_i     (axi_slave_rsp),
+        .mst_ports_req_o      (axi_slave_req_o),
+        .mst_ports_resp_i     (axi_slave_resp_i),
         .addr_map_i           (addr_rules),
         .en_default_mst_port_i('0),
         .default_mst_port_i   ('0)
@@ -169,10 +169,5 @@ module bus_subsystem (
         .out_req_o  (reg_req_o),
         .out_rsp_i  (reg_rsp_i)
     );
-
-
-    assign axi_slave_req_o               = axi_slave_req[NumAxiSlaves:1];
-    assign axi_slave_rsp[NumAxiSlaves:1] = axi_slave_resp_i;
-
 
 endmodule
