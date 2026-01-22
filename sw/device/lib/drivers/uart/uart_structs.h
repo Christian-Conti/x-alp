@@ -3,9 +3,9 @@
 ******************************* H SOURCE FILE *******************************
 **                            *******************                          **
 **                                                                         **
-** project  : x-alp                                                        **
-** filename : soc_ctrl_structs.h                                 **
-** date     : 21/01/2026                                                      **
+** project  : x-heep                                                       **
+** filename : uart_structs.h                                 **
+** date     : 28/08/2025                                                      **
 **                                                                         **
 *****************************************************************************
 **                                                                         **
@@ -15,8 +15,8 @@
 */
 
 /**
-* @file   soc_ctrl_structs.h
-* @date   21/01/2026
+* @file   uart_structs.h
+* @date   28/08/2025
 * @brief  Contains structs for every register
 *
 * This file contains the structs of the registes of the peripheral.
@@ -25,8 +25,8 @@
 * 
 */
 
-#ifndef _SOC_CTRL_STRUCTS_H
-#define _SOC_CTRL_STRUCTS_H
+#ifndef _UART_STRUCTS_H
+#define UART_STRUCTS
 
 /****************************************************************************/
 /**                                                                        **/
@@ -35,7 +35,7 @@
 /****************************************************************************/
 
 #include <inttypes.h>
-#include "core_v_mcu.h"
+#include "core_v_mini_mcu.h"
 
 /****************************************************************************/
 /**                                                                        **/
@@ -43,7 +43,7 @@
 /**                                                                        **/
 /****************************************************************************/
 
-#define soc_ctrl_peri ((volatile soc_ctrl *) SOC_CTRL_START_ADDRESS)
+#define uart_peri ((volatile uart *) UART_START_ADDRESS)
 
 /****************************************************************************/
 /**                                                                        **/
@@ -55,19 +55,31 @@
 
 typedef struct {
 
-  uint32_t EXIT_VALID;                            /*!< Exit Valid - Used to write exit valid bit*/
+  uint32_t INTR_STATE;                            /*!< Interrupt State Register*/
 
-  uint32_t EXIT_VALUE;                            /*!< Exit Value - Used to write exit value register*/
+  uint32_t INTR_ENABLE;                           /*!< Interrupt Enable Register*/
 
-  uint32_t BOOT_SELECT;                           /*!< Boot Select Value - Used to decide boot mode*/
+  uint32_t INTR_TEST;                             /*!< Interrupt Test Register*/
 
-  uint32_t BOOT_EXIT_LOOP;                        /*!< Boot Exit Loop Value - Set externally (e.g. JTAG, TESTBENCH, or another MASTER) to make the CPU jump to the main function entry*/
+  uint32_t CTRL;                                  /*!< UART control register*/
 
-  uint32_t BOOT_ADDRESS;                          /*!< Boot Address Value - Used in the boot rom or power-on-reset functions*/
+  uint32_t STATUS;                                /*!< UART live status register*/
 
-  uint32_t SYSTEM_FREQUENCY_HZ;                   /*!< System Frequency Value - Used to know and set at which frequency the system is running (in Hz)*/
+  uint32_t RDATA;                                 /*!< UART read data*/
 
-} soc_ctrl;
+  uint32_t WDATA;                                 /*!< UART write data*/
+
+  uint32_t FIFO_CTRL;                             /*!< UART FIFO control register*/
+
+  uint32_t FIFO_STATUS;                           /*!< UART FIFO status register*/
+
+  uint32_t OVRD;                                  /*!< TX pin override control. Gives direct SW control over TX pin state*/
+
+  uint32_t VAL;                                   /*!< UART oversampled values*/
+
+  uint32_t TIMEOUT_CTRL;                          /*!< UART RX timeout control*/
+
+} uart;
 
 /****************************************************************************/
 /**                                                                        **/
@@ -75,11 +87,11 @@ typedef struct {
 /**                                                                        **/
 /****************************************************************************/
 
-#ifndef _SOC_CTRL_STRUCTS_C_SRC
+#ifndef _UART_STRUCTS_C_SRC
 
 
 
-#endif  /* _SOC_CTRL_STRUCTS_C_SRC */
+#endif  /* _UART_STRUCTS_C_SRC */
 
 /****************************************************************************/
 /**                                                                        **/
@@ -96,7 +108,7 @@ typedef struct {
 
 
 
-#endif /* _SOC_CTRL_STRUCTS_H */
+#endif /* _UART_STRUCTS_H */
 /****************************************************************************/
 /**                                                                        **/
 /**                                EOF                                     **/

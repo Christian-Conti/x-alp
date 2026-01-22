@@ -23,9 +23,13 @@ extern "C" {
 // Exit Value - Used to write exit value register
 #define SOC_CTRL_EXIT_VALUE_REG_OFFSET 0x4
 
-// Boot Select Value - Used to decide whether to boot from JTAG or FLASH
+// Boot Select Value - Used to decide boot mode
 #define SOC_CTRL_BOOT_SELECT_REG_OFFSET 0x8
-#define SOC_CTRL_BOOT_SELECT_BOOT_SELECT_BIT 0
+#define SOC_CTRL_BOOT_SELECT_BOOT_SELECT_MASK 0x3
+#define SOC_CTRL_BOOT_SELECT_BOOT_SELECT_OFFSET 0
+#define SOC_CTRL_BOOT_SELECT_BOOT_SELECT_FIELD \
+  ((bitfield_field32_t) { .mask = SOC_CTRL_BOOT_SELECT_BOOT_SELECT_MASK, .index = SOC_CTRL_BOOT_SELECT_BOOT_SELECT_OFFSET })
+#define SOC_CTRL_BOOT_SELECT_BOOT_SELECT_VALUE_BOOT_SELECT_PASSIVE 0x0
 
 // Boot Exit Loop Value - Set externally (e.g. JTAG, TESTBENCH, or another
 // MASTER) to make the CPU jump to the main function entry

@@ -3,9 +3,9 @@
 ******************************* H SOURCE FILE *******************************
 **                            *******************                          **
 **                                                                         **
-** project  : x-heep                                                       **
+** project  : x-alp                                                        **
 ** filename : fast_intr_ctrl_structs.h                                 **
-** date     : 05/11/2025                                                      **
+** date     : 21/01/2026                                                      **
 **                                                                         **
 *****************************************************************************
 **                                                                         **
@@ -16,7 +16,7 @@
 
 /**
 * @file   fast_intr_ctrl_structs.h
-* @date   05/11/2025
+* @date   21/01/2026
 * @brief  Contains structs for every register
 *
 * This file contains the structs of the registes of the peripheral.
