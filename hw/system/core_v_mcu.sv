@@ -42,7 +42,7 @@ module core_v_mcu (
         // .cvxif_resp_o (),
         // .cvxif_req_i('0),
 
-        .bus_req_o (axi_master_req_sig[CPU_BUS_IDX]),
+        .bus_req_o(axi_master_req_sig[CPU_BUS_IDX]),
         .bus_rsp_i(axi_master_rsp_sig[CPU_BUS_IDX]),
 
         .irq_i      (fast_irq[1:0]),
@@ -52,9 +52,9 @@ module core_v_mcu (
 
     // Memory Subsystem
     memory_subsystem u_memory_subsystem (
-        .clk_i     (clk_i),
-        .rst_ni    (rst_ni),
-        .bus_req_i (axi_slave_req_sig[MEM_BUS_IDX]),
+        .clk_i    (clk_i),
+        .rst_ni   (rst_ni),
+        .bus_req_i(axi_slave_req_sig[MEM_BUS_IDX]),
         .bus_rsp_o(axi_slave_rsp_sig[MEM_BUS_IDX])
     );
 
@@ -64,11 +64,11 @@ module core_v_mcu (
         .rst_ni(rst_ni),
 
         // AXI master
-        .axi_master_req_i (axi_master_req_sig),
+        .axi_master_req_i(axi_master_req_sig),
         .axi_master_rsp_o(axi_master_rsp_sig),
 
         // AXI slave
-        .axi_slave_req_o (axi_slave_req_sig),
+        .axi_slave_req_o(axi_slave_req_sig),
         .axi_slave_rsp_i(axi_slave_rsp_sig),
 
         // Peripheral register interface
