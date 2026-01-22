@@ -9,6 +9,7 @@ filesets:
       - subsystems/memory_subsystem.sv
       - subsystems/cpu_subsystem.sv
       - subsystems/bus_subsystem.sv
+      - subsystems/bootrom_subsystem.sv
       - subsystems/uart_subsystem.sv
 
   files_rtl:
@@ -25,6 +26,10 @@ filesets:
       - pulp-platform.org::register_interface:0.4.7
       - openhwgroup.org::cva6:1.4.0
       - lowrisc:ip:uart
+  
+  ip_modules:
+    depend:
+      - x-alp:ip:boot_rom
       - x-heep:ip:soc_ctrl
       - x-heep:ip:fast_intr_ctrl
 
@@ -56,6 +61,7 @@ targets:
   default:
     filesets:
     - "!target_format ? (!target_lint ? (vendor_modules))"
+    - ip_modules
     - target_sim ? (simulation_rtl)
     - tool_verilator ? (waivers)
     - files_rtl
