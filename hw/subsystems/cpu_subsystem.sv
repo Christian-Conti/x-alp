@@ -10,9 +10,9 @@ module cpu_subsystem (
     // input core_v_mcu_pkg::cvxif_resp_t cvxif_resp_i,
 
     // AXI bus request
-    output core_v_mcu_pkg::axi_mst_req_t  bus_req_o,
+    output core_v_mcu_pkg::axi_mst_req_t bus_req_o,
     // AXI bus response
-    input  core_v_mcu_pkg::axi_mst_rsp_t bus_resp_i,
+    input  core_v_mcu_pkg::axi_mst_rsp_t bus_rsp_i,
 
     // Level sensitive (async) interrupts
     input logic [1:0] irq_i,
@@ -54,7 +54,7 @@ module cpu_subsystem (
         // noc request, can be AXI or OpenPiton
         .noc_req_o    (bus_req_o),
         // noc response, can be AXI or OpenPiton
-        .noc_resp_i   (bus_resp_i)
+        .noc_resp_i   (bus_rsp_i)
     );
 
 endmodule

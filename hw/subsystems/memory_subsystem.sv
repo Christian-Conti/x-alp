@@ -5,9 +5,9 @@ module memory_subsystem (
     input logic rst_ni,
 
     // AXI bus request
-    input  core_v_mcu_pkg::axi_slv_req_t  bus_req_i,
+    input  core_v_mcu_pkg::axi_slv_req_t bus_req_i,
     // AXI bus response
-    output core_v_mcu_pkg::axi_slv_rsp_t bus_resp_o
+    output core_v_mcu_pkg::axi_slv_rsp_t bus_rsp_o
 
 );
 
@@ -36,7 +36,7 @@ module memory_subsystem (
         .rst_ni      (rst_ni),
         .busy_o      (),
         .axi_req_i   (bus_req_i),
-        .axi_resp_o  (bus_resp_o),
+        .axi_resp_o  (bus_rsp_o),
         .mem_req_o   (mem_req),
         .mem_gnt_i   (mem_gnt),
         .mem_addr_o  (mem_addr),
