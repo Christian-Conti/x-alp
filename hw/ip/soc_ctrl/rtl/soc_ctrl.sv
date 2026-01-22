@@ -27,7 +27,6 @@ module soc_ctrl #(
 
     soc_ctrl_reg2hw_t reg2hw;
     soc_ctrl_hw2reg_t hw2reg;
-    reg_rsp_t         reg_rsp_int;
 
 `ifndef SYNTHESIS
     logic testbench_set_exit_loop[1];
@@ -56,7 +55,7 @@ module soc_ctrl #(
         .clk_i,
         .rst_ni,
         .reg_req_i,
-        .reg_rsp_o(reg_rsp_int),
+        .reg_rsp_o(reg_rsp_o),
         .reg2hw,
         .hw2reg,
         .devmode_i(1'b1)
