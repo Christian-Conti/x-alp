@@ -50,7 +50,7 @@ package core_v_mcu_pkg;
 
     // Slave addresses
     localparam addr_t MEM_BUS_BASE_ADDR = 64'h0000_0000_0000_0000;
-    localparam addr_t MEM_BUS_SIZE = 64'h0000_0000_1000_0000;
+    localparam addr_t MEM_BUS_SIZE = 64'h0000_0000_0001_0000;  // 64 KB
     localparam addr_t MEM_BUS_END_ADDR = MEM_BUS_BASE_ADDR + MEM_BUS_SIZE;
     localparam addr_t PERIPH_BUS_BASE_ADDR = 64'h0000_0000_1000_0000;
     localparam addr_t PERIPH_BUS_SIZE = 64'h0000_0000_0FFF_FFFF;

@@ -14,7 +14,7 @@ module memory_subsystem (
     /* verilator lint_off PINCONNECTEMPTY */
     /* verilator lint_off UNUSEDSIGNAL */
 
-    localparam int AddrWidth = $clog2(8192);  // 8 KB SRAM
+    localparam int AddrWidth = $clog2(8192);  // 64 KB SRAM (8192 words * 8 bytes/word)
 
     logic                 mem_req;
     logic [AddrWidth-1:0] mem_addr;

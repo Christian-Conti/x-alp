@@ -77,7 +77,7 @@ package cva6_config_pkg;
 
     localparam config_pkg::cache_type_t CVA6ConfigDcacheType = config_pkg::WT;
 
-    localparam int CVA6ConfigMmuPresent = 0;
+    localparam int CVA6ConfigMmuPresent = 1;
 
     localparam int CVA6ConfigRvfiTrace = 1;
 
