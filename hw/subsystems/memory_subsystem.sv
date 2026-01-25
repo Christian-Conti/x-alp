@@ -71,7 +71,7 @@ module memory_subsystem (
         .rst_ni          (rst_ni),
         .req_i           (mem_req),
         .we_i            (mem_we),
-        .addr_i          (mem_addr),
+        .addr_i          ({3'b000, mem_addr[AddrWidth-1:3]}),
         .wdata_i         (mem_wdata),
         .be_i            ('1),
         .pwrgate_ni      ('1),
