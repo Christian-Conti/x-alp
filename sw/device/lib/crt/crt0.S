@@ -14,8 +14,6 @@
 #include "core_v_mcu.h"
 #include "soc_ctrl_regs.h"
 
-#define RAMSIZE_COPIEDBY_BOOTROM 2048
-
 /* Entry point for bare metal programs */
 .section .text.start
 .global _start
@@ -37,58 +35,9 @@ _start:
    li a2, REFERENCE_CLOCK_Hz
    sw a2, SOC_CTRL_SYSTEM_FREQUENCY_HZ_REG_OFFSET(a0)
 
-#ifdef EXTERNAL_CRTO
-   #include "external_crt0.S"
-#endif
-
-#ifdef FLASH_LOAD
-
-    call w25q128jw_init_crt0
-
-    // This assumes ram base address is 0x00000000 and the section .text stars from ram0 (in the first RAMSIZE_COPIEDBY_BOOTROM Byte)
-    li     s1, RAMSIZE_COPIEDBY_BOOTROM
-    li     t0, FLASH_MEM_START_ADDRESS
-
-    // copy the remaining (if any) text and data sections //
-    // Setup the in/out pointers and copy size knowing 1KiB as already been copied
-    mv     a0, t0 // src ptr (flash)
-    add   a0, a0, s1
-
-    la     a1, _etext
-    // Skip if everything has already been copied, and copy the data section
-    blt    a1, s1, _load_data_section
-
-    // copy size in bytes, i.e. _etext - RAMSIZE_COPIEDBY_BOOTROM
-    sub   a2, a1, s1
-
-    // dst ptr (ram)
-    mv     a1, s1
-
-    // copy the remaining data --> w25q128jw_read_standard(a0 is src addr, a1 is dest ptr data, a2 is length)
-
-    // this sub is redundat as we could have simply set a0 to RAMSIZE_COPIEDBY_BOOTROM+0x0,
-    // but like this is more readable as we set the FLASH address as memory mapped to FLASH_MEM_START_ADDRESS, and then remove the offset
-    // as required bz the w25q128jw_read_standard function
-    sub    a0,a0,t0
-    call w25q128jw_read_standard
-
-_load_data_section:
-    // src ptr
-    la     a0, _lma_data_start
-    // dst ptr
-    la     a1, __data_start
-    // copy size in bytes
-    la     a2, _lma_data_end
-    sub    a2, a2, a0
-
-    bltz   a2, _load_data_section_end // dont do anything if you do not have something in data
-
-    sub    a0,a0,t0
-    call w25q128jw_read_standard
-_load_data_section_end:
-
-
-#endif
+/* mask interrupts until vectors are set */
+    csrwi mie, 0
+    csrci mstatus, 0x8
 
 /* clear the bss segment */
 _init_bss:
@@ -97,21 +46,6 @@ _init_bss:
     sub    a2, a2, a0
     li     a1, 0
     call   memset
-
-#ifdef FLASH_EXEC
-/* copy initialized data sections from flash to ram (to be verified, copied from picosoc)*/
-    la a0, _sidata
-    la a1, _sdata
-    la a2, _edata
-    bge a1, a2, end_init_data
-    loop_init_data:
-    lw a3, 0(a0)
-    sw a3, 0(a1)
-    addi a0, a0, 4
-    addi a1, a1, 4
-    blt a1, a2, loop_init_data
-    end_init_data:
-#endif
 
 /* set vector table address and vectored mode */
     la a0, __vector_start
