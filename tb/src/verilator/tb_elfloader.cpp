@@ -36,22 +36,6 @@ char TbElfLoader::get_entry(long long *entry_ret) {
   return 0;
 }
 
-// Iterator over the section addresses and lengths
-// Returns:
-// 0 if there are no more sections
-// 1 if there are more sections to load
-// char TbElfLoader::get_section(long long *address_ret, long long *len_ret)
-//{
-//  if (section_index < sections.size()) {
-//    *address_ret = sections[section_index].first;
-//    *len_ret = sections[section_index].second;
-//    section_index++;
-//    return 1;
-//  } else {
-//    return 0;
-//  }
-//}
-
 char TbElfLoader::get_section(long long *address_ret, long long *len_ret) {
   if (section_index < sections.size()) {
     *address_ret = sections[section_index].first;
