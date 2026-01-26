@@ -28,5 +28,8 @@
     "README.md",
     "src_files.yml",
     "VERSION"
-  ]
+  ],
+
+  patch_dir: "patches/pulpplatform_axi",
+
 }
