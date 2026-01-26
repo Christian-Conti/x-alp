@@ -11,8 +11,8 @@
 #include <stddef.h>
 #include <stdint.h>
 
-#include "mmio.h"
 #include "error.h"
+#include "mmio.h"
 
 #include "core_v_mcu.h"
 
@@ -21,7 +21,6 @@ extern "C" {
 #endif
 
 #define NCO_WIDTH 16
-
 
 /**
  * Initialization parameters for UART.
@@ -37,8 +36,8 @@ typedef struct uart {
    */
   uint32_t baudrate;
   /**
-  * The NCO to control the baudrate
-  */
+   * The NCO to control the baudrate
+   */
   uint64_t nco;
   /**
    * The peripheral clock frequency (used to compute the UART baudrate divisor).
@@ -101,4 +100,4 @@ __attribute__((weak, optimize("O0"))) void handler_irq_uart(uint32_t id);
 }
 #endif
 
-#endif  // OPENTITAN_SW_DEVICE_SILICON_CREATOR_LIB_DRIVERS_UART_H_
+#endif // OPENTITAN_SW_DEVICE_SILICON_CREATOR_LIB_DRIVERS_UART_H_

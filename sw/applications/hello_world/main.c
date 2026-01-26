@@ -16,13 +16,12 @@
  * Author: Robert Balas <balasr@iis.ee.ethz.ch>
  */
 
+#include "printf.h"
 #include <stdio.h>
 #include <stdlib.h>
-#include "printf.h"
 
-int main(int argc, char *argv[])
-{
-    /* write something to stdout */
-    printf("hello world!\n");
-    return EXIT_SUCCESS;
+int main(int argc, char *argv[]) {
+  /* write something to stdout */
+  printf("hello world!\n");
+  return EXIT_SUCCESS;
 }

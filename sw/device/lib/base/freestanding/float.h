@@ -70,4 +70,4 @@
 #define DBL_HAS_SUBNORM __DBL_HAS_DENORM__   /**< @hideinitializer */
 #define LDBL_HAS_SUBNORM __LDBL_HAS_DENORM__ /**< @hideinitializer */
 
-#endif  // OPENTITAN_SW_DEVICE_LIB_BASE_FREESTANDING_FLOAT_H_
+#endif // OPENTITAN_SW_DEVICE_LIB_BASE_FREESTANDING_FLOAT_H_

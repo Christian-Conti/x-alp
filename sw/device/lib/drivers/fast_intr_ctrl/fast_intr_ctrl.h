@@ -1,28 +1,28 @@
 /*
-                              *******************
-******************************* H SOURCE FILE *******************************
-**                            *******************                          **
-**                                                                         **
-** project  : X_HEEP                                                       **
-** filename : fast_intr_ctrl.h
-** version  : 1                                             **
-** date     : 27/03/23                                                   **
-**                                                                         **
-*****************************************************************************
-**
-** Copyright (c) EPFL contributors.
-** All rights reserved.
-**
-*****************************************************************************
-*/
+ *******************
+ ******************************* H SOURCE FILE *******************************
+ **                            *******************                          **
+ **                                                                         **
+ ** project  : X_HEEP                                                       **
+ ** filename : fast_intr_ctrl.h
+ ** version  : 1                                             **
+ ** date     : 27/03/23                                                   **
+ **                                                                         **
+ *****************************************************************************
+ **
+ ** Copyright (c) EPFL contributors.
+ ** All rights reserved.
+ **
+ *****************************************************************************
+ */
 
 /***************************************************************************/
 /***************************************************************************/
 /**
-* @file   fast_intr_ctrl.h
-* @date   27/03/23
-* @brief  The fast interrupt controller peripheral driver
-*/
+ * @file   fast_intr_ctrl.h
+ * @date   27/03/23
+ * @brief  The fast interrupt controller peripheral driver
+ */
 
 #ifndef _FAST_INTR_CTRL_H_
 #define _FAST_INTR_CTRL_H_
@@ -35,17 +35,15 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+#include "mmio.h"
 #include <stddef.h>
 #include <stdint.h>
-#include "mmio.h"
 
 /****************************************************************************/
 /**                                                                        **/
 /**                       DEFINITIONS AND MACROS                           **/
 /**                                                                        **/
 /****************************************************************************/
-
-
 
 /****************************************************************************/
 /**                                                                        **/
@@ -57,7 +55,7 @@ extern "C" {
  * possible returns of the clear_fast_interrupt function.
  */
 typedef enum fast_intr_ctrl_result {
-  kFastIntrCtrlOk_e    = 0, /*!< successfully done. */
+  kFastIntrCtrlOk_e = 0,    /*!< successfully done. */
   kFastIntrCtrlError_e = 1, /*!< an error occured. */
 } fast_intr_ctrl_result_t;
 
@@ -67,22 +65,22 @@ typedef enum fast_intr_ctrl_result {
  * pending register while recieving an interrupt through FIC.
  */
 typedef enum fast_intr_ctrl_fast_interrupt {
-  kTimer_1_fic_e    = 0, /*!< Timer 1. */
-  kTimer_2_fic_e    = 1, /*!< Timer 2. */
-  kTimer_3_fic_e    = 2, /*!< Timer 3. */
-  kDma_done_fic_e   = 3, /*!< DMA transaction done. */
-  kSpi_fic_e        = 4, /*!< SPI. */
-  kSpiFlash_fic_e   = 5, /*!< SPI Flash. */
-  kGpio_0_fic_e     = 6, /*!< GPIO 0. */
-  kGpio_1_fic_e     = 7, /*!< GPIO 1. */
-  kGpio_2_fic_e     = 8, /*!< GPIO 2. */
-  kGpio_3_fic_e     = 9, /*!< GPIO 3. */
-  kGpio_4_fic_e     = 10,/*!< GPIO 4. */
-  kGpio_5_fic_e     = 11,/*!< GPIO 5. */
-  kGpio_6_fic_e     = 12,/*!< GPIO 6. */
-  kGpio_7_fic_e     = 13,/*!< GPIO 7. */
+  kTimer_1_fic_e = 0,     /*!< Timer 1. */
+  kTimer_2_fic_e = 1,     /*!< Timer 2. */
+  kTimer_3_fic_e = 2,     /*!< Timer 3. */
+  kDma_done_fic_e = 3,    /*!< DMA transaction done. */
+  kSpi_fic_e = 4,         /*!< SPI. */
+  kSpiFlash_fic_e = 5,    /*!< SPI Flash. */
+  kGpio_0_fic_e = 6,      /*!< GPIO 0. */
+  kGpio_1_fic_e = 7,      /*!< GPIO 1. */
+  kGpio_2_fic_e = 8,      /*!< GPIO 2. */
+  kGpio_3_fic_e = 9,      /*!< GPIO 3. */
+  kGpio_4_fic_e = 10,     /*!< GPIO 4. */
+  kGpio_5_fic_e = 11,     /*!< GPIO 5. */
+  kGpio_6_fic_e = 12,     /*!< GPIO 6. */
+  kGpio_7_fic_e = 13,     /*!< GPIO 7. */
   kDma_window_fic_e = 14, /*!< DMA window done. */
-  kExt_peri_fic_e   = 15,  /*!< External peripheral interrupt*/
+  kExt_peri_fic_e = 15,   /*!< External peripheral interrupt*/
 } fast_intr_ctrl_fast_interrupt_t;
 
 /****************************************************************************/
@@ -105,10 +103,9 @@ typedef enum fast_intr_ctrl_fast_interrupt {
  * @retval kFastIntrCtrlOk_e (= 0) if successfully set the bit
  * @retval kFastIntrCtrlError_e (= 1) if an error occured during operation
  */
-fast_intr_ctrl_result_t enable_fast_interrupt(fast_intr_ctrl_fast_interrupt_t\
- fast_interrupt, bool enable);
+fast_intr_ctrl_result_t enable_fast_interrupt(fast_intr_ctrl_fast_interrupt_t fast_interrupt, bool enable);
 
- /**
+/**
  * @brief Enable the generation of the fast interrupt
  * peripheral by writing inside FAST_INTR_ENABLE
  * @param enable enable value
@@ -117,7 +114,6 @@ fast_intr_ctrl_result_t enable_fast_interrupt(fast_intr_ctrl_fast_interrupt_t\
  */
 fast_intr_ctrl_result_t enable_all_fast_interrupts(bool enable);
 
-
 /**
  * @brief clean the bit inside FAST_INTR_PENDING register for the requested
  * peripheral by writing inside FAST_INTR_CLEAR
@@ -125,8 +121,7 @@ fast_intr_ctrl_result_t enable_all_fast_interrupts(bool enable);
  * @retval kFastIntrCtrlOk_e (= 0) if successfully clear the bit
  * @retval kFastIntrCtrlError_e (= 1) if an error occured during operation
  */
-fast_intr_ctrl_result_t clear_fast_interrupt(fast_intr_ctrl_fast_interrupt_t\
- fast_interrupt);
+fast_intr_ctrl_result_t clear_fast_interrupt(fast_intr_ctrl_fast_interrupt_t fast_interrupt);
 
 /**
  * @brief fast interrupt controller irq for timer 1
@@ -248,7 +243,6 @@ void fic_irq_gpio_6(void);
  */
 void fic_irq_gpio_7(void);
 
-
 /****************************************************************************/
 /**                                                                        **/
 /**                          INLINE FUNCTIONS                              **/
@@ -262,4 +256,4 @@ void fic_irq_gpio_7(void);
 /**                                EOF                                     **/
 /**                                                                        **/
 /****************************************************************************/
-#endif  // _FAST_INTR_CTRL_H_
+#endif // _FAST_INTR_CTRL_H_

@@ -88,7 +88,7 @@ module core_v_mcu (
         .bus_req_i(axi_slave_req_sig[MEM_BUS_IDX]),
         .bus_rsp_o(axi_slave_rsp_sig[MEM_BUS_IDX])
     );
-    
+
     //
     //  ███████████  █████  █████  █████████ 
     // ░░███░░░░░███░░███  ░░███  ███░░░░░███
@@ -151,7 +151,7 @@ module core_v_mcu (
         .reg_req_i(reg_req_sig[BOOT_ROM_REG_IDX]),
         .reg_rsp_o(reg_rsp_sig[BOOT_ROM_REG_IDX])
     );
-    
+
     assign fast_intr = '0;  // No external fast interrupts for now
 
     fast_intr_ctrl #(

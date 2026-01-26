@@ -22,9 +22,9 @@ extern "C" {
  */
 enum module_ {
   kModuleUnknown = 0,
-  kModuleUart = 0x4155,       // ASCII "UA".
-  kModuleHmac = 0x4d48,       // ASCII "HM".
-  kModuleSigverify = 0x5653,  // ASCII "SV".
+  kModuleUart = 0x4155,      // ASCII "UA".
+  kModuleHmac = 0x4d48,      // ASCII "HM".
+  kModuleSigverify = 0x5653, // ASCII "SV".
 };
 
 /**
@@ -34,8 +34,7 @@ enum module_ {
  * @param error_ The unique error id in that module.  Error ids must not
  *               repeat within a module.
  */
-#define ERROR_(error_, module_, status_) \
-  ((error_ << 24) | (module_ << 8) | (status_))
+#define ERROR_(error_, module_, status_) ((error_ << 24) | (module_ << 8) | (status_))
 
 // clang-format off
 // Use an X-macro to facilitate writing unit tests.
@@ -65,16 +64,14 @@ typedef enum system_error {
  *
  * @param expr_ An expression which results in an system_error_t.
  */
-#define RETURN_IF_ERROR(expr_)        \
-  do {                                \
-    system_error_t local_error_ = expr_; \
-    if (local_error_ != kErrorOk) {   \
-      return local_error_;            \
-    }                                 \
+#define RETURN_IF_ERROR(expr_)                                                                                         \
+  do {                                                                                                                 \
+    system_error_t local_error_ = expr_;                                                                               \
+    if (local_error_ != kErrorOk) { return local_error_; }                                                             \
   } while (0)
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif  // OPENTITAN_SW_DEVICE_SILICON_CREATOR_LIB_ERROR_H_
+#endif // OPENTITAN_SW_DEVICE_SILICON_CREATOR_LIB_ERROR_H_

@@ -22,5 +22,4 @@
 #define __bool_true_false_are_defined 1
 #endif
 
-
-#endif  // OPENTITAN_SW_DEVICE_LIB_BASE_FREESTANDING_STDBOOL_H_
+#endif // OPENTITAN_SW_DEVICE_LIB_BASE_FREESTANDING_STDBOOL_H_

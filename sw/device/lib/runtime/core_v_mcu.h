@@ -2,22 +2,20 @@
 // Solderpad Hardware License, Version 2.1, see LICENSE.md for details.
 // SPDX-License-Identifier: Apache-2.0 WITH SHL-2.1
 
-
-
 #ifndef _COREV_MCU_H_
 #define _COREV_MCU_H_
 
 #ifdef __cplusplus
 extern "C" {
-#endif  // __cplusplus
+#endif // __cplusplus
 
 #define MEMORY_BANKS 1
 
 #define RAM0_START_ADDRESS 0x0000000000000000
-#define RAM0_END_ADDRESS   0x0000000000010000
+#define RAM0_END_ADDRESS 0x0000000000010000
 
 #define PERIPH_START_ADDRESS 0x0000000010000000
-#define PERIPH_END_ADDRESS   0x0000000020000000
+#define PERIPH_END_ADDRESS 0x0000000020000000
 
 #define SOC_CTRL_START_ADDRESS (PERIPH_START_ADDRESS + 0x0000000000000000)
 #define SOC_CTRL_SIZE 0x1000
@@ -35,9 +33,8 @@ extern "C" {
 #define UART_SIZE 0x1000
 #define UART_END_ADDRESS (UART_START_ADDRESS + UART_SIZE)
 
-
 #ifdef __cplusplus
-}  // extern "C"
-#endif  // __cplusplus
+} // extern "C"
+#endif // __cplusplus
 
-#endif  // _COREV_MCU_H_
+#endif // _COREV_MCU_H_

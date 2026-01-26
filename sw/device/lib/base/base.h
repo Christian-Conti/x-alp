@@ -6,9 +6,9 @@
 #define OPENTITAN_SW_DEVICE_LIB_DIF_DIF_BASE_H_
 
 /**
-* @file
-* @brief Shared macros and headers for DIFs.
-*/
+ * @file
+ * @brief Shared macros and headers for DIFs.
+ */
 
 #include <stdbool.h>
 
@@ -17,87 +17,85 @@
 
 #ifdef __cplusplus
 extern "C" {
-#endif  // __cplusplus
+#endif // __cplusplus
 
 /**
-* Evaluate an expression and return if the result is an error.
-*
-* @param expr_ An expression which results in an dif_result_t.
-*/
-#define DIF_RETURN_IF_ERROR(expr_)       \
- do {                                   \
-   dif_result_t local_error_ = (expr_); \
-   if (local_error_ != kDifOk) {        \
-     return local_error_;               \
-   }                                    \
- } while (false)
+ * Evaluate an expression and return if the result is an error.
+ *
+ * @param expr_ An expression which results in an dif_result_t.
+ */
+#define DIF_RETURN_IF_ERROR(expr_)                                                                                     \
+  do {                                                                                                                 \
+    dif_result_t local_error_ = (expr_);                                                                               \
+    if (local_error_ != kDifOk) { return local_error_; }                                                               \
+  } while (false)
 
 /**
-* The result of a DIF operation.
-*
-* NOTE: additional result values can be defined in the manually-implemented
-* header by creating an additional *_result_t enum type. See the Lifecycle
-* Controller DIF for how this may be implemented.
-*/
+ * The result of a DIF operation.
+ *
+ * NOTE: additional result values can be defined in the manually-implemented
+ * header by creating an additional *_result_t enum type. See the Lifecycle
+ * Controller DIF for how this may be implemented.
+ */
 typedef enum dif_result {
- /**
-  * Indicates that the operation succeeded.
-  */
- kDifOk = 0,
- /**
-  * Indicates some unspecified failure.
-  */
- kDifError = 1,
- /**
-  * Indicates that some parameter passed into a function failed a
-  * precondition.
-  *
-  * When this value is returned, no hardware operations occurred.
-  */
- kDifBadArg = 2,
- /**
-  * The operation failed because writes to a required register are
-  * disabled.
-  */
- kDifLocked = 3,
- /**
-  * The operation failed because the IP is processing an operation, and will
-  * finish in some amount of time. A function that returns this error may be
-  * retried at any time, and is guaranteed to have not produced any side
-  * effects.
-  */
- kDifUnavailable = 4,
- /**
-  * Indicates that the Ip's FIFO (if it has one or more of) is full.
-  */
- kDifIpFifoFull = 5,
- /**
-  * Indicates that the attempted operation would attempt a read/write to an
-  * address that would go out of range.
-  */
- kDifOutOfRange = 6,
- /**
-  * Indicates that the attempted operation would attempt a read/write to an
-  * address that is not aligned.
-  */
- kDifUnaligned = 7,
+  /**
+   * Indicates that the operation succeeded.
+   */
+  kDifOk = 0,
+  /**
+   * Indicates some unspecified failure.
+   */
+  kDifError = 1,
+  /**
+   * Indicates that some parameter passed into a function failed a
+   * precondition.
+   *
+   * When this value is returned, no hardware operations occurred.
+   */
+  kDifBadArg = 2,
+  /**
+   * The operation failed because writes to a required register are
+   * disabled.
+   */
+  kDifLocked = 3,
+  /**
+   * The operation failed because the IP is processing an operation, and will
+   * finish in some amount of time. A function that returns this error may be
+   * retried at any time, and is guaranteed to have not produced any side
+   * effects.
+   */
+  kDifUnavailable = 4,
+  /**
+   * Indicates that the Ip's FIFO (if it has one or more of) is full.
+   */
+  kDifIpFifoFull = 5,
+  /**
+   * Indicates that the attempted operation would attempt a read/write to an
+   * address that would go out of range.
+   */
+  kDifOutOfRange = 6,
+  /**
+   * Indicates that the attempted operation would attempt a read/write to an
+   * address that is not aligned.
+   */
+  kDifUnaligned = 7,
 } dif_result_t;
 
 /**
-* A toggle state: enabled, or disabled.
-*
-* This enum may be used instead of a `bool` when describing an enabled/disabled
-* state.
-*/
+ * A toggle state: enabled, or disabled.
+ *
+ * This enum may be used instead of a `bool` when describing an enabled/disabled
+ * state.
+ */
 typedef enum dif_toggle {
- /**
-  * The "disabled" state.
-  */
- kDifToggleDisabled = 0,
- /**
-  * The "enabled" state.
-  */
- kDifToggleEnabled = 1,
+  /**
+   * The "disabled" state.
+   */
+  kDifToggleDisabled = 0,
+  /**
+   * The "enabled" state.
+   */
+  kDifToggleEnabled = 1,
 } dif_toggle_t;
 
 // /**
@@ -150,7 +148,8 @@ typedef enum dif_toggle {
 // * @param val A multi-bit bool value.
 // * @return Corresponding dif_toggle_t value.
 // */
-// static inline dif_toggle_t dif_multi_bit_bool_to_toggle(multi_bit_bool_t val) {
+// static inline dif_toggle_t dif_multi_bit_bool_to_toggle(multi_bit_bool_t val)
+// {
 //  switch (val) {
 //    case kMultiBitBool4True:
 //    case kMultiBitBool8True:
@@ -169,7 +168,8 @@ typedef enum dif_toggle {
 // * @return Corresponding `multi_bit_bool_t` value. Invalid values resolve to
 // * "false".
 // */
-// static inline multi_bit_bool_t dif_toggle_to_multi_bit_bool4(dif_toggle_t val) {
+// static inline multi_bit_bool_t dif_toggle_to_multi_bit_bool4(dif_toggle_t
+// val) {
 //  if (val == kDifToggleEnabled) {
 //    return kMultiBitBool4True;
 //  } else {
@@ -184,7 +184,8 @@ typedef enum dif_toggle {
 // * @return Corresponding `multi_bit_bool_t` value. Invalid values resolve to
 // * "false".
 // */
-// static inline multi_bit_bool_t dif_toggle_to_multi_bit_bool8(dif_toggle_t val) {
+// static inline multi_bit_bool_t dif_toggle_to_multi_bit_bool8(dif_toggle_t
+// val) {
 //  if (val == kDifToggleEnabled) {
 //    return kMultiBitBool8True;
 //  } else {
@@ -199,7 +200,8 @@ typedef enum dif_toggle {
 // * @return Corresponding `multi_bit_bool_t` value. Invalid values resolve to
 // * "false".
 // */
-// static inline multi_bit_bool_t dif_toggle_to_multi_bit_bool12(dif_toggle_t val) {
+// static inline multi_bit_bool_t dif_toggle_to_multi_bit_bool12(dif_toggle_t
+// val) {
 //  if (val == kDifToggleEnabled) {
 //    return kMultiBitBool12True;
 //  } else {
@@ -214,7 +216,8 @@ typedef enum dif_toggle {
 // * @return Corresponding `multi_bit_bool_t` value. Invalid values resolve to
 // * "false".
 // */
-// static inline multi_bit_bool_t dif_toggle_to_multi_bit_bool16(dif_toggle_t val) {
+// static inline multi_bit_bool_t dif_toggle_to_multi_bit_bool16(dif_toggle_t
+// val) {
 //  if (val == kDifToggleEnabled) {
 //    return kMultiBitBool16True;
 //  } else {
@@ -223,7 +226,7 @@ typedef enum dif_toggle {
 // }
 
 #ifdef __cplusplus
-}  // extern "C"
-#endif  // __cplusplus
+} // extern "C"
+#endif // __cplusplus
 
-#endif  // OPENTITAN_SW_DEVICE_LIB_DIF_DIF_BASE_H_
+#endif // OPENTITAN_SW_DEVICE_LIB_DIF_DIF_BASE_H_

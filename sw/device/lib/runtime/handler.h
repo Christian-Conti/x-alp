@@ -7,7 +7,7 @@
 
 #ifdef __cplusplus
 extern "C" {
-#endif  // __cplusplus
+#endif // __cplusplus
 
 typedef enum exc_id {
   kInstMisa = 0,
@@ -130,9 +130,8 @@ void handler_lsu_fault(void);
  */
 void handler_ecall(void);
 
-
 #ifdef __cplusplus
 }
-#endif  // __cplusplus
+#endif // __cplusplus
 
-#endif  // OPENTITAN_SW_DEVICE_LIB_HANDLER_H_
+#endif // OPENTITAN_SW_DEVICE_LIB_HANDLER_H_

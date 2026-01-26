@@ -6,9 +6,8 @@
 extern "C" {
 #endif
 
-int init()
-{
-    return 0;
+int init() {
+  return 0;
 }
 
 #ifdef __cplusplus

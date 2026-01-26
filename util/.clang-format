@@ -1,0 +1,22 @@
+BasedOnStyle: LLVM
+
+# meno a capo: alza il limite colonne
+ColumnLimit: 120
+
+# più compatto su chiamate e firme
+BinPackArguments: true
+BinPackParameters: true
+
+# tieni corte cose su una riga quando possibile
+AllowShortFunctionsOnASingleLine: Inline
+AllowShortIfStatementsOnASingleLine: WithoutElse
+AllowShortLoopsOnASingleLine: true
+AllowShortBlocksOnASingleLine: Always
+
+# evita di “spalmare” liste/initializer su tante righe se non serve
+Cpp11BracedListStyle: true
+
+# penalizza di meno lo stare sulla stessa riga
+PenaltyBreakBeforeFirstCallParameter: 1
+PenaltyBreakComment: 300
+PenaltyBreakString: 300

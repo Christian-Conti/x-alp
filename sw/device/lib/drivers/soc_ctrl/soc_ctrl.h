@@ -47,7 +47,6 @@ typedef struct {
   uint8_t has_uart;
 } soc_ctrl_xheep_peripheral_config_t;
 
-
 /**
  * Write a to valid register of the SOC CTRL.
  * @param soc_ctrl Pointer to soc_ctrl_t represting the target SOC CTRL.
@@ -61,7 +60,6 @@ void soc_ctrl_set_valid(const soc_ctrl_t *soc_ctrl, uint8_t valid);
  * @param exit value data to write.
  */
 void soc_ctrl_set_exit_value(const soc_ctrl_t *soc_ctrl, uint32_t exit_value);
-
 
 uint32_t soc_ctrl_get_frequency(const soc_ctrl_t *soc_ctrl);
 
@@ -100,7 +98,6 @@ uint32_t get_xheep_instance_id(const soc_ctrl_t *soc_ctrl);
 
 soc_ctrl_xheep_ao_peripheral_config_t get_xheep_ao_peripheral_config(const soc_ctrl_t *soc_ctrl);
 
-
 /**
  * Get the X-HEEP Peripheral Config (HJSON file)
  * @param soc_ctrl Pointer to soc_ctrl_t represting the target SOC CTRL.
@@ -108,9 +105,8 @@ soc_ctrl_xheep_ao_peripheral_config_t get_xheep_ao_peripheral_config(const soc_c
 
 soc_ctrl_xheep_peripheral_config_t get_xheep_peripheral_config(const soc_ctrl_t *soc_ctrl);
 
-
 #ifdef __cplusplus
 }
 #endif
 
-#endif  // OPENTITAN_SW_DEVICE_SILICON_CREATOR_LIB_DRIVERS_SOC CTRL_H_
+#endif // OPENTITAN_SW_DEVICE_SILICON_CREATOR_LIB_DRIVERS_SOC CTRL_H_

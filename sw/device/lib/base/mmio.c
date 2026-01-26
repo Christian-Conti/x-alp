@@ -4,8 +4,7 @@
 
 #ifdef __cplusplus
 extern "C" {
-#endif  // __cplusplus
-
+#endif // __cplusplus
 
 #include "mmio.h"
 
@@ -36,11 +35,8 @@ static ptrdiff_t misalignment32_of(uintptr_t addr) {
  * @param from_mmio if true, copy from MMIO to main memory. Otherwise, copy from
  * main memory to MMIO.
  */
-static void mmio_region_memcpy32(mmio_region_t base, uint32_t offset, void *buf,
-                                 size_t len, bool from_mmio) {
-  if (len == 0) {
-    return;
-  }
+static void mmio_region_memcpy32(mmio_region_t base, uint32_t offset, void *buf, size_t len, bool from_mmio) {
+  if (len == 0) { return; }
 
   // First, bring the MMIO address into word alignment, so we can do
   // full-word I/O rather than partial word I/O.
@@ -52,9 +48,7 @@ static void mmio_region_memcpy32(mmio_region_t base, uint32_t offset, void *buf,
     // Note that we might be doing less I/O than the misalignment requires; we
     // might be off by a single byte, but not have the full three bytes for full
     // realignment.
-    if (realignment > len) {
-      realignment = len;
-    }
+    if (realignment > len) { realignment = len; }
 
     // Converts `offset`, which points to a subword boundary, to point to the
     // start of the current word it points into.
@@ -83,9 +77,7 @@ static void mmio_region_memcpy32(mmio_region_t base, uint32_t offset, void *buf,
     // the same case as a full word, since we're already word aligned (if
     // this would be a subword read, it would end the loop anyway).
     uint32_t bytes_to_copy = sizeof(uint32_t);
-    if (bytes_to_copy > len) {
-      bytes_to_copy = len;
-    }
+    if (bytes_to_copy > len) { bytes_to_copy = len; }
 
     // Read the current word from MMIO.
     uint32_t current_word = 0;
@@ -112,20 +104,17 @@ static void mmio_region_memcpy32(mmio_region_t base, uint32_t offset, void *buf,
   }
 }
 
-void mmio_region_memcpy_from_mmio32(mmio_region_t base, uint32_t offset,
-                                    void *dest, size_t len) {
+void mmio_region_memcpy_from_mmio32(mmio_region_t base, uint32_t offset, void *dest, size_t len) {
   mmio_region_memcpy32(base, offset, dest, len, true);
 }
 
-void mmio_region_memcpy_to_mmio32(mmio_region_t base, uint32_t offset,
-                                  const void *src, size_t len) {
+void mmio_region_memcpy_to_mmio32(mmio_region_t base, uint32_t offset, const void *src, size_t len) {
   // Below `const` cast is necessary to be able to use `mmio_region_memcpy32`
   // for both read and write operations but `from_mmio = false` means that `src`
   // will never be written to.
   mmio_region_memcpy32(base, offset, (void *)src, len, false);
 }
 
-
 #ifdef __cplusplus
 }
-#endif  // __cplusplus
+#endif // __cplusplus

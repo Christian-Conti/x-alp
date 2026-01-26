@@ -15,4 +15,4 @@
 
 #define asm __asm__
 
-#endif  // OPENTITAN_SW_DEVICE_LIB_BASE_STDASM_H_
+#endif // OPENTITAN_SW_DEVICE_LIB_BASE_STDASM_H_

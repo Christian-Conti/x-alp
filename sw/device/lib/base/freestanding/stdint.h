@@ -137,4 +137,4 @@ typedef __INTMAX_TYPE__ intmax_t;
 #define UINT64_C(value) (value##ULL)  /**< @hideinitializer */
 #define UINTMAX_C(value) (value##ULL) /**< @hideinitializer */
 
-#endif  // OPENTITAN_SW_DEVICE_LIB_BASE_FREESTANDING_STDINT_H_
+#endif // OPENTITAN_SW_DEVICE_LIB_BASE_FREESTANDING_STDINT_H_

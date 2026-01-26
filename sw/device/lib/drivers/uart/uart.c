@@ -9,20 +9,20 @@ extern "C" {
 #endif
 #include "uart.h"
 
-#include <stddef.h>
-#include <stdint.h>
 #include "assert.h"
 #include "bitfield.h"
-#include "mmio.h"
 #include "error.h"
+#include "mmio.h"
+#include <stddef.h>
+#include <stdint.h>
 
-#include "uart_regs.h"  // Generated.
+#include "uart_regs.h" // Generated.
 
-//#ifdef __cplusplus
+// #ifdef __cplusplus
 static_assert((1UL << NCO_WIDTH) - 1 == UART_CTRL_NCO_MASK, "Bad value for NCO_WIDTH");
-//#else
+// #else
 static_assert((1UL << NCO_WIDTH) - 1 == UART_CTRL_NCO_MASK, "Bad value for NCO_WIDTH");
-//#endif
+// #endif
 
 static void uart_reset(const uart_t *uart) {
   mmio_region_write32(uart->base_addr, UART_CTRL_REG_OFFSET, 0u);
@@ -40,20 +40,14 @@ static void uart_reset(const uart_t *uart) {
 }
 
 system_error_t uart_init(const uart_t *uart) {
-  if (uart == NULL) {
-    return kErrorUartInvalidArgument;
-  }
+  if (uart == NULL) { return kErrorUartInvalidArgument; }
 
-  if (uart->baudrate == 0 || uart->clk_freq_hz == 0) {
-    return kErrorUartInvalidArgument;
-  }
+  if (uart->baudrate == 0 || uart->clk_freq_hz == 0) { return kErrorUartInvalidArgument; }
 
   uint32_t nco_masked = uart->nco & UART_CTRL_NCO_MASK;
 
   // Requested baudrate is too high for the given clock frequency.
-  if (uart->nco != nco_masked) {
-    return kErrorUartBadBaudRate;
-  }
+  if (uart->nco != nco_masked) { return kErrorUartBadBaudRate; }
 
   // Must be called before the first write to any of the UART registers.
   uart_reset(uart);
@@ -88,14 +82,12 @@ static bool uart_rx_empty(const uart_t *uart) {
 
 void uart_putchar(const uart_t *uart, uint8_t byte) {
   // If the transmit FIFO is full, wait.
-  while (uart_tx_full(uart)) {
-  }
+  while (uart_tx_full(uart)) {}
   uint32_t reg = bitfield_field32_write(0, UART_WDATA_WDATA_FIELD, byte);
   mmio_region_write32(uart->base_addr, UART_WDATA_REG_OFFSET, reg);
 
   // If the transmitter is active, wait.
-  while (!uart_tx_idle(uart)) {
-  }
+  while (!uart_tx_idle(uart)) {}
 }
 
 static uint8_t uart_rx_fifo_read(const uart_t *uart) {
@@ -105,8 +97,8 @@ static uint8_t uart_rx_fifo_read(const uart_t *uart) {
 }
 
 /**
-* Read 1 byte from the RX FIFO.
-*/
+ * Read 1 byte from the RX FIFO.
+ */
 size_t uart_getchar(const uart_t *uart, uint8_t *data) {
   while (uart_rx_empty(uart));
   *data = uart_rx_fifo_read(uart);
@@ -143,9 +135,8 @@ size_t uart_sink(void *uart, const char *data, size_t len) {
   return uart_write((const uart_t *)uart, (const uint8_t *)data, len);
 }
 
-__attribute__((weak, optimize("O0"))) void handler_irq_uart(uint32_t id)
-{
- // Replace this function with a non-weak implementation
+__attribute__((weak, optimize("O0"))) void handler_irq_uart(uint32_t id) {
+  // Replace this function with a non-weak implementation
 }
 
 #ifdef __cplusplus

@@ -6,61 +6,65 @@
 // Christopher Reinwardt <creinwar@student.ethz.ch>
 // Paul Scheffler <paulsc@iis.ee.ethz.ch>
 
-#include <stdint.h>
-#include "util.h"
 #include "core_v_mcu.h"
 #include "soc_ctrl_regs.h"
+#include "util.h"
+#include <stdint.h>
 
 extern int boot_next_stage(void *);
 
 int boot_passive(uint64_t core_freq) {
-    volatile uint32_t main_address = *reg32(SOC_CTRL_START_ADDRESS, SOC_CTRL_BOOT_ADDRESS_REG_OFFSET);
-    
-    while (*reg32(SOC_CTRL_START_ADDRESS, SOC_CTRL_BOOT_EXIT_LOOP_REG_OFFSET) == 0) ;
-    
-    return boot_next_stage((void *)(main_address));
+  volatile uint32_t main_address = *reg32(SOC_CTRL_START_ADDRESS, SOC_CTRL_BOOT_ADDRESS_REG_OFFSET);
+
+  while (*reg32(SOC_CTRL_START_ADDRESS, SOC_CTRL_BOOT_EXIT_LOOP_REG_OFFSET) == 0);
+
+  return boot_next_stage((void *)(main_address));
 }
 
 int boot_spi_sdcard(uint64_t core_freq, uint64_t rtc_freq) {
-    // // Initialize device handle
-    // spi_sdcard_t device = {
-    //     .spi_freq = MIN(24 * 1000 * 1000, core_freq / 2), // Up to half core freq or 24MHz (<25MHz)
-    //     .csid = 0,
-    //     .csid_dummy = SPI_HOST_PARAM_NUM_C_S - 1 // Last physical CS is designated dummy
-    // };
-    // CHECK_CALL(spi_sdcard_init(&device, core_freq))
-    // // Wait for device to be initialized (1ms, round up extra tick to be sure)
-    // clint_spin_until((1000 * rtc_freq) / (1000 * 1000) + 1);
-    // return gpt_boot_part_else_raw(spi_sdcard_read_checkcrc, &device, &__base_spm,
-    //                               __BOOT_SPM_MAX_LBAS, __BOOT_ZSL_TYPE_GUID, 0);
+  // // Initialize device handle
+  // spi_sdcard_t device = {
+  //     .spi_freq = MIN(24 * 1000 * 1000, core_freq / 2), // Up to half core
+  //     freq or 24MHz (<25MHz) .csid = 0, .csid_dummy = SPI_HOST_PARAM_NUM_C_S
+  //     - 1 // Last physical CS is designated dummy
+  // };
+  // CHECK_CALL(spi_sdcard_init(&device, core_freq))
+  // // Wait for device to be initialized (1ms, round up extra tick to be sure)
+  // clint_spin_until((1000 * rtc_freq) / (1000 * 1000) + 1);
+  // return gpt_boot_part_else_raw(spi_sdcard_read_checkcrc, &device,
+  // &__base_spm,
+  //                               __BOOT_SPM_MAX_LBAS, __BOOT_ZSL_TYPE_GUID,
+  //                               0);
 }
 
 int boot_spi_s25fs512s(uint64_t core_freq, uint64_t rtc_freq) {
-    // // Initialize device handle
-    // spi_s25fs512s_t device = {
-    //     .spi_freq = MIN(40 * 1000 * 1000, core_freq / 4), // Up to quarter core freq or 40MHz
-    //     .csid = 1};
-    // CHECK_CALL(spi_s25fs512s_init(&device, core_freq))
-    // // Wait for device to be initialized (t_PU = 300us, round up extra tick to be sure)
-    // clint_spin_until((350 * rtc_freq) / (1000 * 1000) + 1);
-    // return gpt_boot_part_else_raw(spi_s25fs512s_single_read, &device, &__base_spm,
-    //                               __BOOT_SPM_MAX_LBAS, __BOOT_ZSL_TYPE_GUID, 0);
+  // // Initialize device handle
+  // spi_s25fs512s_t device = {
+  //     .spi_freq = MIN(40 * 1000 * 1000, core_freq / 4), // Up to quarter core
+  //     freq or 40MHz .csid = 1};
+  // CHECK_CALL(spi_s25fs512s_init(&device, core_freq))
+  // // Wait for device to be initialized (t_PU = 300us, round up extra tick to
+  // be sure) clint_spin_until((350 * rtc_freq) / (1000 * 1000) + 1); return
+  // gpt_boot_part_else_raw(spi_s25fs512s_single_read, &device, &__base_spm,
+  //                               __BOOT_SPM_MAX_LBAS, __BOOT_ZSL_TYPE_GUID,
+  //                               0);
 }
 
 int boot_i2c_24fc1025(uint64_t core_freq) {
-    // // Initialize device handle
-    // dif_i2c_t i2c;
-    // CHECK_CALL(i2c_24fc1025_init(&i2c, core_freq))
-    // return gpt_boot_part_else_raw(i2c_24fc1025_read, &i2c, &__base_spm, __BOOT_SPM_MAX_LBAS,
-    //                               __BOOT_ZSL_TYPE_GUID, 0);
+  // // Initialize device handle
+  // dif_i2c_t i2c;
+  // CHECK_CALL(i2c_24fc1025_init(&i2c, core_freq))
+  // return gpt_boot_part_else_raw(i2c_24fc1025_read, &i2c, &__base_spm,
+  // __BOOT_SPM_MAX_LBAS,
+  //                               __BOOT_ZSL_TYPE_GUID, 0);
 }
 
 int main() {
-    volatile uint32_t main_address = *reg32(SOC_CTRL_START_ADDRESS, SOC_CTRL_BOOT_ADDRESS_REG_OFFSET);
-    
-    while (*reg32(SOC_CTRL_START_ADDRESS, SOC_CTRL_BOOT_EXIT_LOOP_REG_OFFSET) == 0) ;
-    
-    boot_next_stage((void *)(main_address));
+  volatile uint32_t main_address = *reg32(SOC_CTRL_START_ADDRESS, SOC_CTRL_BOOT_ADDRESS_REG_OFFSET);
 
-    return 0;
+  while (*reg32(SOC_CTRL_START_ADDRESS, SOC_CTRL_BOOT_EXIT_LOOP_REG_OFFSET) == 0);
+
+  boot_next_stage((void *)(main_address));
+
+  return 0;
 }

@@ -29,8 +29,7 @@ extern ssize_t recv_start, recv_end;
 int rbs_init(uint16_t port);
 
 // Do a bit of work.
-void rbs_tick(unsigned char *jtag_tck, unsigned char *jtag_tms,
-              unsigned char *jtag_tdi, unsigned char *jtag_trstn,
+void rbs_tick(unsigned char *jtag_tck, unsigned char *jtag_tms, unsigned char *jtag_tdi, unsigned char *jtag_trstn,
               unsigned char jtag_tdo);
 
 unsigned char rbs_done();

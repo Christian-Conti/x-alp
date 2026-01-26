@@ -4,7 +4,7 @@
 
 #ifdef __cplusplus
 extern "C" {
-#endif  // __cplusplus
+#endif // __cplusplus
 
 #include "memory.h"
 
@@ -22,23 +22,19 @@ extern "C" {
 void *memcpy(void *__restrict dest, const void *__restrict src, size_t len) {
   uint8_t *dest8 = (uint8_t *)dest;
   uint8_t *src8 = (uint8_t *)src;
-  for (size_t i = 0; i < len; ++i) {
-    dest8[i] = src8[i];
-  }
+  for (size_t i = 0; i < len; ++i) { dest8[i] = src8[i]; }
   return dest;
 }
-#endif  // !defined(HOST_BUILD)
+#endif // !defined(HOST_BUILD)
 
 #if !defined(HOST_BUILD)
 void *memset(void *dest, int value, size_t len) {
   uint8_t *dest8 = (uint8_t *)dest;
   uint8_t value8 = (uint8_t)value;
-  for (size_t i = 0; i < len; ++i) {
-    dest8[i] = value8;
-  }
+  for (size_t i = 0; i < len; ++i) { dest8[i] = value8; }
   return dest;
 }
-#endif  // !defined(HOST_BUILD)
+#endif // !defined(HOST_BUILD)
 
 #if !defined(HOST_BUILD)
 enum {
@@ -59,35 +55,29 @@ int memcmp(const void *lhs, const void *rhs, size_t len) {
   }
   return kMemCmpEq;
 }
-#endif  // !defined(HOST_BUILD)
+#endif // !defined(HOST_BUILD)
 
 #if !defined(HOST_BUILD)
 void *memchr(const void *ptr, int value, size_t len) {
   uint8_t *ptr8 = (uint8_t *)ptr;
   uint8_t value8 = (uint8_t)value;
   for (size_t i = 0; i < len; ++i) {
-    if (ptr8[i] == value8) {
-      return ptr8 + i;
-    }
+    if (ptr8[i] == value8) { return ptr8 + i; }
   }
   return NULL;
 }
-#endif  // !defined(HOST_BUILD)
+#endif // !defined(HOST_BUILD)
 
 void *memrchr(const void *ptr, int value, size_t len) {
   uint8_t *ptr8 = (uint8_t *)ptr;
   uint8_t value8 = (uint8_t)value;
   for (size_t i = 0; i < len; ++i) {
     size_t idx = len - i - 1;
-    if (ptr8[idx] == value8) {
-      return ptr8 + idx;
-    }
+    if (ptr8[idx] == value8) { return ptr8 + idx; }
   }
   return NULL;
 }
 
-
-
 #ifdef __cplusplus
 }
-#endif  // __cplusplus
+#endif // __cplusplus

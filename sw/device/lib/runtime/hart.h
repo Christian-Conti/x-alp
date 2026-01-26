@@ -7,8 +7,7 @@
 
 #ifdef __cplusplus
 extern "C" {
-#endif  // __cplusplus
-
+#endif // __cplusplus
 
 #include <stddef.h>
 #include <stdnoreturn.h>
@@ -27,11 +26,12 @@ extern "C" {
  *
  * This function may behave as if it is a no-op.
  */
-static inline void wait_for_interrupt(void) { asm volatile("wfi"); }
-
+static inline void wait_for_interrupt(void) {
+  asm volatile("wfi");
+}
 
 #ifdef __cplusplus
 }
-#endif  // __cplusplus
+#endif // __cplusplus
 
-#endif  // OPENTITAN_SW_DEVICE_LIB_RUNTIME_HART_H_
+#endif // OPENTITAN_SW_DEVICE_LIB_RUNTIME_HART_H_

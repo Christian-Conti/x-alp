@@ -19,7 +19,7 @@
 
 #ifdef __cplusplus
 extern "C" {
-#endif  // __cplusplus
+#endif // __cplusplus
 
 /**
  * Computes the number of elements in the given array.
@@ -174,7 +174,7 @@ void *memchr(const void *ptr, int value, size_t len);
 void *memrchr(const void *ptr, int value, size_t len);
 
 #ifdef __cplusplus
-}  // extern "C"
-#endif  // __cplusplus
+} // extern "C"
+#endif // __cplusplus
 
-#endif  // OPENTITAN_SW_DEVICE_LIB_BASE_MEMORY_H_
+#endif // OPENTITAN_SW_DEVICE_LIB_BASE_MEMORY_H_

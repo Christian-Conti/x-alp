@@ -10,7 +10,7 @@
 
 #ifdef __cplusplus
 extern "C" {
-#endif  // __cplusplus
+#endif // __cplusplus
 
 /**
  * @file
@@ -24,8 +24,9 @@ extern "C" {
 #define BITFIELD_WARN_UNUSED_RESULT __attribute__((warn_unused_result))
 
 /**
- * Masks used for the bitfield operations to access different amount of bits inside a register
-*/
+ * Masks used for the bitfield operations to access different amount of bits
+ * inside a register
+ */
 #define BIT_MASK_1 0x01
 #define BIT_MASK_2 0x02
 #define BIT_MASK_3 0x03
@@ -74,8 +75,7 @@ typedef struct bitfield_field32 {
  * @return Zero-extended `field` from `bitfield`.
  */
 BITFIELD_WARN_UNUSED_RESULT
-static inline uint32_t bitfield_field32_read(uint32_t bitfield,
-                                      bitfield_field32_t field) {
+static inline uint32_t bitfield_field32_read(uint32_t bitfield, bitfield_field32_t field) {
   return (bitfield >> field.index) & field.mask;
 }
 
@@ -92,9 +92,7 @@ static inline uint32_t bitfield_field32_read(uint32_t bitfield,
  * @return `bitfield` with `field` set to `value`.
  */
 BITFIELD_WARN_UNUSED_RESULT
-static inline uint32_t bitfield_field32_write(uint32_t bitfield,
-                                       bitfield_field32_t field,
-                                       uint32_t value) {
+static inline uint32_t bitfield_field32_write(uint32_t bitfield, bitfield_field32_t field, uint32_t value) {
   bitfield &= ~(field.mask << field.index);
   bitfield |= (value & field.mask) << field.index;
   return bitfield;
@@ -123,10 +121,10 @@ typedef uint32_t bitfield_bit32_index_t;
  * @return A 1-bit field that corresponds to `bit_index`.
  */
 BITFIELD_WARN_UNUSED_RESULT
-static inline bitfield_field32_t bitfield_bit32_to_field32(
-    bitfield_bit32_index_t bit_index) {
+static inline bitfield_field32_t bitfield_bit32_to_field32(bitfield_bit32_index_t bit_index) {
   return (bitfield_field32_t){
-      .mask = 0x1, .index = bit_index,
+      .mask = 0x1,
+      .index = bit_index,
   };
 }
 
@@ -138,10 +136,8 @@ static inline bitfield_field32_t bitfield_bit32_to_field32(
  * @return `true` if the bit was one, `false` otherwise.
  */
 BITFIELD_WARN_UNUSED_RESULT
-static inline bool bitfield_bit32_read(uint32_t bitfield,
-                                bitfield_bit32_index_t bit_index) {
-  return bitfield_field32_read(bitfield,
-                               bitfield_bit32_to_field32(bit_index)) == 0x1u;
+static inline bool bitfield_bit32_read(uint32_t bitfield, bitfield_bit32_index_t bit_index) {
+  return bitfield_field32_read(bitfield, bitfield_bit32_to_field32(bit_index)) == 0x1u;
 }
 
 /**
@@ -153,17 +149,14 @@ static inline bool bitfield_bit32_read(uint32_t bitfield,
  * @return `bitfield` with the `bit_index`th bit set to `value`.
  */
 BITFIELD_WARN_UNUSED_RESULT
-static inline uint32_t bitfield_bit32_write(uint32_t bitfield,
-                                     bitfield_bit32_index_t bit_index,
-                                     bool value) {
-  return bitfield_field32_write(bitfield, bitfield_bit32_to_field32(bit_index),
-                                value ? 0x1u : 0x0u);
+static inline uint32_t bitfield_bit32_write(uint32_t bitfield, bitfield_bit32_index_t bit_index, bool value) {
+  return bitfield_field32_write(bitfield, bitfield_bit32_to_field32(bit_index), value ? 0x1u : 0x0u);
 }
 
 /**
  * Reads a value from `bitfield` based on given "mask" and "index"
  *
- * This function uses the `mask` and 'index' parameters to read the value 
+ * This function uses the `mask` and 'index' parameters to read the value
  * from `bitfield`.
  * The resulting value will be shifted right and zero-extended so the field's
  * zero-bit is the return value's zero-bit.
@@ -174,17 +167,14 @@ static inline uint32_t bitfield_bit32_write(uint32_t bitfield,
  * @return Zero-extended `field` from `bitfield`.
  */
 BITFIELD_WARN_UNUSED_RESULT
-static inline uint32_t bitfield_read(uint32_t bitfield, 
-                              uint32_t mask, 
-                              uint32_t index) 
-{
+static inline uint32_t bitfield_read(uint32_t bitfield, uint32_t mask, uint32_t index) {
   return (bitfield >> index) & mask;
 }
 
 /**
  * Writes `value` in `bitfield` based on given "mask" and "index"
  *
- * This function uses the `mask` and 'index' parameters to set specific bits 
+ * This function uses the `mask` and 'index' parameters to set specific bits
  * in `bitfield`.
  * The relevant portion of `bitfield` is zeroed before the bits are set to
  * `value`.
@@ -195,11 +185,7 @@ static inline uint32_t bitfield_read(uint32_t bitfield,
  * @return `bitfield` with `field` set to `value`.
  */
 BITFIELD_WARN_UNUSED_RESULT
-static inline uint32_t bitfield_write(uint32_t bitfield,
-                                       uint32_t mask, 
-                                       uint32_t index,
-                                       uint32_t value) 
-{
+static inline uint32_t bitfield_write(uint32_t bitfield, uint32_t mask, uint32_t index, uint32_t value) {
   bitfield &= ~(mask << index);
   bitfield |= (value & mask) << index;
   return bitfield;
@@ -343,7 +329,7 @@ static inline uint32_t bitfield_byteswap32(uint32_t bitfield) {
 }
 
 #ifdef __cplusplus
-}  // extern "C"
-#endif  // __cplusplus
+} // extern "C"
+#endif // __cplusplus
 
-#endif  // OPENTITAN_SW_DEVICE_LIB_BASE_BITFIELD_H_
+#endif // OPENTITAN_SW_DEVICE_LIB_BASE_BITFIELD_H_

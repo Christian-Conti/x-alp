@@ -32,4 +32,4 @@ typedef enum hardened_bool {
   kHardenedBoolFalse = 0x1d4u,
 } hardened_bool_t;
 
-#endif  // OPENTITAN_SW_DEVICE_LIB_BASE_HARDENED_H_
+#endif // OPENTITAN_SW_DEVICE_LIB_BASE_HARDENED_H_

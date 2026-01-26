@@ -172,6 +172,7 @@ verilator-waves: .check-gtkwave
 ## Format
 format: .check-fusesoc
 	@$(FUSESOC) $(FUSESOC_FLAGS) run --no-export --target format $(XALP)
+	git ls-files -z -- '*.c' '*.h' '*.cpp' '*.hpp' ':(exclude)build/**' ':(exclude)**/vendor/**' | xargs -0 clang-format -i -style=file:util/.clang-format
 
 ## Lint
 lint: .check-fusesoc
