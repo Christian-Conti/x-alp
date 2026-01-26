@@ -158,11 +158,11 @@ package cva6_config_pkg;
         NrExecuteRegionRules: unsigned'(2),
         ExecuteRegionAddrBase:
         1024'(
-        {core_v_mcu_pkg::BOOT_ROM_REG_START_ADDR, core_v_mcu_pkg::MEM_BUS_BASE_ADDR}
+        {core_v_mcu_pkg::BOOT_ROM_REG_START_ADDR, core_v_mcu_pkg::CODE_ZONE_BASE_ADDR}
         ),
         ExecuteRegionLength:
         1024'(
-        {core_v_mcu_pkg::BOOT_ROM_REG_SIZE, core_v_mcu_pkg::MEM_BUS_SIZE}
+        {core_v_mcu_pkg::BOOT_ROM_REG_SIZE, core_v_mcu_pkg::CODE_ZONE_SIZE}
         ),
         NrCachedRegionRules: unsigned'(1),
         CachedRegionAddrBase: 1024'({core_v_mcu_pkg::MEM_BUS_BASE_ADDR}),

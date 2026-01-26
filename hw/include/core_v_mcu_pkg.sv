@@ -56,6 +56,14 @@ package core_v_mcu_pkg;
     localparam addr_t PERIPH_BUS_SIZE = 64'h0000_0000_0FFF_FFFF;
     localparam addr_t PERIPH_BUS_END_ADDR = PERIPH_BUS_BASE_ADDR + PERIPH_BUS_SIZE;
 
+    // Code and Data memory zones (cacheable)
+    localparam addr_t CODE_ZONE_BASE_ADDR = 64'h0000_0000_0000_0000;
+    localparam addr_t CODE_ZONE_SIZE = 64'h0000_0000_0000_8000;  // 32 KB
+    localparam addr_t CODE_ZONE_END_ADDR = CODE_ZONE_BASE_ADDR + CODE_ZONE_SIZE;
+    localparam addr_t DATA_ZONE_BASE_ADDR = 64'h0000_0000_0000_8000;
+    localparam addr_t DATA_ZONE_SIZE = 64'h0000_0000_0000_8000;  // 32 KB
+    localparam addr_t DATA_ZONE_END_ADDR = DATA_ZONE_BASE_ADDR + DATA_ZONE_SIZE;
+
     // Register indexes
     localparam int unsigned SOC_CTRL_REG_IDX = 0;
     localparam int unsigned BOOT_ROM_REG_IDX = 1;
