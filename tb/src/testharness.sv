@@ -18,6 +18,7 @@ module testharness #(
     // parameter int unsigned SelectedCfg  = 32'd0,
     // parameter bit          UseDramSys   = 1'b0,
     // parameter int unsigned DRAM_LATENCY = 32'd1,
+    parameter int unsigned CLK_FREQUENCY = 'd100_000,  //KHz
     parameter bit USE_JTAG_DPI = 1'b0
 ) (
     input logic       clk_i,
@@ -89,8 +90,12 @@ module testharness #(
     // DUT
     //----
     x_alp u_x_alp (
-        .clk_i (clk_i),
-        .rst_ni(rst_ni)
+        .clk_i       (clk_i),
+        .rst_ni      (rst_ni),
+        .uart_tx_o   (uart_tx),
+        .uart_rx_i   (uart_rx),
+        .exit_valid_o(exit_valid_o),
+        .exit_value_o(exit_value_o)
     );
 
     // UNSUPPORTED FEATURES in VERILATOR
@@ -110,57 +115,18 @@ module testharness #(
 `endif
 
 
-    //-----------
-    // Ext Periph
-    //-----------
-`ifndef VERILATOR
-    axi_mst_req_t axi_slink_mst_req;
-    axi_mst_rsp_t axi_slink_mst_rsp;
+    uartdpi #(
+        .BAUD('d256000),
+        .FREQ(CLK_FREQUENCY * 1000),  //Hz
+        .NAME("uart0")
+    ) i_uart0 (
+        .clk_i,
+        .rst_ni,
+        .tx_o(uart_rx),
+        .rx_i(uart_tx)
+    );
 
-    assign axi_slink_mst_req = '0;
-`endif
 
-    // vip_x_alp_soc #(
-    // .DutCfg           (DutCfg),
-    // .UseDramSys       (UseDramSys),
-    // .UseJtagDPI       (USE_JTAG_DPI),
-    // .DramLatency      (DRAM_LATENCY),
-    // .axi_ext_llc_req_t(axi_llc_req_t),
-    // .axi_ext_llc_rsp_t(axi_llc_rsp_t),
-    // .axi_ext_mst_req_t(axi_mst_req_t),
-    // .axi_ext_mst_rsp_t(axi_mst_rsp_t)
-    // ) vip (
-    // .clk(clk_i),
-    // .rst_n(rst_ni)
-    // TODO:Connect other signals
-    //       .axi_llc_mst_req(axi_llc_mst_req),
-    //       .axi_llc_mst_rsp(axi_llc_mst_rsp),
-    //       // JTAG
-    //       .jtag_tck(sim_jtag_tck),
-    //       .jtag_trst_n(sim_jtag_trst_n),
-    //       .jtag_tms(sim_jtag_tms),
-    //       .jtag_tdi(sim_jtag_tdi),
-    //       .jtag_tdo(sim_jtag_tdo),
-    //       .uart_tx(uart_tx),
-    // `ifndef VERILATOR
-    //       .uart_rx(uart_rx),
-    //       .test_mode(),
-    //       .boot_mode(boot_mode_i),
-    //       .axi_slink_mst_req(axi_slink_mst_req),
-    //       .axi_slink_mst_rsp(),
-    //       .i2c_sda(),  // unsupported in verilator
-    //       .i2c_scl(),  // unsupported in verilator
-    //       .spih_sck(),  // unsupported in verilator
-    //       .spih_csb(),  // unsupported in verilator
-    //       .spih_sd(),  // unsupported in verilator
-    //       .slink_rcv_clk_i(slink_rcv_clk),
-    //       .slink_rcv_clk_o('0),
-    //       .slink_i(slink),
-    //       .slink_o('0)
-    // `else
-    //       .uart_rx(uart_rx)
-    // `endif
-    // );
 
     // JTAG BOOT MODE
     // --------------

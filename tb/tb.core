@@ -15,6 +15,15 @@ filesets:
     files:
     - misc/tb-waivers.vlt
 
+  uartdpi:
+    depend:
+    - lowrisc:dv_dpi:uartdpi
+
+  systemverilog_only_uart:
+    files:
+    - ../hw/vendor/lowrisc_opentitan/hw/dv/dpi/uartdpi/uartdpi.sv
+    file_type: systemVerilogSource
+
   verilator_tb:
     files:
     - src/verilator/tb_utils.hh:
@@ -38,3 +47,4 @@ targets:
     - testbench
     - tool_verilator ? (verilator_tb_waivers)
     - tool_verilator ? (verilator_tb)
+    - tool_verilator ? (uartdpi)
