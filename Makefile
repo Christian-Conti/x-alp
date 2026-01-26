@@ -129,8 +129,7 @@ app: clean-app
 	echo "\033[0;31mI would start by checking b) or c) if I were you!\033[0m"; \
 	exit 1; \
 	}
-	@cp -r sw/build build/sw
-# 	@python scripts/building/mem_usage.py
+	@$(PYTHON) util/mem_usage.py
 
 ## Just list the different application names available
 app-list:
@@ -157,10 +156,12 @@ verilator-run:
 		--MAX_CYCLES=$(MAX_CYCLES) \
 		--trace=true \
 		$(FUSESOC_ARGS)
+	@echo "Simulation finished."
+	@cat ./build/x-heep_x-alp_x-alp_0.0.1/sim-verilator/uart0.log
 
 ## Verilator wave viewer
 verilator-waves: .check-gtkwave
-	@gtkwave build/x-heep_x-alp_x-alp_0.0.1/sim-verilator/waveform.fst wave.gtkw
+	@gtkwave build/x-heep_x-alp_x-alp_0.0.1/sim-verilator/waveform.fst util/wave.gtkw
 
 # ============================================================================
 # Code Quality

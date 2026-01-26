@@ -1,15 +1,15 @@
 [*]
 [*] GTKWave Analyzer v3.4.0 (w)1999-2022 BSI
-[*] Fri Jan 23 18:38:54 2026
+[*] Mon Jan 26 17:12:49 2026
 [*]
 [dumpfile] "/Users/gigi/workspace/x-heep/x-alp/build/x-heep_x-alp_x-alp_0.0.1/sim-verilator/waveform.fst"
-[dumpfile_mtime] "Fri Jan 23 18:30:49 2026"
-[dumpfile_size] 8569363
+[dumpfile_mtime] "Mon Jan 26 17:06:58 2026"
+[dumpfile_size] 2003186
 [savefile] "/Users/gigi/workspace/x-heep/x-alp/wave.gtkw"
-[timestart] 11153900
+[timestart] 56582100
 [size] 2560 1317
 [pos] 1080 126
-*-15.672823 11298500 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+*-15.228822 56735000 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
 [markername] AA
 [markername] BB
 [markername] CC
@@ -38,6 +38,7 @@
 [markername] ZZ
 [treeopen] TOP.
 [treeopen] TOP.testharness.
+[treeopen] TOP.testharness.i_uart0.
 [treeopen] TOP.testharness.u_x_alp.
 [treeopen] TOP.testharness.u_x_alp.u_core_v_mcu.
 [treeopen] TOP.testharness.u_x_alp.u_core_v_mcu.u_bus_subsystem.axi_slave_req[0].
@@ -47,20 +48,19 @@
 [treeopen] TOP.testharness.u_x_alp.u_core_v_mcu.u_cpu_subsystem.
 [treeopen] TOP.testharness.u_x_alp.u_core_v_mcu.u_cpu_subsystem.bus_req_o.
 [treeopen] TOP.testharness.u_x_alp.u_core_v_mcu.u_cpu_subsystem.bus_rsp_i.
-[treeopen] TOP.testharness.u_x_alp.u_core_v_mcu.u_cpu_subsystem.cpu_inst.
 [treeopen] TOP.testharness.u_x_alp.u_core_v_mcu.u_cpu_subsystem.cpu_inst.gen_cache_wt.i_cache_subsystem.i_cva6_icache.gen_sram[0].data_sram.genblk1.
-[treeopen] TOP.testharness.u_x_alp.u_core_v_mcu.u_cpu_subsystem.cpu_inst.id_stage_i.
-[treeopen] TOP.testharness.u_x_alp.u_core_v_mcu.u_cpu_subsystem.cpu_inst.issue_stage_i.
-[treeopen] TOP.testharness.u_x_alp.u_core_v_mcu.u_cpu_subsystem.cpu_inst.issue_stage_i.i_issue_read_operands.
-[treeopen] TOP.testharness.u_x_alp.u_core_v_mcu.u_cpu_subsystem.cpu_inst.issue_stage_i.i_issue_read_operands.gen_asic_regfile.
 [treeopen] TOP.testharness.u_x_alp.u_core_v_mcu.u_cpu_subsystem.cpu_inst.issue_stage_i.i_issue_read_operands.gen_asic_regfile.i_ariane_regfile.
 [treeopen] TOP.testharness.u_x_alp.u_core_v_mcu.u_memory_subsystem.
-[treeopen] TOP.testharness.u_x_alp.u_core_v_mcu.u_memory_subsystem.bus_req_i.
-[treeopen] TOP.testharness.u_x_alp.u_core_v_mcu.u_memory_subsystem.bus_rsp_o.
+[treeopen] TOP.testharness.u_x_alp.u_core_v_mcu.u_memory_subsystem.bus_req_i.ar.
+[treeopen] TOP.testharness.u_x_alp.u_core_v_mcu.u_memory_subsystem.u_axi_to_mem.i_axi_to_detailed_mem.
 [treeopen] TOP.testharness.u_x_alp.u_core_v_mcu.u_memory_subsystem.u_ram0.
 [treeopen] TOP.testharness.u_x_alp.u_core_v_mcu.u_soc_ctrl.reg_req_i.
 [treeopen] TOP.testharness.u_x_alp.u_core_v_mcu.u_soc_ctrl.reg_rsp_o.
 [treeopen] TOP.testharness.u_x_alp.u_core_v_mcu.u_soc_ctrl.soc_ctrl_reg_top_i.
+[treeopen] TOP.testharness.u_x_alp.u_core_v_mcu.u_uart_subsystem.
+[treeopen] TOP.testharness.u_x_alp.u_core_v_mcu.u_uart_subsystem.uart_i.
+[treeopen] TOP.testharness.u_x_alp.u_core_v_mcu.u_uart_subsystem.uart_i.uart_core.reg2hw.status.
+[treeopen] TOP.testharness.u_x_alp.u_core_v_mcu.u_uart_subsystem.uart_i.uart_core.reg2hw.timeout_ctrl.
 [sst_width] 404
 [signals_width] 365
 [sst_expanded] 1
@@ -69,8 +69,9 @@
 TOP.clk_i
 @28
 TOP.rst_ni
-@800200
+@c00200
 -CPU REQ/RSP
+@800200
 -AR
 @22
 [color] 5
@@ -172,7 +173,7 @@ TOP.testharness.u_x_alp.u_core_v_mcu.u_cpu_subsystem.bus_req_o.b_ready
 TOP.testharness.u_x_alp.u_core_v_mcu.u_cpu_subsystem.bus_rsp_i.b_valid
 @1401200
 -B
-@800200
+@c00200
 -R
 @22
 [color] 2
@@ -192,12 +193,14 @@ TOP.testharness.u_x_alp.u_core_v_mcu.u_cpu_subsystem.bus_rsp_i.r.user[63:0]
 TOP.testharness.u_x_alp.u_core_v_mcu.u_cpu_subsystem.bus_req_o.r_ready
 [color] 2
 TOP.testharness.u_x_alp.u_core_v_mcu.u_cpu_subsystem.bus_rsp_i.r_valid
-@1000200
+@1401200
 -R
 -CPU REQ/RSP
 @c00200
 -AXI-XBAR
+@800200
 -M0
+@c00200
 -AR
 @22
 TOP.testharness.u_x_alp.u_core_v_mcu.u_bus_subsystem.i_axi_xbar.mst_ports_req_o[0].ar.addr[63:0]
@@ -290,10 +293,10 @@ TOP.testharness.u_x_alp.u_core_v_mcu.u_bus_subsystem.i_axi_xbar.mst_ports_req_o[
 TOP.testharness.u_x_alp.u_core_v_mcu.u_bus_subsystem.i_axi_xbar.mst_ports_resp_i[0].r_valid
 @1401200
 -R
+@1000200
 -M0
-@800200
--M1
 @c00200
+-M1
 -AR
 @22
 TOP.testharness.u_x_alp.u_core_v_mcu.u_bus_subsystem.i_axi_xbar.mst_ports_req_o[1].ar.addr[63:0]
@@ -386,11 +389,9 @@ TOP.testharness.u_x_alp.u_core_v_mcu.u_bus_subsystem.i_axi_xbar.mst_ports_req_o[
 TOP.testharness.u_x_alp.u_core_v_mcu.u_bus_subsystem.i_axi_xbar.mst_ports_resp_i[1].r_valid
 @1401200
 -R
-@1000200
 -M1
-@1401200
 -AXI-XBAR
-@800200
+@c00200
 -ID(0)
 @100000028
 TOP.testharness.u_x_alp.u_core_v_mcu.u_cpu_subsystem.cpu_inst.commit_instr_id_commit[0].fu[3:0]
@@ -415,9 +416,9 @@ TOP.testharness.u_x_alp.u_core_v_mcu.u_cpu_subsystem.cpu_inst.commit_instr_id_co
 TOP.testharness.u_x_alp.u_core_v_mcu.u_cpu_subsystem.cpu_inst.commit_instr_id_commit[0].use_zimm
 TOP.testharness.u_x_alp.u_core_v_mcu.u_cpu_subsystem.cpu_inst.commit_instr_id_commit[0].valid
 TOP.testharness.u_x_alp.u_core_v_mcu.u_cpu_subsystem.cpu_inst.commit_instr_id_commit[0].vfp
-@1000200
+@1401200
 -ID(0)
-@800200
+@c00200
 -ID(1)
 @100000028
 TOP.testharness.u_x_alp.u_core_v_mcu.u_cpu_subsystem.cpu_inst.commit_instr_id_commit[1].bp.cf[2:0]
@@ -455,34 +456,50 @@ TOP.testharness.u_x_alp.u_core_v_mcu.u_cpu_subsystem.cpu_inst.commit_instr_id_co
 TOP.testharness.u_x_alp.u_core_v_mcu.u_cpu_subsystem.cpu_inst.commit_instr_id_commit[1].use_zimm
 TOP.testharness.u_x_alp.u_core_v_mcu.u_cpu_subsystem.cpu_inst.commit_instr_id_commit[1].valid
 TOP.testharness.u_x_alp.u_core_v_mcu.u_cpu_subsystem.cpu_inst.commit_instr_id_commit[1].vfp
-@1000200
+@1401200
 -ID(1)
+@28
+TOP.testharness.u_x_alp.exit_valid_o
+@22
+TOP.testharness.u_x_alp.exit_value_o[31:0]
+@28
+TOP.testharness.u_x_alp.uart_rx_i
+TOP.testharness.u_x_alp.uart_tx_o
+@22
+TOP.testharness.u_x_alp.u_core_v_mcu.u_memory_subsystem.bus_req_i.ar.addr[63:0]
+TOP.testharness.u_x_alp.u_core_v_mcu.u_memory_subsystem.u_axi_to_mem.mem_addr_o[0][12:0]
+TOP.testharness.u_x_alp.u_core_v_mcu.u_memory_subsystem.u_ram0.u_tc_sram.addr_i[0][12:0]
+TOP.testharness.u_x_alp.u_core_v_mcu.u_memory_subsystem.u_ram0.be_i[7:0]
+TOP.testharness.u_x_alp.u_core_v_mcu.u_memory_subsystem.u_ram0.rdata_o[63:0]
+TOP.testharness.u_x_alp.u_core_v_mcu.u_memory_subsystem.u_axi_to_mem.mem_addr_o[0][12:0]
+@24
+TOP.testharness.u_x_alp.u_core_v_mcu.u_memory_subsystem.u_ram0.addr_i[12:0]
+@820
+TOP.testharness.u_x_alp.u_core_v_mcu.u_uart_subsystem.uart_i.uart_core.u_uart_txfifo.wdata_i[7:0]
 @22
 TOP.testharness.u_x_alp.u_core_v_mcu.u_cpu_subsystem.cpu_inst.issue_stage_i.i_issue_read_operands.gen_asic_regfile.i_ariane_regfile.mem[10][63:0]
-TOP.testharness.u_x_alp.u_core_v_mcu.u_memory_subsystem.bus_req_i.ar.addr[63:0]
-@28
-TOP.testharness.u_x_alp.u_core_v_mcu.u_memory_subsystem.bus_req_i.ar_valid
-TOP.testharness.u_x_alp.u_core_v_mcu.u_memory_subsystem.bus_rsp_o.r_valid
+TOP.testharness.u_x_alp.u_core_v_mcu.u_cpu_subsystem.cpu_inst.issue_stage_i.i_issue_read_operands.gen_asic_regfile.i_ariane_regfile.mem[27][63:0]
+@820
+TOP.testharness.u_x_alp.u_core_v_mcu.u_memory_subsystem.u_ram0.u_tc_sram.sram[1574][63:0]
+TOP.testharness.u_x_alp.u_core_v_mcu.u_memory_subsystem.u_ram0.u_tc_sram.sram[1575][63:0]
 @22
-TOP.testharness.u_x_alp.u_core_v_mcu.u_memory_subsystem.bus_rsp_o.r.data[63:0]
-TOP.testharness.u_x_alp.u_core_v_mcu.u_memory_subsystem.mem_addr[12:0]
-TOP.testharness.u_x_alp.u_core_v_mcu.u_memory_subsystem.u_ram0.u_tc_sram.sram[3][63:0]
-TOP.testharness.u_x_alp.u_core_v_mcu.u_memory_subsystem.u_ram0.u_tc_sram.sram[15][63:0]
-TOP.testharness.u_x_alp.u_core_v_mcu.u_memory_subsystem.u_ram0.u_tc_sram.sram[74][63:0]
-TOP.testharness.u_x_alp.u_core_v_mcu.u_memory_subsystem.u_ram0.u_tc_sram.sram[566][63:0]
-TOP.testharness.u_x_alp.u_core_v_mcu.u_memory_subsystem.u_ram0.u_tc_sram.sram[945][63:0]
-TOP.testharness.u_x_alp.u_core_v_mcu.u_memory_subsystem.u_ram0.u_tc_sram.sram[1376][63:0]
-@23
-TOP.testharness.u_x_alp.u_core_v_mcu.u_memory_subsystem.u_ram0.u_tc_sram.sram[1411][63:0]
+TOP.testharness.u_x_alp.u_core_v_mcu.u_memory_subsystem.u_axi_to_mem.axi_req_i.ar.addr[63:0]
+TOP.testharness.u_x_alp.u_core_v_mcu.u_memory_subsystem.u_axi_to_mem.mem_addr_o[0][12:0]
+TOP.testharness.u_x_alp.u_core_v_mcu.u_memory_subsystem.u_axi_to_mem.axi_req_i.ar.addr[63:0]
+TOP.testharness.u_x_alp.u_core_v_mcu.u_memory_subsystem.u_axi_to_mem.i_axi_to_detailed_mem.mem_addr_o[0][12:0]
+TOP.testharness.u_x_alp.u_core_v_mcu.u_memory_subsystem.u_axi_to_mem.i_axi_to_detailed_mem.i_mem_to_banks.addr_i[12:0]
+TOP.testharness.u_x_alp.u_core_v_mcu.u_memory_subsystem.u_axi_to_mem.i_axi_to_detailed_mem.rd_meta.addr[12:0]
+TOP.testharness.u_x_alp.u_core_v_mcu.u_memory_subsystem.u_axi_to_mem.i_axi_to_detailed_mem.rd_meta_d.addr[12:0]
+TOP.testharness.u_x_alp.u_core_v_mcu.u_memory_subsystem.u_axi_to_mem.i_axi_to_detailed_mem.rd_meta_q.addr[12:0]
+TOP.testharness.u_x_alp.u_core_v_mcu.u_memory_subsystem.u_axi_to_mem.i_axi_to_detailed_mem.meta.addr[12:0]
+TOP.testharness.u_x_alp.u_core_v_mcu.u_memory_subsystem.u_axi_to_mem.i_axi_to_detailed_mem.m2s_req.addr[12:0]
+@24
+TOP.testharness.u_x_alp.u_core_v_mcu.u_memory_subsystem.u_axi_to_mem.i_axi_to_detailed_mem.axi_req_i.ar.size[2:0]
 @28
-TOP.testharness.u_x_alp.u_core_v_mcu.u_memory_subsystem.mem_gnt
+TOP.testharness.u_x_alp.u_core_v_mcu.u_memory_subsystem.u_axi_to_mem.i_axi_to_detailed_mem.axi_req_i.ar_valid
 @22
-TOP.testharness.u_x_alp.u_core_v_mcu.u_memory_subsystem.mem_rdata[63:0]
-TOP.testharness.u_x_alp.u_core_v_mcu.u_cpu_subsystem.cpu_inst.issue_stage_i.i_issue_read_operands.gen_asic_regfile.i_ariane_regfile.mem[0][63:0]
-TOP.testharness.u_x_alp.u_core_v_mcu.u_cpu_subsystem.cpu_inst.issue_stage_i.i_issue_read_operands.gen_asic_regfile.i_ariane_regfile.mem[8][63:0]
-@28
-TOP.testharness.u_x_alp.u_core_v_mcu.u_memory_subsystem.mem_req
-@22
-TOP.testharness.u_x_alp.u_core_v_mcu.u_memory_subsystem.u_ram0.addr_i[12:0]
+TOP.testharness.u_x_alp.u_core_v_mcu.u_memory_subsystem.u_axi_to_mem.i_axi_to_detailed_mem.rd_meta_d.addr[12:0]
+@24
+TOP.testharness.u_x_alp.u_core_v_mcu.u_memory_subsystem.u_ram0.u_tc_sram.addr_i[0][12:0]
 [pattern_trace] 1
 [pattern_trace] 0
