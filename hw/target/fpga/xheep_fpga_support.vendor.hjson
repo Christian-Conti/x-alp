@@ -17,6 +17,9 @@
     "constraints/genesys2",
     "constraints/nexys",
     "constraints/pynq-z2",
+    "scripts/genesys2",
+    "scripts/nexys",
+    "scripts/pynq-z2",
   ]
 
 }
