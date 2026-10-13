@@ -44,8 +44,7 @@ package cva6_config_pkg;
   localparam CVA6ConfigDcacheSetAssoc = 8;
   localparam CVA6ConfigDcacheLineWidth = 128;
 
-  localparam CVA6ConfigDcacheFlushOnFence = 1'b0;
-  localparam CVA6ConfigDcacheFlushOnFenceI = 1'b1;
+  localparam CVA6ConfigDcacheFlushOnFence = 1'b1;
   localparam CVA6ConfigDcacheInvalidateOnFlush = 1'b0;
 
   localparam CVA6ConfigDcacheIdWidth = 1;
@@ -108,7 +107,6 @@ package cva6_config_pkg;
       CvxifEn: bit'(CVA6ConfigCvxifEn),
       CoproType: config_pkg::COPRO_NONE,
       RVZiCond: bit'(CVA6ConfigRVZiCond),
-      RVZiCbom: bit'(0),
       RVZicntr: bit'(1),
       RVZihpm: bit'(1),
       NrScoreboardEntries: unsigned'(CVA6ConfigNrScoreboardEntries),
@@ -158,7 +156,6 @@ package cva6_config_pkg;
       DcacheSetAssoc: unsigned'(CVA6ConfigDcacheSetAssoc),
       DcacheLineWidth: unsigned'(CVA6ConfigDcacheLineWidth),
       DcacheFlushOnFence: unsigned'(CVA6ConfigDcacheFlushOnFence),
-      DcacheFlushOnFenceI: unsigned'(CVA6ConfigDcacheFlushOnFenceI),
       DcacheInvalidateOnFlush: unsigned'(CVA6ConfigDcacheInvalidateOnFlush),
       DataUserEn: unsigned'(CVA6ConfigDataUserEn),
       WtDcacheWbufDepth: int'(CVA6ConfigWtDcacheWbufDepth),
@@ -167,7 +164,6 @@ package cva6_config_pkg;
       InstrTlbEntries: int'(16),
       DataTlbEntries: int'(16),
       UseSharedTlb: bit'(0),
-      SvnapotEn: bit'(0),
       SharedTlbDepth: int'(64),
       NrLoadPipeRegs: int'(CVA6ConfigNrLoadPipeRegs),
       NrStorePipeRegs: int'(CVA6ConfigNrStorePipeRegs),

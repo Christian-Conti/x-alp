@@ -25,35 +25,44 @@
 #ifndef __MEM_MODEL_H__
 #define __MEM_MODEL_H__
 
-#include <cstdint>
 #include <map>
+#include <cstdint>
 
 class mem_model
 {
 public:
+
     enum mem_model_init_mode_e
     {
         MEM_MODEL_INIT_VALUE,
         MEM_MODEL_INIT_RANDOM
     };
 
-    typedef std::map<uint64_t, uint64_t> mem_array_t;
+    typedef std::map<uint64_t, uint64_t>  mem_array_t;
     typedef std::pair<uint64_t, uint64_t> mem_array_pair_t;
 
     mem_model(const char* name,
               mem_model_init_mode_e init_mode = MEM_MODEL_INIT_RANDOM,
-              uint64_t init_val = 0)
-      : name_m(name)
-      , init_mode_m(MEM_MODEL_INIT_RANDOM)
-      , init_val_m(init_val)
+              uint64_t              init_val  = 0) :
+            name_m(name),
+            init_mode_m(MEM_MODEL_INIT_RANDOM),
+            init_val_m(init_val)
     {
     }
 
-    ~mem_model() {}
+    ~mem_model()
+    {
+    }
 
-    mem_array_t* getMemPtr() { return &mem_array_m; }
+    mem_array_t *getMemPtr()
+    {
+        return &mem_array_m;
+    }
 
-    const char* getName() { return name_m.c_str(); }
+    const char* getName()
+    {
+        return name_m.c_str();
+    }
 
     uint64_t readMemory(uint64_t word_addr)
     {
@@ -113,7 +122,7 @@ public:
         mask = 0;
         for (int j = 0; j < 8; j++) {
             if ((be >> j) & 1) {
-                mask |= (0xffull) << (j * 8);
+                mask |= (0xffull) << (j*8);
             }
         }
 
@@ -121,6 +130,7 @@ public:
     }
 
 protected:
+
     std::string name_m;
     mem_array_t mem_array_m;
     mem_model_init_mode_e init_mode_m;

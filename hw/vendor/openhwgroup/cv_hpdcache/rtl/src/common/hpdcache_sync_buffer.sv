@@ -67,13 +67,9 @@ module hpdcache_sync_buffer
 
     //  FIFO buffer memory management
     //  {{{
-    always_ff @(posedge clk_i or negedge rst_ni)
+    always_ff @(posedge clk_i)
     begin
-        if (!rst_ni) begin
-            buf_q <= '0;
-        end else begin
-            if (buf_we) buf_q <= wdata_i;
-        end
+        if (buf_we) buf_q <= wdata_i;
     end
 
     assign rdata_o = FEEDTHROUGH && !valid_q ? wdata_i : buf_q;

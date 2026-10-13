@@ -145,7 +145,6 @@ module cva6_hpdcache_if_adapter
       flush_fsm_t flush_fsm_q, flush_fsm_d;
 
       logic forward_store, forward_amo, forward_flush;
-      hpdcache_pkg::hpdcache_req_op_t store_op;
 
       //  DCACHE flush request
       //  {{{
@@ -185,23 +184,6 @@ module cva6_hpdcache_if_adapter
         endcase
       end
       //  }}}
-
-      // CBO logic
-      //  {{{
-      always_comb begin : store_cmo_comb
-        store_op = hpdcache_pkg::HPDCACHE_REQ_STORE;
-
-        if (CVA6Cfg.RVZiCbom) begin
-          case (cva6_req_i.cbo_op)
-            ariane_pkg::CBO_INVAL: store_op = hpdcache_pkg::HPDCACHE_REQ_CMO_INVAL_NLINE;
-            ariane_pkg::CBO_CLEAN: store_op = hpdcache_pkg::HPDCACHE_REQ_CMO_FLUSH_NLINE;
-            ariane_pkg::CBO_FLUSH: store_op = hpdcache_pkg::HPDCACHE_REQ_CMO_FLUSH_INVAL_NLINE;
-            default: ;  // store - above
-          endcase
-        end
-      end
-      //  }}}
-
 
       //  AMO logic
       //  {{{
@@ -268,15 +250,12 @@ module cva6_hpdcache_if_adapter
       assign hpdcache_req_store = '{
               addr_offset: cva6_req_i.address_index,
               wdata: cva6_req_i.data_wdata,
-              op: store_op,
+              op: hpdcache_pkg::HPDCACHE_REQ_STORE,
               be: cva6_req_i.data_be,
               size: cva6_req_i.data_size,
               sid: hpdcache_req_sid_i,
               tid: '0,
-              need_rsp:
-              store_op
-              !=
-              hpdcache_pkg::HPDCACHE_REQ_STORE,  // CMO requests need a response
+              need_rsp: 1'b0,
               phys_indexed: 1'b1,
               addr_tag: cva6_req_i.address_tag,
               pma: '{

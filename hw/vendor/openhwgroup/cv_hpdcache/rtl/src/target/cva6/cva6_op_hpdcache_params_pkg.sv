@@ -21,7 +21,7 @@
  *  Authors       : Cesar Fuguet
  *  Creation Date : April, 2023
  *  Description   : Generic parameters package for the HPDcache. All parameters
- *                  can be overridden by Verilog preprocessor definitions.
+ *                  can be overriden by Verilog preprocessor definitions.
  *  History       :
  */
 `ifdef PITON_ARIANE
@@ -44,9 +44,8 @@ package hpdcache_params_pkg;
     `ifdef PITON_ARIANE
         `ifndef CONFIG_L1D_SIZE
             localparam int unsigned PARAM_SETS = 128;
-        `else
-            localparam int unsigned PARAM_SETS = (`CONFIG_L1D_SIZE/`CONFIG_L1D_ASSOCIATIVITY)/
-                (`CONFIG_L1D_CACHELINE_WIDTH/8);
+        `else 
+            localparam int unsigned PARAM_SETS = (`CONFIG_L1D_SIZE/`CONFIG_L1D_ASSOCIATIVITY)/(`CONFIG_L1D_CACHELINE_WIDTH/8);
         `endif
     `else
         localparam int unsigned PARAM_SETS = `CONF_HPDCACHE_SETS;
@@ -61,9 +60,9 @@ package hpdcache_params_pkg;
         `ifndef CONFIG_L1D_ASSOCIATIVITY
             localparam int unsigned PARAM_WAYS = 4;
         `else
-            localparam int unsigned PARAM_WAYS = `CONFIG_L1D_ASSOCIATIVITY;
+            localparam int unsigned PARAM_WAYS = `CONFIG_L1D_ASSOCIATIVITY; 
         `endif
-    `else
+    `else 
         localparam int unsigned PARAM_WAYS = `CONF_HPDCACHE_WAYS;
     `endif
 
@@ -79,7 +78,7 @@ package hpdcache_params_pkg;
     `endif
 
     `ifdef PITON_ARIANE
-        localparam int unsigned PARAM_CL_WORDS = `CONFIG_L1D_CACHELINE_WIDTH/PARAM_WORD_WIDTH;
+        localparam int unsigned PARAM_CL_WORDS = `CONFIG_L1D_CACHELINE_WIDTH/PARAM_WORD_WIDTH; //16 Bytes per cache-line harcoded
     `else
         localparam int unsigned PARAM_CL_WORDS = `CONF_HPDCACHE_CL_WORDS;
     `endif
@@ -182,7 +181,7 @@ package hpdcache_params_pkg;
         `define CONF_HPDCACHE_MSHR_RAM_WBYTEENABLE 0
     `endif
     localparam bit PARAM_MSHR_RAM_WBYTEENABLE = `CONF_HPDCACHE_MSHR_RAM_WBYTEENABLE;
-
+    
     //  HPDcache MSHR whether uses FFs or SRAM
     `ifndef CONF_HPDCACHE_MSHR_USE_REGBANK
         `define CONF_HPDCACHE_MSHR_USE_REGBANK 0
@@ -199,12 +198,12 @@ package hpdcache_params_pkg;
     `ifndef CONF_HPDCACHE_REFILL_FIFO_DEPTH
         `define CONF_HPDCACHE_REFILL_FIFO_DEPTH 32'd2
     `endif
-
+    
     `ifdef PITON_ARIANE
          /* FIXME: Should we increase it even more? */
         localparam int PARAM_REFILL_FIFO_DEPTH = (PARAM_MSHR_SETS*PARAM_MSHR_WAYS) + 32'd10;
     `else
-        localparam int PARAM_REFILL_FIFO_DEPTH = `CONF_HPDCACHE_REFILL_FIFO_DEPTH;
+        localparam int PARAM_REFILL_FIFO_DEPTH = `CONF_HPDCACHE_REFILL_FIFO_DEPTH
     `endif
     //  }}}
 
@@ -230,7 +229,7 @@ package hpdcache_params_pkg;
     `ifndef CONF_HPDCACHE_WBUF_WORDS
         `define CONF_HPDCACHE_WBUF_WORDS PARAM_REQ_WORDS
     `endif
-
+    
     `ifdef PITON_ARIANE
         localparam int unsigned PARAM_WBUF_WORDS = 1;
     `else

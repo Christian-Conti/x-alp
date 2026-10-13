@@ -42,7 +42,7 @@
   axi_llc: {
     upstream: {
       url: https://github.com/pulp-platform/axi_llc.git
-      rev: master
+      rev: 31059c4be62985f81bc46138f09e442d996aa3f3
     }
 
     exclude_from_upstream: [

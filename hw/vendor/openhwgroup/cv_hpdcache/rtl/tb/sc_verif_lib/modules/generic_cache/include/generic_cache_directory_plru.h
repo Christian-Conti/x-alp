@@ -26,25 +26,35 @@
 #ifndef __GENERIC_CACHE_DIRECTORY_PLRU_H__
 #define __GENERIC_CACHE_DIRECTORY_PLRU_H__
 
-#include <string>
 #include <systemc>
+#include <string>
 
 #include "generic_cache_directory_base.h"
 
 class GenericCacheDirectoryPlru : public GenericCacheDirectoryBase
 {
-    bool* plru_m;
+    bool      *plru_m;
 
 public:
-    GenericCacheDirectoryPlru(const std::string& name, size_t nways, size_t nsets, size_t nbytes)
-      : GenericCacheDirectoryBase(name, nways, nsets, nbytes)
+
+    GenericCacheDirectoryPlru(const std::string &name,
+                              size_t            nways,
+                              size_t            nsets,
+                              size_t            nbytes)
+            : GenericCacheDirectoryBase(name, nways, nsets, nbytes)
     {
-        plru_m = new bool[nways * nsets];
+        plru_m = new bool [nways*nsets];
     }
 
-    ~GenericCacheDirectoryPlru() { delete[] plru_m; }
+    ~GenericCacheDirectoryPlru()
+    {
+        delete [] plru_m;
+    }
 
-    bool& getCachePlru(size_t way, size_t set) { return plru_m[way * sets_m + set]; }
+    bool &getCachePlru(size_t way, size_t set)
+    {
+        return plru_m[way*sets_m + set];
+    }
 
     void reset()
     {
@@ -57,7 +67,10 @@ public:
         }
     }
 
-    virtual bool repl(uint64_t addr, uint64_t* victim_tag, size_t* victim_way, size_t* victim_set)
+    virtual bool repl(uint64_t  addr,
+                      uint64_t* victim_tag,
+                      size_t*   victim_way,
+                      size_t*   victim_set)
     {
         uint64_t tag;
         size_t set;
@@ -79,7 +92,7 @@ public:
                 }
                 //  set the new information
                 getCacheValid(way, set) = true;
-                getCacheTag(way, set) = tag;
+                getCacheTag(way, set)   = tag;
                 replUpdate(way, set);
                 return false;
             }
@@ -88,7 +101,7 @@ public:
         //  look for a non-recently used way (plru bit unset)
         for (size_t way = 0; way < ways_m; way++) {
             if (!getCachePlru(way, set)) {
-                //  get victim entry information
+                //  get victim entry informations
                 if (victim_tag != nullptr) {
                     *victim_tag = getCacheTag(way, set);
                 }

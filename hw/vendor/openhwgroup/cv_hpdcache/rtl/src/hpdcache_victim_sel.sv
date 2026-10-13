@@ -1,7 +1,6 @@
 /*
  *  Copyright 2023 CEA*
  *  *Commissariat a l'Energie Atomique et aux Energies Alternatives (CEA)
- *  Copyright 2025 Inria, Universite Grenoble-Alpes, TIMA
  *
  *  SPDX-License-Identifier: Apache-2.0 WITH SHL-2.1
  *
@@ -62,7 +61,7 @@ import hpdcache_pkg::*;
     //  Direct mapped cache (one way)
     if (HPDcacheCfg.u.ways == 1)
     begin : gen_single_way_victim_sel
-        assign sel_victim_way_o = ~sel_dir_fetch_i;
+        assign sel_victim_way_o = 1'b1;
     end
 
     //  -----------------------------------------------------------------------
@@ -116,7 +115,7 @@ import hpdcache_pkg::*;
 `ifndef HPDCACHE_ASSERT_OFF
     initial victim_sel_assert:
             assert (HPDcacheCfg.u.victimSel inside {HPDCACHE_VICTIM_RANDOM, HPDCACHE_VICTIM_PLRU})
-                    else $fatal(1, "unsupported victim selection policy");
+                    else $fatal("unsupported victim selection policy");
 `endif
 
 endmodule
