@@ -132,7 +132,6 @@ package cva6_config_pkg;
         RVZCB: bit'(CVA6ConfigZcbExtEn),
         RVZCMP: bit'(CVA6ConfigZcmpExtEn),
         RVZCMT: bit'(0),
-        RVZiCbom: bit'(0),
         XFVec: bit'(CVA6ConfigFVecEn),
         CvxifEn: bit'(CVA6ConfigCvxifEn),
         CoproType: config_pkg::COPRO_NONE,
@@ -232,9 +231,7 @@ package cva6_config_pkg;
         SharedTlbDepth: int'(64),
         NrLoadPipeRegs: int'(CVA6ConfigNrLoadPipeRegs),
         NrStorePipeRegs: int'(CVA6ConfigNrStorePipeRegs),
-        DcacheIdWidth: int'(CVA6ConfigDcacheIdWidth),
-        DcacheFlushOnFenceI: bit'(0),
-        SvnapotEn: bit'(0)
+        DcacheIdWidth: int'(CVA6ConfigDcacheIdWidth)
     };
 
 endpackage
