@@ -10,4 +10,12 @@
     rev: "599a83b89359074b1fe4f5f44900ad42c3bf7fb1",
   },
 
+  exclude_from_upstream: [ 
+    "board_files/aup-zu3-8gb",
+    "board_files/genesys2",
+    "hw/target/fpga/xheep_fpga_support/constraints/genesys2",
+    "hw/target/fpga/xheep_fpga_support/constraints/nexys",
+    "hw/target/fpga/xheep_fpga_support/constraints/pynq-z2",
+  ]
+
 }
