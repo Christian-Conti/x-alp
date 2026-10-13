@@ -54,4 +54,5 @@ hw/vendor/x-heep/hw/ip/pad_ring/pad_ring.sv
 # User-dependent configuration files
 .vscode
 .continue
+.DS_Store
 private/
