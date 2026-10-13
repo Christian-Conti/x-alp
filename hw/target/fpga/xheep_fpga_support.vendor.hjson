@@ -20,6 +20,11 @@
     "scripts/genesys2",
     "scripts/nexys",
     "scripts/pynq-z2",
+    // X-ALP declares its FPGA filesets in xalp.core and maps tc_sram to
+    // tc_sram_xilinx (XPM), so the X-HEEP SRAM IP generator is not used.
+    "core-v-mini-mcu-fpga.core",
+    "*generate_sram.tcl.tpl",
+    "*sram_wrapper.sv.tpl",
   ]
 
 }

@@ -14,6 +14,9 @@ module xilinx_core_v_mcu_wrapper #(
 `ifdef FPGA_AUP_ZU3
     inout logic clk_100mhz_n,
     inout logic clk_100mhz_p,
+`elsif FPGA_ZCU104
+    inout logic clk_300mhz_n,
+    inout logic clk_300mhz_p,
 `else
     inout logic clk_i,
 `endif
@@ -75,13 +78,19 @@ module xilinx_core_v_mcu_wrapper #(
     //       .CLK_IN1_D_0_clk_p(clk_200mhz_p),
     //       .clk_out1_0(clk_gen)
     //   );
-    // `else  // FPGA AUP-ZU3
+`ifdef FPGA_ZCU104
+    xilinx_clk_wizard_wrapper xilinx_clk_wizard_wrapper_i (
+        .CLK_IN1_D_0_clk_n(clk_300mhz_n),
+        .CLK_IN1_D_0_clk_p(clk_300mhz_p),
+        .clk_out1_0       (clk_gen)
+    );
+`else  // FPGA AUP-ZU3
     xilinx_clk_wizard_wrapper xilinx_clk_wizard_wrapper_i (
         .CLK_IN1_D_0_clk_n(clk_100mhz_n),
         .CLK_IN1_D_0_clk_p(clk_100mhz_p),
         .clk_out1_0       (clk_gen)
     );
-    // `endif
+`endif
 
     x_alp x_alp_system_i (
         .clk_i (clk_gen),
