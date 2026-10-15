@@ -6,30 +6,34 @@
 
 package pad_control_reg_pkg;
 
-    // Address widths within the block
-    parameter int BlockAw = 2;
+  // Address widths within the block
+  parameter int BlockAw = 2;
 
-    ////////////////////////////
-    // Typedefs for registers //
-    ////////////////////////////
+  ////////////////////////////
+  // Typedefs for registers //
+  ////////////////////////////
 
-    typedef struct packed {logic q;} pad_control_reg2hw_dummy_reg_t;
+  typedef struct packed {
+    logic        q;
+  } pad_control_reg2hw_dummy_reg_t;
 
-    // Register -> HW type
-    typedef struct packed {
-        pad_control_reg2hw_dummy_reg_t dummy;  // [0:0]
-    } pad_control_reg2hw_t;
+  // Register -> HW type
+  typedef struct packed {
+    pad_control_reg2hw_dummy_reg_t dummy; // [0:0]
+  } pad_control_reg2hw_t;
 
-    // Register offsets
-    parameter logic [BlockAw-1:0] PAD_CONTROL_DUMMY_OFFSET = 2'h0;
+  // Register offsets
+  parameter logic [BlockAw-1:0] PAD_CONTROL_DUMMY_OFFSET = 2'h 0;
 
-    // Register index
-    typedef enum int {PAD_CONTROL_DUMMY} pad_control_id_e;
+  // Register index
+  typedef enum int {
+    PAD_CONTROL_DUMMY
+  } pad_control_id_e;
 
-    // Register width information to check illegal writes
-    parameter logic [3:0] PAD_CONTROL_PERMIT[1] = '{
-        4'b0001  // index[0] PAD_CONTROL_DUMMY
-    };
+  // Register width information to check illegal writes
+  parameter logic [3:0] PAD_CONTROL_PERMIT [1] = '{
+    4'b 0001  // index[0] PAD_CONTROL_DUMMY
+  };
 
 endpackage
 

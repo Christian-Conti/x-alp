@@ -13,24 +13,24 @@ create_bd_design $design_name
 
 # Create interface ports
 set ddr4_sdram [ create_bd_intf_port -mode Master -vlnv xilinx.com:interface:ddr4_rtl:1.0 ddr4_sdram ]
-
-set C0_DDR4_S_AXI [ create_bd_intf_port -mode Slave -vlnv xilinx.com:interface:aximm_rtl:1.0 C0_DDR4_S_AXI ]
+  
+set S_AXI [ create_bd_intf_port -mode Slave -vlnv xilinx.com:interface:aximm_rtl:1.0 S_AXI ]
 set_property -dict [ list \
   CONFIG.ADDR_WIDTH {32} \
   CONFIG.ARUSER_WIDTH {0} \
   CONFIG.AWUSER_WIDTH {0} \
   CONFIG.BUSER_WIDTH {0} \
-  CONFIG.DATA_WIDTH {512} \
+  CONFIG.DATA_WIDTH {64} \
   CONFIG.HAS_BRESP {1} \
   CONFIG.HAS_BURST {1} \
   CONFIG.HAS_CACHE {1} \
   CONFIG.HAS_LOCK {1} \
   CONFIG.HAS_PROT {1} \
   CONFIG.HAS_QOS {1} \
-  CONFIG.HAS_REGION {0} \
+  CONFIG.HAS_REGION {1} \
   CONFIG.HAS_RRESP {1} \
   CONFIG.HAS_WSTRB {1} \
-  CONFIG.ID_WIDTH {4} \
+  CONFIG.ID_WIDTH {0} \
   CONFIG.MAX_BURST_LENGTH {256} \
   CONFIG.NUM_READ_OUTSTANDING {2} \
   CONFIG.NUM_READ_THREADS {1} \
@@ -43,24 +43,15 @@ set_property -dict [ list \
   CONFIG.SUPPORTS_NARROW_BURST {1} \
   CONFIG.WUSER_BITS_PER_BYTE {0} \
   CONFIG.WUSER_WIDTH {0} \
-  ] $C0_DDR4_S_AXI
+  ] $S_AXI
 
 # Create ports
-set reset [ create_bd_port -dir I -type rst reset ]
+set s_axi_aclk [ create_bd_port -dir I -type clk s_axi_aclk ]
+set s_axi_aresetn [ create_bd_port -dir I -type rst s_axi_aresetn ]
+set sys_rst [ create_bd_port -dir I -type rst sys_rst ]
 set_property -dict [ list \
   CONFIG.POLARITY {ACTIVE_HIGH} \
-] $reset
-set addn_ui_clkout1 [ create_bd_port -dir O -type clk addn_ui_clkout1 ]
-set c0_ddr4_aresetn [ create_bd_port -dir I -type rst c0_ddr4_aresetn ]
-set c0_ddr4_ui_clk [ create_bd_port -dir O -type clk c0_ddr4_ui_clk ]
-set_property -dict [ list \
-  CONFIG.ASSOCIATED_BUSIF {C0_DDR4_S_AXI} \
-] $c0_ddr4_ui_clk
-set_property CONFIG.ASSOCIATED_BUSIF.VALUE_SRC DEFAULT $c0_ddr4_ui_clk
-
-set c0_ddr4_ui_clk_sync_rst [ create_bd_port -dir O -type rst c0_ddr4_ui_clk_sync_rst ]
-set c0_init_calib_complete [ create_bd_port -dir O c0_init_calib_complete ]
-set c0_sys_clk_i [ create_bd_port -dir I -type clk c0_sys_clk_i ]
+] $sys_rst
 
 # Create instance: ddr4_0, and set properties
 set ddr4_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:ddr4:2.2 ddr4_0 ]
@@ -74,25 +65,39 @@ set_property -dict [list \
   CONFIG.System_Clock {No_Buffer} \
 ] $ddr4_0
 
+# Create instance: axi_dwidth_converter_0, and set properties
+set axi_dwidth_converter_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_dwidth_converter:2.1 axi_dwidth_converter_0 ]
+
+# Create instance: axi_clock_converter_0, and set properties
+set axi_clock_converter_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_clock_converter:2.1 axi_clock_converter_0 ]
+
+# Create instance: rst_ddr4_0_266M, and set properties
+set rst_ddr4_0_266M [ create_bd_cell -type ip -vlnv xilinx.com:ip:proc_sys_reset:5.0 rst_ddr4_0_266M ]
+
 # Create interface connections
-connect_bd_intf_net -intf_net C0_DDR4_S_AXI_0_1 [get_bd_intf_ports C0_DDR4_S_AXI] [get_bd_intf_pins ddr4_0/C0_DDR4_S_AXI]
+connect_bd_intf_net -intf_net S_AXI_0_1 [get_bd_intf_ports S_AXI] [get_bd_intf_pins axi_clock_converter_0/S_AXI]
+connect_bd_intf_net -intf_net axi_clock_converter_0_M_AXI [get_bd_intf_pins axi_clock_converter_0/M_AXI] [get_bd_intf_pins axi_dwidth_converter_0/S_AXI]
+connect_bd_intf_net -intf_net axi_dwidth_converter_0_M_AXI [get_bd_intf_pins axi_dwidth_converter_0/M_AXI] [get_bd_intf_pins ddr4_0/C0_DDR4_S_AXI]
 connect_bd_intf_net -intf_net ddr4_0_C0_DDR4 [get_bd_intf_ports ddr4_sdram] [get_bd_intf_pins ddr4_0/C0_DDR4]
 
 # Create port connections
-connect_bd_net -net c0_ddr4_aresetn_0_1  [get_bd_ports c0_ddr4_aresetn] \
-[get_bd_pins ddr4_0/c0_ddr4_aresetn]
-connect_bd_net -net c0_sys_clk_i_0_1  [get_bd_ports c0_sys_clk_i] \
-[get_bd_pins ddr4_0/c0_sys_clk_i]
-connect_bd_net -net ddr4_0_addn_ui_clkout1  [get_bd_pins ddr4_0/addn_ui_clkout1] \
-[get_bd_ports addn_ui_clkout1]
 connect_bd_net -net ddr4_0_c0_ddr4_ui_clk  [get_bd_pins ddr4_0/c0_ddr4_ui_clk] \
-[get_bd_ports c0_ddr4_ui_clk]
+[get_bd_pins axi_clock_converter_0/m_axi_aclk] \
+[get_bd_pins axi_dwidth_converter_0/s_axi_aclk] \
+[get_bd_pins rst_ddr4_0_266M/slowest_sync_clk] \
+[get_bd_pins ddr4_0/c0_sys_clk_i]
 connect_bd_net -net ddr4_0_c0_ddr4_ui_clk_sync_rst  [get_bd_pins ddr4_0/c0_ddr4_ui_clk_sync_rst] \
-[get_bd_ports c0_ddr4_ui_clk_sync_rst]
-connect_bd_net -net ddr4_0_c0_init_calib_complete  [get_bd_pins ddr4_0/c0_init_calib_complete] \
-[get_bd_ports c0_init_calib_complete]
-connect_bd_net -net reset_1  [get_bd_ports reset] \
+[get_bd_pins rst_ddr4_0_266M/ext_reset_in]
+connect_bd_net -net reset_1  [get_bd_ports sys_rst] \
 [get_bd_pins ddr4_0/sys_rst]
+connect_bd_net -net rst_ddr4_0_266M_peripheral_aresetn  [get_bd_pins rst_ddr4_0_266M/peripheral_aresetn] \
+[get_bd_pins axi_dwidth_converter_0/s_axi_aresetn] \
+[get_bd_pins axi_clock_converter_0/m_axi_aresetn] \
+[get_bd_pins ddr4_0/c0_ddr4_aresetn]
+connect_bd_net -net s_axi_aclk_0_1  [get_bd_ports s_axi_aclk] \
+[get_bd_pins axi_clock_converter_0/s_axi_aclk]
+connect_bd_net -net s_axi_aresetn_0_1  [get_bd_ports s_axi_aresetn] \
+[get_bd_pins axi_clock_converter_0/s_axi_aresetn]
 
 # Create address segments
 
