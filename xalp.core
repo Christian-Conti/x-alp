@@ -34,6 +34,7 @@ filesets:
   fpga-zcu104:
     files:
     - hw/target/fpga/xheep_fpga_support/scripts/zcu104/xilinx_generate_clk_wizard.tcl: {file_type: tclSource}
+    - hw/target/fpga/xheep_fpga_support/scripts/zcu104/xilinx_generate_ddr4_ctrl_wizard.tcl: {file_type: tclSource}
     - hw/target/fpga/xheep_fpga_support/constraints/zcu104/pin_assign.xdc: {file_type: xdc}
     - hw/target/fpga/xheep_fpga_support/constraints/zcu104/constraints.xdc: {file_type: xdc}
 
