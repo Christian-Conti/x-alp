@@ -14,26 +14,22 @@ module sram_wrapper #(
     // DEPENDENT PARAMETERS, DO NOT OVERWRITE!
     parameter int unsigned AddrWidth = (NumWords > 32'd1) ? $clog2(NumWords) : 32'd1
 ) (
-    input logic clk_i,
-    input logic rst_ni,
+    input  logic                   clk_i,
+    input  logic                   rst_ni,
     // input ports
-    input logic req_i,
-    input logic we_i,
-    input logic [AddrWidth-1:0] addr_i,
-    input logic [DataWidth-1:0] wdata_i,
-    input logic [DataWidth/8-1:0] be_i,
+    input  logic                   req_i,
+    input  logic                   we_i,
+    input  logic [  AddrWidth-1:0] addr_i,
+    input  logic [  DataWidth-1:0] wdata_i,
+    input  logic [DataWidth/8-1:0] be_i,
     // power manager signals that goes to the ASIC macros
-    input logic pwrgate_ni,
-    output logic pwrgate_ack_no,
-    input logic set_retentive_ni,
+    input  logic                   pwrgate_ni,
+    output logic                   pwrgate_ack_no,
+    input  logic                   set_retentive_ni,
     // output ports
-    output logic [DataWidth-1:0] rdata_o
+    output logic [  DataWidth-1:0] rdata_o
 );
 
-assign pwrgate_ack_no = pwrgate_ni;
+    assign pwrgate_ack_no = pwrgate_ni;
 
-
-  else begin
-    $error("Bank size not generated.");
-  end
 endmodule
