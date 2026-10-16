@@ -30,7 +30,7 @@ set_property -dict [list \
   CONFIG.HAS_REGION {1} \
   CONFIG.HAS_RRESP {1} \
   CONFIG.HAS_WSTRB {1} \
-  CONFIG.ID_WIDTH {0} \
+  CONFIG.ID_WIDTH {4} \
   CONFIG.MAX_BURST_LENGTH {256} \
   CONFIG.NUM_READ_OUTSTANDING {2} \
   CONFIG.NUM_READ_THREADS {1} \
@@ -51,10 +51,9 @@ set s_axi_aresetn [create_bd_port -dir I -type rst s_axi_aresetn]
 set sys_rst [create_bd_port -dir I -type rst sys_rst]
 set_property -dict [list CONFIG.POLARITY {ACTIVE_HIGH}] $sys_rst
 
-# Expose the differential 300 MHz reference clock at the block-design boundary.
-# The top-level wrapper maps this pair to the ZCU104 clock input pins.
-set c0_sys_clk_p [create_bd_port -dir I -type clk -freq_hz 300000000 c0_sys_clk_p]
-set c0_sys_clk_n [create_bd_port -dir I -type clk c0_sys_clk_n]
+# Expose the buffered 300 MHz reference clock at the block-design boundary.
+# The top-level wrapper maps this clock to the MIG input.
+set c0_sys_clk_i [create_bd_port -dir I -type clk -freq_hz 300000000 c0_sys_clk_i]
 
 # Create instance: ddr4_0, and set properties
 set ddr4_0 [create_bd_cell -type ip -vlnv xilinx.com:ip:ddr4:2.2 ddr4_0]
@@ -67,7 +66,7 @@ set_property -dict [list \
   CONFIG.C0_CLOCK_BOARD_INTERFACE {Custom} \
   CONFIG.C0_DDR4_BOARD_INTERFACE {ddr4_sdram} \
   CONFIG.RESET_BOARD_INTERFACE {Custom} \
-  CONFIG.System_Clock {Differential} \
+  CONFIG.System_Clock {No Buffer} \
 ] $ddr4_0
 
 # Create instance: axi_dwidth_converter_0
@@ -102,10 +101,8 @@ connect_bd_net -net s_axi_aclk_0_1 [get_bd_ports s_axi_aclk] \
   [get_bd_pins axi_clock_converter_0/s_axi_aclk]
 connect_bd_net -net s_axi_aresetn_0_1 [get_bd_ports s_axi_aresetn] \
   [get_bd_pins axi_clock_converter_0/s_axi_aresetn]
-connect_bd_net -net c0_sys_clk_p_0_1 [get_bd_ports c0_sys_clk_p] \
-  [get_bd_pins ddr4_0/c0_sys_clk_p]
-connect_bd_net -net c0_sys_clk_n_0_1 [get_bd_ports c0_sys_clk_n] \
-  [get_bd_pins ddr4_0/c0_sys_clk_n]
+connect_bd_net -net c0_sys_clk_i_0_1 [get_bd_ports c0_sys_clk_i] \
+  [get_bd_pins ddr4_0/c0_sys_clk_i]
 
 # Create address segments
 
@@ -116,4 +113,3 @@ close_bd_design $design_name
 # Create wrapper
 set wrapper_path [make_wrapper -fileset sources_1 -files [get_files -norecurse xilinx_ddr4_ctrl_wizard.bd] -top]
 add_files -norecurse -fileset sources_1 $wrapper_path
-
