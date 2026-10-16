@@ -176,20 +176,20 @@ module xilinx_core_v_mcu_wrapper #(
     end
 
     xilinx_ddr4_ctrl_wizard ddr4_ctrl_i (
-        .ddr4_sdram_act_n  (ddr4_sdram_act_n),
-        .ddr4_sdram_adr    (ddr4_sdram_adr),
-        .ddr4_sdram_ba     (ddr4_sdram_ba),
-        .ddr4_sdram_bg     (ddr4_sdram_bg),
-        .ddr4_sdram_ck_c   (ddr4_sdram_ck_c),
-        .ddr4_sdram_ck_t   (ddr4_sdram_ck_t),
-        .ddr4_sdram_cke    (ddr4_sdram_cke),
-        .ddr4_sdram_cs_n   (ddr4_sdram_cs_n),
-        .ddr4_sdram_dm_n   (ddr4_sdram_dm_n),
-        .ddr4_sdram_dq     (ddr4_sdram_dq),
-        .ddr4_sdram_dqs_c  (ddr4_sdram_dqs_c),
-        .ddr4_sdram_dqs_t  (ddr4_sdram_dqs_t),
-        .ddr4_sdram_odt    (ddr4_sdram_odt),
-        .ddr4_sdram_reset_n(ddr4_sdram_reset_n),
+        .ddr4_sdram_act_n    (ddr4_sdram_act_n),
+        .ddr4_sdram_adr      (ddr4_sdram_adr),
+        .ddr4_sdram_ba       (ddr4_sdram_ba),
+        .ddr4_sdram_bg       (ddr4_sdram_bg),
+        .ddr4_sdram_ck_c     (ddr4_sdram_ck_c),
+        .ddr4_sdram_ck_t     (ddr4_sdram_ck_t),
+        .ddr4_sdram_cke      (ddr4_sdram_cke),
+        .ddr4_sdram_cs_n     (ddr4_sdram_cs_n),
+        .ddr4_sdram_dm_n (ddr4_sdram_dm_n),
+        .ddr4_sdram_dq       (ddr4_sdram_dq),
+        .ddr4_sdram_dqs_c    (ddr4_sdram_dqs_c),
+        .ddr4_sdram_dqs_t    (ddr4_sdram_dqs_t),
+        .ddr4_sdram_odt      (ddr4_sdram_odt),
+        .ddr4_sdram_reset_n  (ddr4_sdram_reset_n),
 
         // Route the board's raw 300 MHz reference clock to the MIG.
         // Keep the Clock Wizard output on the SoC/AXI side only.
@@ -245,3 +245,4 @@ module xilinx_core_v_mcu_wrapper #(
 `endif
 
 endmodule
+

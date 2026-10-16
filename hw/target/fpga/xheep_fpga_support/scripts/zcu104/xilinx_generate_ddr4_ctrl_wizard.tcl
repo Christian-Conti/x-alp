@@ -12,7 +12,8 @@ set design_name xilinx_ddr4_ctrl_wizard
 create_bd_design $design_name
 
 # Create interface ports
-set ddr4_sdram [create_bd_intf_port -mode Master -vlnv xilinx.com:interface:ddr4_rtl:1.0 ddr4_sdram]
+# Use the ZCU104 board DDR4 pin map for the external interface.
+set ddr4_sdram [create_bd_intf_port -mode Master -vlnv xilinx.com:interface:ddr4_rtl:1.0 -board_intf ddr4_sdram ddr4_sdram]
 set S_AXI [create_bd_intf_port -mode Slave -vlnv xilinx.com:interface:aximm_rtl:1.0 S_AXI]
 set_property -dict [list \
   CONFIG.ADDR_WIDTH {32} \
@@ -115,3 +116,4 @@ close_bd_design $design_name
 # Create wrapper
 set wrapper_path [make_wrapper -fileset sources_1 -files [get_files -norecurse xilinx_ddr4_ctrl_wizard.bd] -top]
 add_files -norecurse -fileset sources_1 $wrapper_path
+
