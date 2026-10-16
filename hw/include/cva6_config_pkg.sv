@@ -201,18 +201,9 @@ package cva6_config_pkg;
         NrCachedRegionRules: unsigned'(2),
         CachedRegionAddrBase:
         1024'(
-        {
-            core_v_mcu_pkg::LLC_ZONE_BASE_ADDR,
-            core_v_mcu_pkg::DRAM_ZONE_BASE_ADDR
-        }
+        {core_v_mcu_pkg::LLC_ZONE_BASE_ADDR, core_v_mcu_pkg::DRAM_ZONE_BASE_ADDR}
         ),
-        CachedRegionLength:
-        1024'(
-        {
-            core_v_mcu_pkg::LLC_ZONE_SIZE,
-            core_v_mcu_pkg::DRAM_ZONE_SIZE
-        }
-        ),
+        CachedRegionLength: 1024'({core_v_mcu_pkg::LLC_ZONE_SIZE, core_v_mcu_pkg::DRAM_ZONE_SIZE}),
         MaxOutstandingStores: unsigned'(7),
         DebugEn: bit'(1),
         SDTRIG: bit'(0),
