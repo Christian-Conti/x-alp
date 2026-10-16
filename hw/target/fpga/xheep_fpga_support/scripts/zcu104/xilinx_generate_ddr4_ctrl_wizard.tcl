@@ -12,10 +12,9 @@ set design_name xilinx_ddr4_ctrl_wizard
 create_bd_design $design_name
 
 # Create interface ports
-set ddr4_sdram [ create_bd_intf_port -mode Master -vlnv xilinx.com:interface:ddr4_rtl:1.0 ddr4_sdram ]
-  
-set S_AXI [ create_bd_intf_port -mode Slave -vlnv xilinx.com:interface:aximm_rtl:1.0 S_AXI ]
-set_property -dict [ list \
+set ddr4_sdram [create_bd_intf_port -mode Master -vlnv xilinx.com:interface:ddr4_rtl:1.0 ddr4_sdram]
+set S_AXI [create_bd_intf_port -mode Slave -vlnv xilinx.com:interface:aximm_rtl:1.0 S_AXI]
+set_property -dict [list \
   CONFIG.ADDR_WIDTH {32} \
   CONFIG.ARUSER_WIDTH {0} \
   CONFIG.AWUSER_WIDTH {0} \
@@ -43,36 +42,41 @@ set_property -dict [ list \
   CONFIG.SUPPORTS_NARROW_BURST {1} \
   CONFIG.WUSER_BITS_PER_BYTE {0} \
   CONFIG.WUSER_WIDTH {0} \
-  ] $S_AXI
+] $S_AXI
 
 # Create ports
-set s_axi_aclk [ create_bd_port -dir I -type clk s_axi_aclk ]
-set s_axi_aresetn [ create_bd_port -dir I -type rst s_axi_aresetn ]
-set sys_rst [ create_bd_port -dir I -type rst sys_rst ]
-set_property -dict [ list \
-  CONFIG.POLARITY {ACTIVE_HIGH} \
-] $sys_rst
+set s_axi_aclk [create_bd_port -dir I -type clk s_axi_aclk]
+set s_axi_aresetn [create_bd_port -dir I -type rst s_axi_aresetn]
+set sys_rst [create_bd_port -dir I -type rst sys_rst]
+set_property -dict [list CONFIG.POLARITY {ACTIVE_HIGH}] $sys_rst
+
+# Expose the differential 300 MHz reference clock at the block-design boundary.
+# The top-level wrapper maps this pair to the ZCU104 clock input pins.
+set c0_sys_clk_p [create_bd_port -dir I -type clk -freq_hz 300000000 c0_sys_clk_p]
+set c0_sys_clk_n [create_bd_port -dir I -type clk c0_sys_clk_n]
 
 # Create instance: ddr4_0, and set properties
-set ddr4_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:ddr4:2.2 ddr4_0 ]
+set ddr4_0 [create_bd_cell -type ip -vlnv xilinx.com:ip:ddr4:2.2 ddr4_0]
 set_property -dict [list \
   CONFIG.ADDN_UI_CLKOUT1_FREQ_HZ {100} \
   CONFIG.C0.BANK_GROUP_WIDTH {2} \
   CONFIG.C0.DDR4_AxiAddressWidth {32} \
   CONFIG.C0.DDR4_AxiIDWidth {4} \
+  CONFIG.C0.DDR4_InputClockPeriod {3333} \
+  CONFIG.C0_CLOCK_BOARD_INTERFACE {Custom} \
   CONFIG.C0_DDR4_BOARD_INTERFACE {ddr4_sdram} \
-  CONFIG.RESET_BOARD_INTERFACE {reset} \
-  CONFIG.System_Clock {No_Buffer} \
+  CONFIG.RESET_BOARD_INTERFACE {Custom} \
+  CONFIG.System_Clock {Differential} \
 ] $ddr4_0
 
-# Create instance: axi_dwidth_converter_0, and set properties
-set axi_dwidth_converter_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_dwidth_converter:2.1 axi_dwidth_converter_0 ]
+# Create instance: axi_dwidth_converter_0
+set axi_dwidth_converter_0 [create_bd_cell -type ip -vlnv xilinx.com:ip:axi_dwidth_converter:2.1 axi_dwidth_converter_0]
 
-# Create instance: axi_clock_converter_0, and set properties
-set axi_clock_converter_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_clock_converter:2.1 axi_clock_converter_0 ]
+# Create instance: axi_clock_converter_0
+set axi_clock_converter_0 [create_bd_cell -type ip -vlnv xilinx.com:ip:axi_clock_converter:2.1 axi_clock_converter_0]
 
-# Create instance: rst_ddr4_0_266M, and set properties
-set rst_ddr4_0_266M [ create_bd_cell -type ip -vlnv xilinx.com:ip:proc_sys_reset:5.0 rst_ddr4_0_266M ]
+# Create instance: rst_ddr4_0_266M
+set rst_ddr4_0_266M [create_bd_cell -type ip -vlnv xilinx.com:ip:proc_sys_reset:5.0 rst_ddr4_0_266M]
 
 # Create interface connections
 connect_bd_intf_net -intf_net S_AXI_0_1 [get_bd_intf_ports S_AXI] [get_bd_intf_pins axi_clock_converter_0/S_AXI]
@@ -80,24 +84,27 @@ connect_bd_intf_net -intf_net axi_clock_converter_0_M_AXI [get_bd_intf_pins axi_
 connect_bd_intf_net -intf_net axi_dwidth_converter_0_M_AXI [get_bd_intf_pins axi_dwidth_converter_0/M_AXI] [get_bd_intf_pins ddr4_0/C0_DDR4_S_AXI]
 connect_bd_intf_net -intf_net ddr4_0_C0_DDR4 [get_bd_intf_ports ddr4_sdram] [get_bd_intf_pins ddr4_0/C0_DDR4]
 
-# Create port connections
-connect_bd_net -net ddr4_0_c0_ddr4_ui_clk  [get_bd_pins ddr4_0/c0_ddr4_ui_clk] \
-[get_bd_pins axi_clock_converter_0/m_axi_aclk] \
-[get_bd_pins axi_dwidth_converter_0/s_axi_aclk] \
-[get_bd_pins rst_ddr4_0_266M/slowest_sync_clk] \
-[get_bd_pins ddr4_0/c0_sys_clk_i]
-connect_bd_net -net ddr4_0_c0_ddr4_ui_clk_sync_rst  [get_bd_pins ddr4_0/c0_ddr4_ui_clk_sync_rst] \
-[get_bd_pins rst_ddr4_0_266M/ext_reset_in]
-connect_bd_net -net reset_1  [get_bd_ports sys_rst] \
-[get_bd_pins ddr4_0/sys_rst]
-connect_bd_net -net rst_ddr4_0_266M_peripheral_aresetn  [get_bd_pins rst_ddr4_0_266M/peripheral_aresetn] \
-[get_bd_pins axi_dwidth_converter_0/s_axi_aresetn] \
-[get_bd_pins axi_clock_converter_0/m_axi_aresetn] \
-[get_bd_pins ddr4_0/c0_ddr4_aresetn]
-connect_bd_net -net s_axi_aclk_0_1  [get_bd_ports s_axi_aclk] \
-[get_bd_pins axi_clock_converter_0/s_axi_aclk]
-connect_bd_net -net s_axi_aresetn_0_1  [get_bd_ports s_axi_aresetn] \
-[get_bd_pins axi_clock_converter_0/s_axi_aresetn]
+# Connect ports
+connect_bd_net -net ddr4_0_c0_ddr4_ui_clk [get_bd_pins ddr4_0/c0_ddr4_ui_clk] \
+  [get_bd_pins axi_clock_converter_0/m_axi_aclk] \
+  [get_bd_pins axi_dwidth_converter_0/s_axi_aclk] \
+  [get_bd_pins rst_ddr4_0_266M/slowest_sync_clk]
+connect_bd_net -net ddr4_0_c0_ddr4_ui_clk_sync_rst [get_bd_pins ddr4_0/c0_ddr4_ui_clk_sync_rst] \
+  [get_bd_pins rst_ddr4_0_266M/ext_reset_in]
+connect_bd_net -net reset_1 [get_bd_ports sys_rst] \
+  [get_bd_pins ddr4_0/sys_rst]
+connect_bd_net -net rst_ddr4_0_266M_peripheral_aresetn [get_bd_pins rst_ddr4_0_266M/peripheral_aresetn] \
+  [get_bd_pins axi_dwidth_converter_0/s_axi_aresetn] \
+  [get_bd_pins axi_clock_converter_0/m_axi_aresetn] \
+  [get_bd_pins ddr4_0/c0_ddr4_aresetn]
+connect_bd_net -net s_axi_aclk_0_1 [get_bd_ports s_axi_aclk] \
+  [get_bd_pins axi_clock_converter_0/s_axi_aclk]
+connect_bd_net -net s_axi_aresetn_0_1 [get_bd_ports s_axi_aresetn] \
+  [get_bd_pins axi_clock_converter_0/s_axi_aresetn]
+connect_bd_net -net c0_sys_clk_p_0_1 [get_bd_ports c0_sys_clk_p] \
+  [get_bd_pins ddr4_0/c0_sys_clk_p]
+connect_bd_net -net c0_sys_clk_n_0_1 [get_bd_ports c0_sys_clk_n] \
+  [get_bd_pins ddr4_0/c0_sys_clk_n]
 
 # Create address segments
 
@@ -106,5 +113,5 @@ save_bd_design
 close_bd_design $design_name
 
 # Create wrapper
-set wrapper_path [ make_wrapper -fileset sources_1 -files [ get_files -norecurse xilinx_ddr4_ctrl_wizard.bd ] -top ]
+set wrapper_path [make_wrapper -fileset sources_1 -files [get_files -norecurse xilinx_ddr4_ctrl_wizard.bd] -top]
 add_files -norecurse -fileset sources_1 $wrapper_path
